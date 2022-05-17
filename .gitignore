@@ -1,0 +1,9 @@
+
+.idea/.idea.DiscordApi/.idea/
+
+.nuke/
+
+build/.editorconfig
+
+*/bin/*
+*/obj/*

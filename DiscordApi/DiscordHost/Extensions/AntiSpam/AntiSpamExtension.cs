@@ -1,0 +1,100 @@
+﻿using Discord;
+using Discord.WebSocket;
+using DiscordApi.DiscordHost.Extensions.Interfaces;
+using DiscordApi.DiscordHost.Utils;
+using DiscordApi.Models;
+using Serilog;
+
+namespace DiscordApi.DiscordHost.Extensions.AntiSpam;
+
+public class AntiSpamExtension : Extension
+{
+    private static readonly int _maxQueueLength = 10;
+
+    private readonly DiscordSocketClient _client;
+    private readonly ILoggingExtension _logger;
+
+    private readonly GuildMessages _messages = new(_maxQueueLength);
+
+    public AntiSpamExtension(DiscordSocketClient client, ILoggingExtension logger, string botName) : base(botName)
+    {
+        _client = client;
+        _logger = logger;
+
+        BotName = botName;
+
+        _client.MessageReceived += CheckForSpam;
+
+        Log.Information("AntiSpam attached to {ClientName}", BotName);
+    }
+
+    public string BotName { get; set; }
+
+    private async Task CheckForSpam(SocketMessage message)
+    {
+        if (string.IsNullOrEmpty(message.Content) || message.Author == _client.CurrentUser) return;
+
+        var channel = (SocketTextChannel)message.Channel;
+        var guild = channel.Guild;
+        var author = message.Author;
+
+        if (TryGetConfig<AntiSpamConfig>(guild.Id, out var config))
+        {
+            _messages.InsertIntoQueue(message, guild);
+            var queue = _messages.GetQueue(message, guild);
+
+            if (CheckQueueForSpam(queue))
+            {
+                _logger.Pause();
+
+                foreach (var kvp in queue.GetGroupedByChannels()) await kvp.Key.DeleteMessagesAsync(kvp.Value);
+
+                if (TryGetConfig<LoggingConfig>(guild.Id, out var c))
+                {
+                    await _logger.SendCustomLogMessage(
+                        " ",
+                        _logger.GenerateEmbed(
+                            "User Muted for Spamming",
+                            "Muted User <@" + author.Id + "> for spamming."
+                        ), c.LoggingChannelID);
+
+                    await _logger.SendCustomLogMessage(
+                        " ",
+                        DeletedMessageOverview(queue),
+                        c.LoggingChannelID);
+                }
+
+                queue.Clear();
+
+                await Task.Delay(1000);
+
+                _logger.Resume();
+            }
+        }
+    }
+
+    private bool CheckQueueForSpam(MessageQueue queue)
+    {
+        var spams = queue.Queue
+            .GroupBy(message => message.Content)
+            .Where(group => group.Count() > 5);
+
+        if (spams.Any()) return true;
+
+        return false;
+    }
+
+    private Embed DeletedMessageOverview(MessageQueue queue)
+    {
+        var deleted = queue.GetGroupedByChannels();
+
+        var embed = new EmbedBuilder
+        {
+            Title = "Bulk Deleted Messages by " + deleted.First().Value.First().Author.Username + ":"
+        };
+
+        foreach (var kvp in deleted) embed.AddField(kvp.Key.Name + ":", MessageQueue.MessageList(kvp.Value));
+
+        return embed.Build();
+    }
+}
