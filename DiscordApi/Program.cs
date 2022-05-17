@@ -17,7 +17,7 @@ builder.Services.AddDbContext<AppDBContext>(options => options.UseSqlite("Data S
 builder.Services.AddSingleton<IStateHandler, StateHandler>();
 builder.Services.AddSingleton<BotHostService>();
 builder.Services.AddHostedService(p => p.GetRequiredService<BotHostService>());
-
+builder.Services.AddSingleton<UserStateService>();
 
 var app = builder.Build();
 

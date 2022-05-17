@@ -1,0 +1,79 @@
+﻿:root{
+    --app-bg: #41413966;
+    --nav-bg: #41414177;
+    --overlay-bg: #41414199;
+    --main-border: #65656566;
+}
+
+html, body, main{
+    width: 100vw;
+    height: 100vh;
+    padding: 0;
+    margin: 0;
+    background: transparent;
+    overflow: hidden;
+    font-family: Roboto, sans-serif;
+    color: #eed;
+}
+
+.app-body{
+    margin: 2vh;
+}
+
+.expand{
+    width: 100%;
+    height: 100%;
+}
+
+.login-box{
+    width: 25vw;
+    height: 20vh;
+    border: 1px solid red;
+}
+
+.login-item{
+    width: 100%;
+    height: 33%;
+}
+
+.login-title{
+    text-align: center;
+    font-size: 2vh;
+}
+
+.login-input-box{
+    height: 50%;
+}
+
+.login-input-input{
+    margin: 1vh;
+}
+
+.login-input-title{
+    font-size: 1.5vh;
+    margin: 1vh;
+}
+
+.main-app{
+    width: 90vw;
+    height: 90vh;
+    background: var(--app-bg);
+    backdrop-filter: blur(3px);
+    border-radius: 0.5rem;
+    border: 1px solid var(--main-border);
+}
+
+.nav-bar {
+    height: 3%;
+    width: auto;
+    padding: 1rem;
+    border-bottom: 1px solid var(--main-border);
+    background: var(--nav-bg);
+    border-top-left-radius: 0.5rem;
+    border-top-right-radius: 0.5rem;
+}
+
+.ui{
+    background: rgba(50,50,50,0.3);
+    backdrop-filter: blur(5px);
+}

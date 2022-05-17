@@ -1,0 +1,25 @@
+﻿@using DiscordApi.Services
+@inject UserStateService _state
+@implements IDisposable
+
+<div class="nav-bar flex flex-row-center-v flex-space-between">
+    <div>
+    </div>
+    <div>
+        Logged in as @_state.UserName
+    </div>
+</div>
+
+@code {
+
+    protected override void OnInitialized()
+    {
+        _state.OnChange += StateHasChanged;
+    }
+
+    public void Dispose()
+    {
+        _state.OnChange -= StateHasChanged;
+    }
+
+}
