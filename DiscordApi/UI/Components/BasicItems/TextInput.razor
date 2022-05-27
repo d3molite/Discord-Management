@@ -1,0 +1,51 @@
+﻿@using FluentValidation.Results
+<div class="config-item flex flex-space-between flex-row-center-v">
+    <div>
+        @Title
+    </div>
+    <div class="flex option">
+        <div class="relative w100">
+            <input class="@(IsValid ? "" : "error") w100" value="@Value" @onchange="args => UpdateValue(args.Value.ToString())"/>
+            @if (!IsValid)
+            {
+                <div class="error-message">
+                    @Failure?.ErrorMessage
+                </div>
+            }
+        </div>
+
+    </div>
+</div>
+
+@code {
+
+    [Parameter]
+    public string Title { get; set; }
+
+    [Parameter]
+    public string Value { get; set; }
+
+    [Parameter]
+    public ValidationFailure? Failure
+    {
+        get => _failure;
+        set
+        {
+            _failure = value;
+            StateHasChanged();
+        }
+    }
+
+    private bool IsValid => Failure == null;
+
+    [Parameter]
+    public EventCallback<string> ValueChanged { get; set; }
+
+    private async Task UpdateValue(string newVal)
+    {
+        Value = newVal;
+        await ValueChanged.InvokeAsync(Value);
+    }
+
+    private ValidationFailure? _failure;
+}

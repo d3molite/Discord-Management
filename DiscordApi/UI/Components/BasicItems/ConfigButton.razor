@@ -1,0 +1,27 @@
+﻿<div class="config-item flex flex-space-between flex-row-center-v">
+    <div>
+    </div>
+    <div class="flex option">
+        <div class="relative w100">
+            <div class="button" @onclick="InvokeClick">
+                @Title
+            </div>
+        </div>
+
+    </div>
+</div>
+
+@code {
+
+    [Parameter]
+    public string Title { get; set; }
+
+    [Parameter]
+    public EventCallback Clicked { get; set; }
+
+    private async Task InvokeClick()
+    {
+        await Clicked.InvokeAsync();
+    }
+
+}

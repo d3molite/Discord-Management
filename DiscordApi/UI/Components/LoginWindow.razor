@@ -37,9 +37,12 @@
 @code {
     public string Username { get; set; }
     public string Password { get; set; }
-    
-    public void TryLogin()
+
+    public bool LoginResult { get; set; }
+
+    public async Task TryLogin()
     {
-        _userStateService.TryLogin(Username, Password);
+        LoginResult = await _userStateService.TryLogin(Username, Password);
     }
+
 }

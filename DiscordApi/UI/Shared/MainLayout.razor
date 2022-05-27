@@ -1,0 +1,30 @@
+﻿@implements IDisposable
+@using DiscordApi.UI.Components
+@inherits StateLayoutComponentBase
+
+<PageTitle>Discord Management</PageTitle>
+
+<div class="expand">
+    @if (!State.LoggedIn)
+    {
+        <LoginWindow></LoginWindow>
+    }
+    else
+    {
+        <div class="expand flex flex-center">
+            <div class="main-app flex flex-col">
+                <Nav></Nav>
+                <div class="app-body flex flex-expand">
+                    @Body
+                </div>
+                <div class="save-state">
+                    @State.SaveStatus
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@code{
+
+}

@@ -3,6 +3,7 @@ using System;
 using DiscordApi.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DiscordManager.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    partial class AppDBContextModelSnapshot : ModelSnapshot
+    [Migration("20220526181028_small changes")]
+    partial class smallchanges
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "7.0.0-preview.4.22229.2");
@@ -47,16 +49,6 @@ namespace DiscordManager.Migrations
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
-
-                    b.Property<bool>("IsActive")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER")
-                        .HasDefaultValue(false);
-
-                    b.Property<bool>("IsDebug")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER")
-                        .HasDefaultValue(false);
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -186,10 +178,7 @@ namespace DiscordManager.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("Description")
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("MessageGuildID")
+                    b.Property<int?>("MessageGuildID")
                         .HasColumnType("INTEGER");
 
                     b.Property<ulong>("MessageID")
@@ -281,7 +270,7 @@ namespace DiscordManager.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("RoleGuildID")
+                    b.Property<int?>("RoleGuildID")
                         .HasColumnType("INTEGER");
 
                     b.Property<ulong>("RoleID")
@@ -352,9 +341,7 @@ namespace DiscordManager.Migrations
                 {
                     b.HasOne("DiscordApi.Models.Guild", "RelatedGuild")
                         .WithMany()
-                        .HasForeignKey("MessageGuildID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("MessageGuildID");
 
                     b.Navigation("RelatedGuild");
                 });
@@ -429,9 +416,7 @@ namespace DiscordManager.Migrations
                 {
                     b.HasOne("DiscordApi.Models.Guild", "RelatedGuild")
                         .WithMany()
-                        .HasForeignKey("RoleGuildID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("RoleGuildID");
 
                     b.Navigation("RelatedGuild");
                 });

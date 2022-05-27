@@ -1,0 +1,12 @@
+﻿@using DiscordApi.UI.Components
+@inherits DiscordApi.UI.Components.StateComponentBase
+@page "/"
+
+@if (State.SelectedBot is null)
+{
+    <BotPicker></BotPicker>
+}
+
+@code{
+
+}

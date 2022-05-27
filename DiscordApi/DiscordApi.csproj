@@ -40,6 +40,8 @@
 
     <ItemGroup>
       <PackageReference Include="Discord.Net" Version="3.6.1" />
+      <PackageReference Include="FluentValidation" Version="11.0.1" />
+      <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="6.0.5" />
       <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.0-preview.4.22229.2" />
       <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.5">
         <PrivateAssets>all</PrivateAssets>
@@ -50,12 +52,24 @@
         <PrivateAssets>all</PrivateAssets>
         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       </PackageReference>
+      <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
       <PackageReference Include="OpenCvSharp4" Version="4.5.5.20211231" />
       <PackageReference Include="OpenCvSharp4.runtime.ubuntu.18.04-x64" Version="4.5.5.20211231" />
       <PackageReference Include="OpenCvSharp4.runtime.win" Version="4.5.5.20211231" />
+      <PackageReference Include="RestSharp" Version="107.3.0" />
       <PackageReference Include="Serilog" Version="2.11.1-dev-01397" />
       <PackageReference Include="Serilog.Sinks.Console" Version="4.0.1" />
       <PackageReference Include="Serilog.Sinks.Trace" Version="3.0.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Update="Database.db">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="DiscordHost\Extensions\ReactTo" />
     </ItemGroup>
 
 </Project>

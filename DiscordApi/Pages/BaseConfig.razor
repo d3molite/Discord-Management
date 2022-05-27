@@ -1,0 +1,44 @@
+﻿@page "/base"
+@using DiscordApi.Data
+@inherits DiscordApi.UI.Components.StateComponentBase
+
+<div class="flex flex-expand settings-main">
+    <div class="flex flex-row flex-expand settings-cols">
+        <div class="flex flex-col settings-types">
+            <div class="settings-header border-bottom"></div>
+            @foreach (var cfg in AppDBContext.BaseItems)
+            {
+                @if (SelectedConfig == cfg.Key)
+                {
+                    <div class="settings-item ui">
+                        @cfg.Key
+                    </div>
+                }
+                else
+                {
+                    <div class="settings-item" @onclick="() => SelectConfig(cfg.Key)">
+                        @cfg.Key
+                    </div>
+                }
+            }
+            <div class="flex flex-expand border-right"></div>
+        </div>
+    </div>
+</div>
+
+@code {
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        SelectedConfig = AppDBContext.BaseItems.First().Key;
+    }
+
+    private string SelectedConfig { get; set; }
+
+    private void SelectConfig(string cfgKey)
+    {
+        SelectedConfig = cfgKey;
+    }
+
+}

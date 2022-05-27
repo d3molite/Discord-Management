@@ -1,79 +1,328 @@
-﻿:root{
+﻿:root {
     --app-bg: #41413966;
     --nav-bg: #41414177;
     --overlay-bg: #41414199;
     --main-border: #65656566;
+    --main-enabled: #ffcd71;
+    --main-radius: 0.5rem;
+    --main-text: #eec;
 }
 
-html, body, main{
-    width: 100vw;
-    height: 100vh;
-    padding: 0;
-    margin: 0;
+html, body, main {
     background: transparent;
-    overflow: hidden;
+    color: var(--main-text);
     font-family: Roboto, sans-serif;
-    color: #eed;
+    height: 100vh;
+    margin: 0;
+    overflow: hidden;
+    padding: 0;
+    width: 100vw;
 }
 
-.app-body{
-    margin: 2vh;
+.app-body {
 }
 
-.expand{
-    width: 100%;
+.expand {
     height: 100%;
-}
-
-.login-box{
-    width: 25vw;
-    height: 20vh;
-    border: 1px solid red;
-}
-
-.login-item{
     width: 100%;
+}
+
+.login-box {
+    border: 1px solid var(--main-border);
+    border-radius: var(--main-radius);
+    height: 20vh;
+    width: 25vw;
+}
+
+.login-item {
     height: 33%;
+    width: 100%;
 }
 
-.login-title{
-    text-align: center;
+.login-title {
     font-size: 2vh;
+    text-align: center;
 }
 
-.login-input-box{
+.login-input-box {
     height: 50%;
 }
 
-.login-input-input{
+.login-input-input {
     margin: 1vh;
 }
 
-.login-input-title{
+.login-input-title {
     font-size: 1.5vh;
     margin: 1vh;
 }
 
-.main-app{
-    width: 90vw;
-    height: 90vh;
-    background: var(--app-bg);
+.main-app {
     backdrop-filter: blur(3px);
-    border-radius: 0.5rem;
+    background: var(--app-bg);
     border: 1px solid var(--main-border);
+    border-radius: var(--main-radius);
+    height: 90vh;
+    width: 90vw;
+}
+
+.bot-frame {
+    background: var(--app-bg);
+    border: 1px solid var(--main-border);
+    height: 20%;
+    margin: 1rem;
+    width: 25%;
+}
+
+.bot-frame:hover {
+    filter: drop-shadow(0px 0px 10px var(--main-border));
+}
+
+.bot-frame-img {
+    border-radius: 50%;
+    height: 100%;
+    object-fit: cover;
+    width: 100%;
+}
+
+.padding {
+    padding: 0.5rem;
+}
+
+.bot-frame-img-wrapper {
+    border: 1px solid var(--main-border);
+    border-radius: 50%;
+    margin: 0 1rem;
+}
+
+.bot-frame-status {
+    margin-bottom: 0.5rem;
+}
+
+.bot-frame-title {
+    border-bottom: 1px solid var(--main-border);
+    font-size: 1.5vh;
+    height: 20%;
+    padding-left: 1rem;
+}
+
+.margin {
+    margin: 1rem;
 }
 
 .nav-bar {
-    height: 3%;
-    width: auto;
-    padding: 1rem;
-    border-bottom: 1px solid var(--main-border);
     background: var(--nav-bg);
+    border-bottom: 1px solid var(--main-border);
     border-top-left-radius: 0.5rem;
     border-top-right-radius: 0.5rem;
+    height: 3%;
+    padding: 1rem;
+    width: auto;
 }
 
-.ui{
-    background: rgba(50,50,50,0.3);
+.settings-main {
+    border: 1px solid var(--main-border);
+}
+
+.settings-item {
+    align-items: center;
+    border-bottom: 1px solid var(--main-border);
+    border-right: 1px solid var(--main-border);
+    display: flex;
+    height: 5%;
+    padding-left: 1rem;
+}
+
+.settings-item:hover {
+    background: rgba(50, 50, 50, 0.3);
+    filter: drop-shadow(0px 0px 10px var(--main-border));
+}
+
+.border-right {
+    border-right: 1px solid var(--main-border);
+}
+
+.border-bottom {
+    border-bottom: 1px solid var(--main-border);
+}
+
+.settings-g {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+}
+
+.settings-guild-selected {
+    border-left: 1px solid var(--main-border);
+    border-right: 1px solid var(--main-border);
+    border-top: 1px solid var(--main-border);
+    height: 90%;
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+
+.settings-guild {
+    border-left: 1px solid var(--main-border);
+    border-right: 1px solid var(--main-border);
+    border-top: 1px solid var(--main-border);
+    height: 70%;
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+
+.settings-header {
+    align-items: end;
+    height: 3vh;
+}
+
+.settings-types {
+    width: 15%;
+}
+
+.settings-box {
+
+}
+
+.save-state {
+    bottom: 0;
+    margin-bottom: 1rem;
+    margin-right: 1rem;
+    position: absolute;
+    right: 0;
+}
+
+.settings-main-window {
+    border-top: 1px solid var(--main-border);
+}
+
+.ui {
     backdrop-filter: blur(5px);
+    background: rgba(50, 50, 50, 0.3);
+}
+
+.debug {
+    border: 1px solid red;
+}
+
+.config-item {
+    height: 5vh;
+    width: 30%;
+}
+
+.config-heading {
+    font-size: 1.5rem;
+    margin-bottom: 0.5vh;
+}
+
+.config-column {
+    margin-right: 1rem;
+    width: 30%;
+}
+
+.border {
+    border: 1px solid var(--main-border);
+}
+
+.h100 {
+    height: 100%;
+}
+
+.h110 {
+    height: 110%;
+}
+
+input, select {
+    background: transparent;
+    border: 1px solid var(--main-border);
+    color: var(--main-text);
+    height: 30px;
+    padding-left: 0.5rem;
+}
+
+option {
+    color: black !important;
+}
+
+.option {
+    justify-content: flex-end;
+    width: 50%;
+}
+
+.optionListItem {
+    align-items: center;
+    border-bottom: 1px solid var(--main-border);
+    display: flex;
+    height: 5vh;
+    padding-left: 1rem;
+}
+
+.optionListItem:hover {
+    background: rgba(50, 50, 50, 0.3);
+    filter: drop-shadow(0px 0px 10px var(--main-border));
+}
+
+.button-wrapper {
+    height: 5vh;
+    width: 100%;
+}
+
+.button {
+    border: 1px solid var(--main-border);
+    padding: 1rem;
+}
+
+.button:hover {
+    background: rgba(50, 50, 50, 0.3);
+    filter: drop-shadow(0px 0px 10px var(--main-border));
+}
+
+.margin-top {
+    margin-top: 0.3rem;
+}
+
+.error {
+    border: 1px solid red;
+}
+
+.error-message {
+    color: red;
+    font-size: 0.9rem;
+    font-weight: 1000;
+    position: absolute;
+    right: 0;
+    top: 34px;
+    width: 100%;
+}
+
+#blazor-error-ui {
+    background: lightyellow;
+    bottom: 0;
+    box-shadow: 0 -1px 2px rgba(0, 0, 0, 0.2);
+    display: none;
+    left: 0;
+    padding: 0.6rem 1.25rem 0.7rem 1.25rem;
+    position: fixed;
+    width: 100%;
+    z-index: 1000;
+}
+
+#blazor-error-ui .dismiss {
+    cursor: pointer;
+    position: absolute;
+    right: 0.75rem;
+    top: 0.5rem;
+}
+
+.w100 {
+    width: 100%;
+}
+
+.nav-two {
+    border-left: 2px solid var(--main-border);
+    margin-left: 0.5rem;
+    padding-left: 0.5rem;
+}
+
+.pointer {
+    cursor: pointer;
 }

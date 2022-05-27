@@ -1,25 +1,47 @@
-﻿@using DiscordApi.Services
-@inject UserStateService _state
-@implements IDisposable
+﻿@inject NavigationManager NavManager
+@inherits StateComponentBase
 
 <div class="nav-bar flex flex-row-center-v flex-space-between">
-    <div>
+    <div class="flex">
+        <div @onclick="Home" class="pointer">
+            Home
+        </div>
+        <div @onclick="Base" class="pointer nav-two">
+            Base Config
+        </div>
+    </div>
+    <div class="h100">
+        @if (State.SelectedBot is null)
+        {
+            <p>Select a Bot to continue</p>
+        }
+        else
+        {
+            <div class="flex h100 flex-row-center-v">
+                <div class="bot-frame-img-wrapper h110">
+                    <img class="bot-frame-img" src="@State.SelectedBot.AvatarUrl" alt="@State.SelectedBot.Name profile picture"/>
+                </div>
+                <p>@State.SelectedBot.Name</p>
+            </div>
+        }
     </div>
     <div>
-        Logged in as @_state.UserName
+        Logged in as @State.UserName
     </div>
 </div>
 
 @code {
 
-    protected override void OnInitialized()
+    private void Home()
     {
-        _state.OnChange += StateHasChanged;
+        State.SetBot(null);
+        NavManager.NavigateTo("/");
     }
 
-    public void Dispose()
+    private void Base()
     {
-        _state.OnChange -= StateHasChanged;
+        State.SetBot(null);
+        NavManager.NavigateTo("/base");
     }
 
 }

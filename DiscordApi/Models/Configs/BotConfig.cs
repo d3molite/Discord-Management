@@ -2,6 +2,14 @@
 
 public class BotConfig : IConfig<BotConfig>
 {
+    [NonSerialized] public static Dictionary<string, string> Configs = new()
+    {
+        { "Basic", "" },
+        { "Logging", nameof(RelatedLogger) },
+        { "Reaction Roles", nameof(RoleConfigs) },
+        { "Anti Spam", nameof(AntiSpam) }
+    };
+
     public int ID { get; set; }
 
     public Guild RelatedGuild { get; set; }

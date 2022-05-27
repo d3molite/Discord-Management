@@ -5,6 +5,16 @@ namespace DiscordApi.Data;
 
 public class AppDBContext : DbContext
 {
+    [NonSerialized] public static Dictionary<string, string> BaseItems = new()
+    {
+        { "Bots", nameof(Bots) },
+        { "Guilds", nameof(Guilds) },
+        { "Bot Configs", nameof(Configs) },
+        { "Roles", nameof(Roles) },
+        { "Emoji", nameof(Emoji) },
+        { "Messages", nameof(Messages) }
+    };
+
     public AppDBContext(DbContextOptions options) : base(options)
     {
     }
@@ -19,6 +29,8 @@ public class AppDBContext : DbContext
     public DbSet<BotConfig> Configs { get; set; }
     public DbSet<Modnote> Modnotes { get; set; }
 
+    public DbSet<Message> Messages { get; set; }
+
     public static AppDBContext Get()
     {
         var optionsBuilder = new DbContextOptionsBuilder<AppDBContext>();
@@ -28,5 +40,14 @@ public class AppDBContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder
+            .Entity<Bot>()
+            .Property(p => p.IsActive)
+            .HasDefaultValue(false);
+
+        modelBuilder
+            .Entity<Bot>()
+            .Property(p => p.IsDebug)
+            .HasDefaultValue(false);
     }
 }

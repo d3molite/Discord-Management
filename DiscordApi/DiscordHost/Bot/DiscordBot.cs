@@ -55,6 +55,8 @@ public class DiscordBot
     public string Status => _client.CurrentUser.Status.ToString();
 
     public string AvatarUrl => _client.CurrentUser.GetAvatarUrl();
+    
+    public List<string> Servers => _client.Guilds.Select(x => x.Name).ToList();
 
     private async Task LoadExtensions()
     {

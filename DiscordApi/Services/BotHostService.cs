@@ -39,17 +39,20 @@ public class BotHostService : IHostedService, IBotHostService
         using (var scope = _scopeFactory.CreateAsyncScope())
         {
             var context = scope.ServiceProvider.GetRequiredService<AppDBContext>();
-
             Bots = context.Bots.ToList();
 
 #if DEBUG
-            var bot = Bots.OrderBy(x => x.ID).First();
-            Log.Information("Starting Bot {BotName}", bot.Name);
-            DiscordBot tmp = new(bot.Name, bot.Token, _provider, bot.Presence);
-            BotWrappers.Add(tmp);
-            Task.Run(() => tmp.StartBot());
+            var bots = Bots.Where(x => x.IsDebug);
+            foreach (var bot in bots)
+            {
+                Log.Information("Starting Bot {BotName}", bot.Name);
+                DiscordBot tmp = new(bot.Name, bot.Token, _provider, bot.Presence);
+                BotWrappers.Add(tmp);
+                Task.Run(() => tmp.StartBot());
+            }
+
 #elif RELEASE
-                foreach (Bot bot in this.Bots)
+                foreach (Bot bot in this.Bots.Where(x => x.IsActive))
                 {
                     Log.Information("Starting Bot {BotName}", bot.Name);
                     DiscordBot tmp =

@@ -1,0 +1,39 @@
+﻿@using DiscordApi.Services
+@using DiscordApi.DiscordHost.Bot
+@inject UserStateService _state;
+@inject BotHostService _bots
+@inject NavigationManager NavManager
+
+<div class="flex flex-expand flex-wrap margin">
+    @foreach (var bot in _bots.BotWrappers)
+    {
+        <div class="bot-frame flex flex-col" @onclick="ar => Callback(ar, bot)">
+            <div class="bot-frame-title flex flex-col-center-h">
+                @bot.Name
+            </div>
+            <div class="flex flex-col-center-h flex-expand">
+                <div class="bot-frame-img-wrapper">
+                    <img class="bot-frame-img" src="@bot.AvatarUrl" alt="@bot.Name profile picture"/>
+                </div>
+                <div class="flex flex-col flex-expand">
+                    <div class="bot-frame-status">
+                        @bot.Status
+                    </div>
+                    <div>
+                        @string.Join(", ", bot.Servers)
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@code {
+
+    private void Callback(MouseEventArgs obj, DiscordBot bot)
+    {
+        _state.SetBot(bot);
+        NavManager.NavigateTo("/config");
+    }
+
+}

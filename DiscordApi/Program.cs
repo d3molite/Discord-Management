@@ -1,5 +1,3 @@
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
 using DiscordApi.Data;
 using DiscordApi.DiscordHost.Utils;
 using DiscordApi.Services;
@@ -9,10 +7,11 @@ using Serilog;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddRazorPages();
+builder.Services.AddRazorPages().AddRazorRuntimeCompilation();
 builder.Services.AddServerSideBlazor();
 
 builder.Services.AddDbContext<AppDBContext>(options => options.UseSqlite("Data Source=Database.db"));
+// builder.Services.AddDbContextFactory<AppDBContext>(options => options.UseSqlite("Data Source=Database.db"));
 
 builder.Services.AddSingleton<IStateHandler, StateHandler>();
 builder.Services.AddSingleton<BotHostService>();
