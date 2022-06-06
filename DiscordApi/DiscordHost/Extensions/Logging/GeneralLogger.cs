@@ -44,7 +44,8 @@ public class GeneralLogger : LoggingExtension
                         $"{message.Value.Author.Username}#{message.Value.Author.DiscriminatorValue}";
                     var embMessage =
                         $"Message by user {discriminatedUser} <@{message.Value.Author.Id}> \n was deleted in channel <#{channel.Value.Id}> \n **Content:** \n {message.Value}";
-                    await SendLogMessage(" ", GenerateEmbed("Message Deleted", embMessage), config.LoggingChannelID);
+                    await SendLogMessage(" ", GenerateEmbed("Message Deleted", embMessage, Color.Orange),
+                        config.LoggingChannelID);
                 }
         }
     }
@@ -129,7 +130,7 @@ public class GeneralLogger : LoggingExtension
 
                 var discriminatedUser = $"{user.Username}#{user.DiscriminatorValue}";
                 var embMessage = $"User {discriminatedUser} <@{user.Id}> was banned. \n **Reason**: {banReason}";
-                await SendLogMessage(" ", GenerateEmbed("User Banned", embMessage), config.LoggingChannelID);
+                await SendLogMessage(" ", GenerateEmbed("User Banned", embMessage, Color.Red), config.LoggingChannelID);
             }
     }
 }

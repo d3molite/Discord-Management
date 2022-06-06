@@ -40,7 +40,7 @@ public class Extension
 
         if (v == null)
         {
-            Log.Debug("No {ObjectType} for {ClientName} in {GuildID}", nameof(T), BotName, guildId);
+            Log.Debug("No {ObjectType} for {ClientName} in {GuildID}", typeof(T), BotName, guildId);
             config = new T();
             return false;
         }

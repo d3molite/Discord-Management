@@ -61,7 +61,7 @@ public class AntiSpamExtension : Extension
                             " ",
                             _logger.GenerateEmbed(
                                 "User Muted for Spamming",
-                                "Muted User <@" + author.Id + "> for spamming."
+                                "Muted User <@" + author.Id + "> for spamming.", Color.DarkRed
                             ), c.LoggingChannelID);
                     }
 

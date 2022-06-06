@@ -18,17 +18,6 @@ public class LoggingExtension : Extension, ILoggingExtension
     public DiscordSocketClient Client { get; set; }
     public string BotName { get; set; }
 
-    public Embed GenerateEmbed(string title, string message)
-    {
-        var embed = new EmbedBuilder
-        {
-            Title = "Log - " + DateTime.Now.ToString("HH:mm:ss")
-        };
-        embed.AddField(title, message);
-
-        return embed.Build();
-    }
-
     public void LogSetup()
     {
     }
@@ -73,5 +62,17 @@ public class LoggingExtension : Extension, ILoggingExtension
                 if (logChannel is IMessageChannel msgChannel)
                     await msgChannel.SendMessageAsync(message, embed: embed);
             }
+    }
+
+    public Embed GenerateEmbed(string title, string message, Color? color = null)
+    {
+        var embed = new EmbedBuilder
+        {
+            Title = "Log - " + DateTime.Now.ToString("HH:mm:ss")
+        };
+        if (color != null) embed.Color = color;
+        embed.AddField(title, message);
+
+        return embed.Build();
     }
 }
