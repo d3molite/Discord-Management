@@ -55,7 +55,7 @@ public class DiscordBot
     public string Status => _client.CurrentUser.Status.ToString();
 
     public string AvatarUrl => _client.CurrentUser.GetAvatarUrl();
-    
+
     public List<string> Servers => _client.Guilds.Select(x => x.Name).ToList();
 
     private async Task LoadExtensions()
@@ -145,7 +145,7 @@ public class DiscordBot
 
     private Task Log(LogMessage msg)
     {
-        Serilog.Log.Information(msg.ToString());
+        Serilog.Log.Information("{BotName} {message}", Name, msg.ToString());
         return Task.CompletedTask;
     }
 }

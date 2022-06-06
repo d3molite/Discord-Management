@@ -8,3 +8,5 @@ build/.editorconfig
 */bin/*
 */obj/*
 DiscordApi/Database.db
+
+DiscordApi.sln.DotSettings.user

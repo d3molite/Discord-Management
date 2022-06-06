@@ -31,13 +31,13 @@ public class ImageCommandHandler : InteractionModuleBase
         var channel = Context.Channel;
         var msgs = await channel.GetMessagesAsync(5).FlattenAsync();
         var messages = msgs.ToList();
-        messages.Reverse();
 
         foreach (var message in messages)
         {
-            if (message.Author == Context.Client.CurrentUser)
+            if (message.Author.Id == Context.Client.CurrentUser.Id)
             {
                 await message.DeleteAsync();
+                await RespondAsync("Done!", ephemeral: true);
                 return;
             }
         }
@@ -89,6 +89,19 @@ public class ImageCommandHandler : InteractionModuleBase
         {
             await RespondAsync("Crustifying...");
             await ImageManipulationHelper.MoreJpeg(img.Item2);
+            await SendAndDelete(img.Item2);
+        }
+    }
+
+    [SlashCommand("mandala", "Speen.")]
+    public async Task mandala(int slice = 1)
+    {
+        var img = await TryGetImage();
+
+        if (img.Item1)
+        {
+            await RespondAsync("Speeeeeeen");
+            await ImageManipulationHelper.Mandala(img.Item2, slice);
             await SendAndDelete(img.Item2);
         }
     }
