@@ -49,14 +49,21 @@ public class AntiSpamExtension : Extension
 
                 foreach (var kvp in queue.GetGroupedByChannels()) await kvp.Key.DeleteMessagesAsync(kvp.Value);
 
+                var role = config.MutedRole;
+
+                if (role != null) await Mute((SocketGuildUser)author, guild.GetRole(role.RoleID));
+
                 if (TryGetConfig<LoggingConfig>(guild.Id, out var c))
                 {
-                    await _logger.SendCustomLogMessage(
-                        " ",
-                        _logger.GenerateEmbed(
-                            "User Muted for Spamming",
-                            "Muted User <@" + author.Id + "> for spamming."
-                        ), c.LoggingChannelID);
+                    if (role != null)
+                    {
+                        await _logger.SendCustomLogMessage(
+                            " ",
+                            _logger.GenerateEmbed(
+                                "User Muted for Spamming",
+                                "Muted User <@" + author.Id + "> for spamming."
+                            ), c.LoggingChannelID);
+                    }
 
                     await _logger.SendCustomLogMessage(
                         " ",
@@ -71,6 +78,13 @@ public class AntiSpamExtension : Extension
                 _logger.Resume();
             }
         }
+    }
+
+    private async Task Mute(SocketGuildUser user, SocketRole muted)
+    {
+        var roles = user.Roles.Where(x => x.Name != "everyone").ToArray();
+        await user.RemoveRolesAsync(roles);
+        await user.AddRoleAsync(muted);
     }
 
     private bool CheckQueueForSpam(MessageQueue queue)
@@ -90,7 +104,7 @@ public class AntiSpamExtension : Extension
 
         var embed = new EmbedBuilder
         {
-            Title = "Bulk Deleted Messages by " + deleted.First().Value.First().Author.Username + ":"
+            Title = "Bulk Deleted Spam by " + deleted.First().Value.First().Author.Username + ":"
         };
 
         foreach (var kvp in deleted) embed.AddField(kvp.Key.Name + ":", MessageQueue.MessageList(kvp.Value));

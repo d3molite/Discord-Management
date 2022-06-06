@@ -24,8 +24,14 @@ public class ReactionRoleExtension : ClientExtension
         Log.Information("Reaction Roles attached to {ClientName}", BotName);
     }
 
-    private bool TryGetConfig(ulong guildId, string emoji, ulong messageId, out ReactionRoleConfig? config)
+    private bool TryGetConfig(ulong? guildId, string? emoji, ulong? messageId, out ReactionRoleConfig? config)
     {
+        if (guildId == null || emoji == null || messageId == null)
+        {
+            config = null;
+            return false;
+        }
+        
         using var db = AppDBContext.Get();
 
         try
@@ -61,7 +67,7 @@ public class ReactionRoleExtension : ClientExtension
         var messageId = arg1.Id;
         var channel = arg2.GetOrDownloadAsync().Result as SocketGuildChannel;
         var emoji = arg3.Emote.Name;
-
+        
         if (TryGetConfig(channel!.Guild.Id, emoji, messageId, out var config))
         {
             var role = channel.Guild.GetRole(config!.RelatedRole.RoleID);
@@ -78,7 +84,6 @@ public class ReactionRoleExtension : ClientExtension
         var messageId = arg1.Id;
         var channel = arg2.GetOrDownloadAsync().Result as SocketGuildChannel;
         var emoji = arg3.Emote.Name;
-
 
         if (TryGetConfig(channel!.Guild.Id, emoji, messageId, out var config))
         {
