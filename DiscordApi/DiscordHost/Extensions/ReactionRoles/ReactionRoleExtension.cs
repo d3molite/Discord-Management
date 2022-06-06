@@ -31,7 +31,7 @@ public class ReactionRoleExtension : ClientExtension
             config = null;
             return false;
         }
-        
+
         using var db = AppDBContext.Get();
 
         try
@@ -67,9 +67,11 @@ public class ReactionRoleExtension : ClientExtension
         var messageId = arg1.Id;
         var channel = arg2.GetOrDownloadAsync().Result as SocketGuildChannel;
         var emoji = arg3.Emote.Name;
-        
+
         if (TryGetConfig(channel!.Guild.Id, emoji, messageId, out var config))
         {
+            if (config == null) return;
+            
             var role = channel.Guild.GetRole(config!.RelatedRole.RoleID);
             var user = channel.Guild.GetUser(arg3.UserId);
             await user.RemoveRoleAsync(role);
@@ -87,6 +89,7 @@ public class ReactionRoleExtension : ClientExtension
 
         if (TryGetConfig(channel!.Guild.Id, emoji, messageId, out var config))
         {
+            if (config == null) return;
             var role = channel.Guild.GetRole(config!.RelatedRole.RoleID);
             var user = channel.Guild.GetUser(arg3.UserId);
             await user.AddRoleAsync(role);
