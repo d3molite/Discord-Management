@@ -70,6 +70,8 @@ class Build : NukeBuild
         .DependsOn(Publish)
         .Executes(() =>
         {
+            UploadHelper.UploadBuild(OutputDirectory);
+            UploadHelper.RestartApp();
         });
 
     /// Support plugins are available for:

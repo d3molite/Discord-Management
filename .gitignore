@@ -10,3 +10,5 @@ build/.editorconfig
 DiscordApi/Database.db
 
 DiscordApi.sln.DotSettings.user
+
+build/Credentials.cs
