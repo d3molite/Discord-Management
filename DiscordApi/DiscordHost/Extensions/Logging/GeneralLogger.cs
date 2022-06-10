@@ -44,8 +44,19 @@ public class GeneralLogger : LoggingExtension
                         $"{message.Value.Author.Username}#{message.Value.Author.DiscriminatorValue}";
                     var embMessage =
                         $"Message by user {discriminatedUser} <@{message.Value.Author.Id}> \n was deleted in channel <#{channel.Value.Id}> \n **Content:** \n {message.Value}";
-                    await SendLogMessage(" ", GenerateEmbed("Message Deleted", embMessage, Color.Orange),
-                        config.LoggingChannelID);
+
+                    if (message.Value.Attachments.Count > 0)
+                    {
+                        await SendLogMessage(" ",
+                            GenerateEmbed("Message Deleted", embMessage, Color.Orange,
+                                message.Value.Attachments.ToList()),
+                            config.LoggingChannelID);
+                    }
+                    else
+                    {
+                        await SendLogMessage(" ", GenerateEmbed("Message Deleted", embMessage, Color.Orange),
+                            config.LoggingChannelID);
+                    }
                 }
         }
     }
