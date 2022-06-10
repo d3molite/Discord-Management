@@ -15,7 +15,7 @@ public interface ILoggingExtension
 
     void Resume();
 
-    Embed GenerateEmbed(string title, string message, Color? color = null);
+    Embed GenerateEmbed(string title, string message, Color? color = null, List<IAttachment>? attachments = null);
 
     Task SendLogMessage(string message, Embed embed, ulong channelId);
 

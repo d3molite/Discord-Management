@@ -64,7 +64,7 @@ public class LoggingExtension : Extension, ILoggingExtension
             }
     }
 
-    public Embed GenerateEmbed(string title, string message, Color? color = null)
+    public Embed GenerateEmbed(string title, string message, Color? color = null, List<IAttachment>? attachments = null)
     {
         var embed = new EmbedBuilder
         {
@@ -72,6 +72,11 @@ public class LoggingExtension : Extension, ILoggingExtension
         };
         if (color != null) embed.Color = color;
         embed.AddField(title, message);
+
+        if (attachments != null)
+            embed.AddField(
+                "Attachments",
+                string.Join(Environment.NewLine, attachments.Select(x => x.Url.ToString())));
 
         return embed.Build();
     }
