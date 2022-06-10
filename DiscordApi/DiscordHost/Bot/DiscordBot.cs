@@ -120,6 +120,7 @@ public class DiscordBot
         using var context = AppDBContext.Get();
         var configs = context.Configs
             .Include(prop => prop.RelatedGuild)
+            .Include(prop => prop.RelatedLogger)
             .Where(p => p.RelatedBot.Name == Name);
 
         if (_interactionService.Modules.Any())
@@ -141,6 +142,20 @@ public class DiscordBot
             var ctx = new SocketInteractionContext(_client, interaction);
             await _interactionService.ExecuteCommandAsync(ctx, _provider);
         };
+
+        var files = Directory.GetFiles("./Resources/");
+
+        if (files.Any(p => p.Contains("feature.txt")))
+        {
+            foreach (var config in configs.Where(
+                         x => x.RelatedLogger != null && x.RelatedLogger.StatusChannelID != null))
+            {
+                var text = await File.ReadAllTextAsync("./Resources/feature.txt");
+                await _logger.SendLogMessage(" ",
+                    _logger.GenerateEmbed($"FEATURE UPDATE FOR {Name.ToUpper()}", text, Color.Gold),
+                    config.RelatedLogger!.StatusChannelID!.Value);
+            }
+        }
     }
 
     private Task Log(LogMessage msg)

@@ -1,3 +1,4 @@
+using System.IO;
 using Nuke.Common;
 using Nuke.Common.CI;
 using Nuke.Common.Execution;
@@ -64,14 +65,16 @@ class Build : NukeBuild
                 .SetSelfContained(false)
                 .SetPublishTrimmed(false)
             );
+
+            UploadHelper.GenerateUpdateMessage(Path.Combine(OutputDirectory, "Resources"), "feature.txt");
         });
 
     Target Upload => _ => _
         .DependsOn(Publish)
         .Executes(() =>
         {
-            UploadHelper.UploadBuild(OutputDirectory);
-            UploadHelper.RestartApp();
+            //UploadHelper.UploadBuild(OutputDirectory);
+            //UploadHelper.RestartApp();
         });
 
     /// Support plugins are available for:

@@ -78,11 +78,13 @@
         <None Update="Database.db">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
+        <None Update="Resources\feature.txt">
+          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
     </ItemGroup>
 
     <ItemGroup>
         <Folder Include="DiscordHost\Extensions\ReactTo" />
-        <Folder Include="wwwroot\vue" />
     </ItemGroup>
 
 </Project>

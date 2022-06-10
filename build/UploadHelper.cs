@@ -1,15 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using LibGit2Sharp;
 using Renci.SshNet;
 using WinSCP;
+using Session = WinSCP.Session;
 
 public class UploadHelper
 {
     public static void UploadBuild(string path)
     {
-        var sessionOptions = new SessionOptions()
+        var sessionOptions = new SessionOptions
         {
             Protocol = Protocol.Sftp,
             HostName = Credentials.Host,
@@ -18,14 +19,14 @@ public class UploadHelper
             SshHostKeyFingerprint = "ssh-ed25519 255 a08PwEh56Y5nO1Wgg7en8VZJfDU0eo8nGaaCRJtZfvQ="
         };
 
-        using var session = new WinSCP.Session();
-        
+        using var session = new Session();
+
         session.Open(sessionOptions);
         Console.WriteLine("Connected to {0}", Credentials.Host);
 
         var res = session.PutFilesToDirectory(
-            localDirectory: path,
-            remoteDirectory: Credentials.WorkingDirectory);
+            path,
+            Credentials.WorkingDirectory);
 
         Console.WriteLine($"Uploaded {res.Transfers.Count} files {res.IsSuccess}");
         Console.WriteLine(new string('#', 50));
@@ -51,5 +52,14 @@ public class UploadHelper
         restart.Execute();
 
         Console.WriteLine($"Executed Restart with result: {restart.Result}");
+    }
+
+    public static void GenerateUpdateMessage(string path, string filename)
+    {
+        var repo = new Repository(Repository.Discover("../"));
+        var commit = repo.Commits.First().Message;
+        if (!Directory.Exists(path)) Directory.CreateDirectory(path);
+
+        File.WriteAllText(Path.Combine(path, filename), commit);
     }
 }
