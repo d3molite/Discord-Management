@@ -1,7 +1,4 @@
 ﻿using System;
-using System.IO;
-using System.Linq;
-using LibGit2Sharp;
 using Renci.SshNet;
 using WinSCP;
 using Session = WinSCP.Session;
@@ -52,14 +49,5 @@ public class UploadHelper
         restart.Execute();
 
         Console.WriteLine($"Executed Restart with result: {restart.Result}");
-    }
-
-    public static void GenerateUpdateMessage(string path, string filename)
-    {
-        var repo = new Repository(Repository.Discover("../"));
-        var commit = repo.Commits.First().Message;
-        if (!Directory.Exists(path)) Directory.CreateDirectory(path);
-
-        File.WriteAllText(Path.Combine(path, filename), commit);
     }
 }

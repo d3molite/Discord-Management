@@ -10,6 +10,7 @@ using DiscordApi.DiscordHost.Extensions.Logging;
 using DiscordApi.DiscordHost.Extensions.Modnotes;
 using DiscordApi.DiscordHost.Extensions.ReactionRoles;
 using DiscordApi.DiscordHost.Utils;
+using LibGit2Sharp;
 using Microsoft.EntityFrameworkCore;
 
 namespace DiscordApi.DiscordHost.Bot;
@@ -109,7 +110,6 @@ public class DiscordBot
 
         await LoadExtensions();
 
-
         _client.Log += Log;
 
         await Task.Delay(-1);
@@ -143,16 +143,17 @@ public class DiscordBot
             await _interactionService.ExecuteCommandAsync(ctx, _provider);
         };
 
-        var files = Directory.GetFiles("./Resources/");
+        var repo = new Repository(Repository.Discover("../"));
+        var commit = repo.Commits.First().Message;
 
-        if (files.Any(p => p.Contains("feature.txt")))
+        foreach (var config in configs.Where(
+                     x => x.RelatedLogger != null && x.RelatedLogger.StatusChannelID != null))
         {
-            foreach (var config in configs.Where(
-                         x => x.RelatedLogger != null && x.RelatedLogger.StatusChannelID != null))
+            if (commit.StartsWith("RELEASE"))
             {
-                var text = await File.ReadAllTextAsync("./Resources/feature.txt");
+                var text = commit.Replace("RELEASE", "").Trim();
                 await _logger.SendLogMessage(" ",
-                    _logger.GenerateEmbed($"FEATURE UPDATE FOR {Name.ToUpper()}", text, Color.Gold),
+                    _logger.GenerateEmbed($"UPDATE FOR {Name.ToUpper()}", text, Color.Gold),
                     config.RelatedLogger!.StatusChannelID!.Value);
             }
         }

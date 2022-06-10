@@ -52,14 +52,14 @@ public class BotHostService : IHostedService, IBotHostService
             }
 
 #elif RELEASE
-                foreach (Bot bot in this.Bots.Where(x => x.IsActive))
-                {
-                    Log.Information("Starting Bot {BotName}", bot.Name);
-                    DiscordBot tmp =
- new(name: bot.Name, token: bot.Token, serviceProvider: _provider, presence: bot.Presence);
-                    BotWrappers.Add(tmp);
-                    Task.Run(() => tmp.StartBot());
-                }
+            foreach (var bot in Bots.Where(x => x.IsActive))
+            {
+                Log.Information("Starting Bot {BotName}", bot.Name);
+                DiscordBot tmp =
+                    new(bot.Name, bot.Token, _provider, bot.Presence);
+                BotWrappers.Add(tmp);
+                Task.Run(() => tmp.StartBot());
+            }
 #endif
         }
 
