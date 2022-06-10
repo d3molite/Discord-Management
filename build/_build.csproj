@@ -15,6 +15,7 @@
     <PackageReference Include="Nuke.Common" Version="6.0.2" />
     <PackageReference Include="SSH.NET" Version="2020.0.1" />
 	<DotNetCliToolReference Include="DotnetPublishSsh" Version="0.1.0" />
+	<PackageReference Include="WinSCP" Version="5.20.4-rc" />
   </ItemGroup>
 
 </Project>

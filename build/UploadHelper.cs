@@ -3,58 +3,31 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Renci.SshNet;
+using WinSCP;
 
 public class UploadHelper
 {
     public static void UploadBuild(string path)
     {
-        using var client =
-            new SftpClient(
-                Credentials.Host,
-                Credentials.Port,
-                Credentials.Username,
-                Credentials.Password);
+        var sessionOptions = new SessionOptions()
+        {
+            Protocol = Protocol.Sftp,
+            HostName = Credentials.Host,
+            UserName = Credentials.Username,
+            Password = Credentials.Password,
+            SshHostKeyFingerprint = "ssh-ed25519 255 a08PwEh56Y5nO1Wgg7en8VZJfDU0eo8nGaaCRJtZfvQ="
+        };
 
-        client.Connect();
+        using var session = new WinSCP.Session();
+        
+        session.Open(sessionOptions);
         Console.WriteLine("Connected to {0}", Credentials.Host);
 
-        client.ChangeDirectory(Credentials.WorkingDirectory);
-        Console.WriteLine("Changed directory to {0}", Credentials.WorkingDirectory);
+        var res = session.PutFilesToDirectory(
+            localDirectory: path,
+            remoteDirectory: Credentials.WorkingDirectory);
 
-        // get all directory files
-        var dir = client.ListDirectory(Credentials.WorkingDirectory).ToArray();
-        var files = Directory.GetFiles(path);
-
-        var toUpload = new List<string>();
-
-        foreach (var file in files)
-        {
-            var fileName = Path.GetFileName(file);
-            var match = dir.SingleOrDefault(x => x.Name == fileName);
-
-            if (match != null)
-            {
-                var info = new FileInfo(file);
-                if (DateTime.Compare(info.LastWriteTimeUtc, match.LastWriteTimeUtc) > 0) toUpload.Add(file);
-                Console.WriteLine($"{fileName} was newer. Uploading.");
-            }
-            else
-            {
-                Console.WriteLine($"{fileName} does not yet exist on server. Uploading.");
-                toUpload.Add(file);
-            }
-        }
-
-        foreach (var file in toUpload)
-        {
-            using var fileStream = new FileStream(file, FileMode.Open);
-
-            Console.WriteLine("Uploading {0} ({1:N0} bytes)", file, fileStream.Length);
-            client.BufferSize = 4 * 1024; // bypass Payload error large files
-            client.UploadFile(fileStream, Path.GetFileName(file));
-        }
-
-        Console.WriteLine($"Uploaded {toUpload.Count} files");
+        Console.WriteLine($"Uploaded {res.Transfers.Count} files {res.IsSuccess}");
         Console.WriteLine(new string('#', 50));
     }
 
