@@ -43,6 +43,19 @@ public class ImageCommandHandler : InteractionModuleBase
         }
     }
 
+    [SlashCommand("squoosh", "Content Aware Scale Very Funny Haha.")]
+    public async Task ContentAwareScale(int power = 1)
+    {
+        var img = await TryGetImage();
+
+        if (img.Item1)
+        {
+            await RespondAsync("Squooshing... (this might take a while)");
+            await ImageManipulationHelper.ContentAwareScale(img.Item2, power);
+            await SendAndDelete(img.Item2);
+        }
+    }
+
     [SlashCommand("waaw", "Vertically mirror the last image left to right")]
     public async Task waaw()
     {

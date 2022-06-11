@@ -151,14 +151,13 @@ public class ImageManipulationHelper
         }
         else
         {
-            
             var fp = QuadrantHelper.GetFlipMode(targetSlice);
 
             var fp2 = fp == FlipMode.X ? FlipMode.Y : FlipMode.X;
 
             src = src.Flip(fp2);
             src.CopyTo(tar, mask);
-            
+
             Cv2.Rotate(mask, mask, RotateFlags.Rotate90Clockwise);
             Cv2.Rotate(src, src, RotateFlags.Rotate90Clockwise);
             src = src.Flip(fp);
@@ -246,6 +245,45 @@ public class ImageManipulationHelper
         image.SaveImage(img.TargetPath);
 
         image.Dispose();
+
+        return Task.CompletedTask;
+    }
+
+    public static Task ContentAwareScale(Image img, int power = 1)
+    {
+        using var inputImage = new Mat(img.SourcePath);
+
+        var image = ResizeToSquashable(inputImage);
+        Jpegify(image, 100);
+        
+        var computed = image.Clone();
+
+        if (power > 5) power = 5;
+        
+        for (var i = 0; i <= power; i++)
+        {
+            var gray = computed.Clone();
+            Cv2.CvtColor(computed, gray, ColorConversionCodes.BGR2GRAY);
+            
+            var sobelX = gray.Clone();
+            var sobelY = gray.Clone();
+            
+            Cv2.Scharr(gray, sobelX, image.Depth(), 1, 0);
+            Cv2.Scharr(gray, sobelY, image.Depth(), 0, 1);
+            
+            var helper = new ImageSeamHelper(computed, sobelX);
+            computed = helper.ScaleY();
+            
+            helper.Source = computed;
+            helper.Weighted = sobelY;
+            computed = helper.ScaleX();
+
+            computed = helper.Resize(computed);
+        }
+        
+        computed.SaveImage(img.TargetPath);
+
+        inputImage.Dispose();
 
         return Task.CompletedTask;
     }
@@ -390,5 +428,29 @@ public class ImageManipulationHelper
         {
             Log.Error("Exception in Resizer {exception}", ex);
         }
+    }
+
+    private static Mat ResizeToSquashable(Mat mat)
+    {
+        var width = 600.0;
+
+        try
+        {
+            if (mat.Width > width)
+            {
+                var scaleFactor = width / mat.Width;
+                var height = mat.Height * scaleFactor;
+
+                Cv2.Resize(mat, mat, new Size(width, height));
+            }
+
+            return mat;
+        }
+        catch (Exception ex)
+        {
+            Log.Error("Exception in Resizer {exception}", ex);
+        }
+
+        return new Mat(mat);
     }
 }

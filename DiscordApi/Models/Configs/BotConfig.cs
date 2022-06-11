@@ -30,4 +30,6 @@ public class BotConfig : IConfig<BotConfig>
     public bool ModnotesEnabled { get; set; }
 
     public bool ESportsEnabled { get; set; }
+
+    public string LastCommitPosted { get; set; }
 }

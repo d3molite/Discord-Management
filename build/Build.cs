@@ -66,15 +66,17 @@ class Build : NukeBuild
                 .SetPublishTrimmed(false)
             );
 
-            UploadHelper.GenerateUpdateMessage(Path.Combine(OutputDirectory, "Resources"), "feature.txt");
+            CopyDirectoryRecursively(Path.Combine(RootDirectory, ".git"), Path.Combine(OutputDirectory, ".git"),
+                excludeDirectory: x => x.Name is "hooks" or "objects" or "info");
         });
+
 
     Target Upload => _ => _
         .DependsOn(Publish)
         .Executes(() =>
         {
-            //UploadHelper.UploadBuild(OutputDirectory);
-            //UploadHelper.RestartApp();
+            UploadHelper.UploadBuild(OutputDirectory);
+            UploadHelper.RestartApp();
         });
 
     /// Support plugins are available for:

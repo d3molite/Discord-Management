@@ -143,19 +143,27 @@ public class DiscordBot
             await _interactionService.ExecuteCommandAsync(ctx, _provider);
         };
 
-        var repo = new Repository(Repository.Discover("../"));
-        var commit = repo.Commits.First().Message;
+        var repo = new Repository(Repository.Discover(AppDomain.CurrentDomain.BaseDirectory));
+        var commit = repo.Commits.First();
 
-        foreach (var config in configs.Where(
-                     x => x.RelatedLogger != null && x.RelatedLogger.StatusChannelID != null))
+        if (commit.Message.StartsWith("RELEASE"))
         {
-            if (commit.StartsWith("RELEASE"))
+            var text = commit.Message.Replace("RELEASE", "").Trim();
+
+            foreach (var config in configs.Where(
+                         x => x.RelatedLogger != null && x.RelatedLogger.StatusChannelID != null))
             {
-                var text = commit.Replace("RELEASE", "").Trim();
+                if (commit.Sha == config.LastCommitPosted) continue;
+
+                Serilog.Log.Debug("Sending Commit Message to {Guild}", config.RelatedGuild.Name);
+
                 await _logger.SendLogMessage(" ",
                     _logger.GenerateEmbed($"UPDATE FOR {Name.ToUpper()}", text, Color.Gold),
                     config.RelatedLogger!.StatusChannelID!.Value);
+                config.LastCommitPosted = commit.Sha;
             }
+
+            await context.SaveChangesAsync();
         }
     }
 
