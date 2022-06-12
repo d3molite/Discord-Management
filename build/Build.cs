@@ -66,8 +66,7 @@ class Build : NukeBuild
                 .SetPublishTrimmed(false)
             );
 
-            CopyDirectoryRecursively(Path.Combine(RootDirectory, ".git"), Path.Combine(OutputDirectory, ".git"),
-                excludeDirectory: x => x.Name is "hooks" or "objects" or "info");
+            CopyDirectoryRecursively(Path.Combine(RootDirectory, ".git"), Path.Combine(OutputDirectory, ".git"));
         });
 
 

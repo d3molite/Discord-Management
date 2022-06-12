@@ -143,28 +143,36 @@ public class DiscordBot
             await _interactionService.ExecuteCommandAsync(ctx, _provider);
         };
 
-        var repo = new Repository(Repository.Discover(AppDomain.CurrentDomain.BaseDirectory));
-        var commit = repo.Commits.First();
-
-        if (commit.Message.StartsWith("RELEASE"))
+        try
         {
-            var text = commit.Message.Replace("RELEASE", "").Trim();
+            var repo = new Repository(Repository.Discover(AppDomain.CurrentDomain.BaseDirectory));
+            var commit = repo.Commits.First();
 
-            foreach (var config in configs.Where(
-                         x => x.RelatedLogger != null && x.RelatedLogger.StatusChannelID != null))
+            if (commit.Message.StartsWith("RELEASE"))
             {
-                if (commit.Sha == config.LastCommitPosted) continue;
+                var text = commit.Message.Replace("RELEASE", "").Trim();
 
-                Serilog.Log.Debug("Sending Commit Message to {Guild}", config.RelatedGuild.Name);
+                foreach (var config in configs.Where(
+                             x => x.RelatedLogger != null && x.RelatedLogger.StatusChannelID != null))
+                {
+                    if (commit.Sha == config.LastCommitPosted) continue;
 
-                await _logger.SendLogMessage(" ",
-                    _logger.GenerateEmbed($"UPDATE FOR {Name.ToUpper()}", text, Color.Gold),
-                    config.RelatedLogger!.StatusChannelID!.Value);
-                config.LastCommitPosted = commit.Sha;
+                    Serilog.Log.Debug("Sending Commit Message to {Guild}", config.RelatedGuild.Name);
+
+                    await _logger.SendLogMessage(" ",
+                        _logger.GenerateEmbed($"UPDATE FOR {Name.ToUpper()}", text, Color.Gold),
+                        config.RelatedLogger!.StatusChannelID!.Value);
+                    config.LastCommitPosted = commit.Sha;
+                }
+
+                await context.SaveChangesAsync();
             }
-
-            await context.SaveChangesAsync();
         }
+        catch (Exception ex)
+        {
+            Serilog.Log.Debug("Could not find a repository or commit message for {ClientName}.", Name);
+        }
+        
     }
 
     private Task Log(LogMessage msg)
