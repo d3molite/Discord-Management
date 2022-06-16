@@ -37,10 +37,29 @@ public class AntiSpamExtension : Extension
         var channel = (SocketTextChannel)message.Channel;
         var guild = channel.Guild;
         var author = message.Author;
+        var user = (SocketGuildUser)author;
 
         if (TryGetConfig<AntiSpamConfig>(guild.Id, out var config))
         {
-            _messages.InsertIntoQueue(message, guild);
+
+            if (config.IgnorePrefixes != null)
+            {
+                try
+                {
+                    var pfx = config.IgnorePrefixes.Split(",");
+                    if (!pfx.Any(x => message.Content.StartsWith(x)))
+                    {
+                        _messages.InsertIntoQueue(message, guild);
+                    }
+                }
+                catch
+                {
+                    Log.Debug("Could not split prefixes.");
+                }
+                
+            }
+            else _messages.InsertIntoQueue(message, guild);
+            
             var queue = _messages.GetQueue(message, guild);
 
             if (CheckQueueForSpam(queue))
@@ -50,8 +69,8 @@ public class AntiSpamExtension : Extension
                 foreach (var kvp in queue.GetGroupedByChannels()) await kvp.Key.DeleteMessagesAsync(kvp.Value);
 
                 var role = config.MutedRole;
-
-                if (role != null) await Mute((SocketGuildUser)author, guild.GetRole(role.RoleID));
+                if (role != null) await Mute(user, guild.GetRole(role.RoleID));
+                else await user.SetTimeOutAsync(TimeSpan.FromDays(3), new RequestOptions(){AuditLogReason = $"Spam AutoDetected by {BotName}"});
 
                 if (TryGetConfig<LoggingConfig>(guild.Id, out var c))
                 {
@@ -62,6 +81,15 @@ public class AntiSpamExtension : Extension
                             _logger.GenerateEmbed(
                                 "User Muted for Spamming",
                                 "Muted User <@" + author.Id + "> for spamming.", Color.DarkRed
+                            ), c.LoggingChannelID);
+                    }
+                    else
+                    {
+                        await _logger.SendCustomLogMessage(
+                            " ",
+                            _logger.GenerateEmbed(
+                                "User Timed Out for Spamming",
+                                "Timed Out User <@" + author.Id + "> for spamming (3 Days).", Color.DarkRed
                             ), c.LoggingChannelID);
                     }
 

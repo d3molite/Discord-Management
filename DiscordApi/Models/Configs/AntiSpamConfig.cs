@@ -9,6 +9,8 @@
         public int LinkLimit { get; set; }
 
         public int ResetTime { get; set; }
+        
+        public string? IgnorePrefixes { get; set; }
 
         public Role? MutedRole { get; set; }
     }
