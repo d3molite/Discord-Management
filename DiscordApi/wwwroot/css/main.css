@@ -1,24 +1,4 @@
-﻿:root {
-    --app-bg: #41413966;
-    --nav-bg: #41414177;
-    --overlay-bg: #41414199;
-    --main-border: #65656566;
-    --main-enabled: #ffcd71;
-    --main-radius: 0.5rem;
-    --main-text: #eec;
-}
-
-html, body, main {
-    background: transparent;
-    color: var(--main-text);
-    font-family: Roboto, sans-serif;
-    height: 100vh;
-    margin: 0;
-    overflow: hidden;
-    padding: 0;
-    width: 100vw;
-}
-
+﻿
 .app-body {
 }
 
@@ -27,98 +7,26 @@ html, body, main {
     width: 100%;
 }
 
-.login-box {
-    border: 1px solid var(--main-border);
-    border-radius: var(--main-radius);
-    height: 20vh;
-    width: 25vw;
+.underline {
+    text-decoration: underline;
 }
 
-.login-item {
-    height: 33%;
-    width: 100%;
-}
-
-.login-title {
-    font-size: 2vh;
-    text-align: center;
-}
-
-.login-input-box {
-    height: 50%;
-}
-
-.login-input-input {
-    margin: 1vh;
-}
-
-.login-input-title {
-    font-size: 1.5vh;
-    margin: 1vh;
-}
-
-.main-app {
-    backdrop-filter: blur(3px);
-    background: var(--app-bg);
-    border: 1px solid var(--main-border);
-    border-radius: var(--main-radius);
-    height: 90vh;
-    width: 90vw;
-}
-
-.bot-frame {
-    background: var(--app-bg);
-    border: 1px solid var(--main-border);
-    height: 20%;
-    margin: 1rem;
-    width: 25%;
-}
-
-.bot-frame:hover {
-    filter: drop-shadow(0px 0px 10px var(--main-border));
-}
-
-.bot-frame-img {
-    border-radius: 50%;
-    height: 100%;
-    object-fit: cover;
-    width: 100%;
+.pointer {
+    cursor: pointer;
 }
 
 .padding {
     padding: 0.5rem;
 }
 
-.bot-frame-img-wrapper {
-    border: 1px solid var(--main-border);
-    border-radius: 50%;
-    margin: 0 1rem;
-}
-
-.bot-frame-status {
-    margin-bottom: 0.5rem;
-}
-
-.bot-frame-title {
-    border-bottom: 1px solid var(--main-border);
-    font-size: 1.5vh;
-    height: 20%;
-    padding-left: 1rem;
-}
-
 .margin {
     margin: 1rem;
 }
 
-.nav-bar {
-    background: var(--nav-bg);
-    border-bottom: 1px solid var(--main-border);
-    border-top-left-radius: 0.5rem;
-    border-top-right-radius: 0.5rem;
-    height: 3%;
-    padding: 1rem;
-    width: auto;
+.margin-left {
+    margin-left: 1rem;
 }
+
 
 .settings-main {
     border: 1px solid var(--main-border);
@@ -323,6 +231,3 @@ option {
     padding-left: 0.5rem;
 }
 
-.pointer {
-    cursor: pointer;
-}

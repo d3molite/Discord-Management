@@ -52,8 +52,13 @@ app.UseAuthorization();
 
 app.UseDefaultFiles();
 
-var provider = new FileExtensionContentTypeProvider();
-provider.Mappings[".vue"] = "application/javascript";
+var provider = new FileExtensionContentTypeProvider
+{
+    Mappings =
+    {
+        [".vue"] = "application/javascript"
+    }
+};
 
 app.UseStaticFiles(new StaticFileOptions
 {

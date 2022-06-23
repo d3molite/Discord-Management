@@ -1,0 +1,46 @@
+:root {
+    --selected: #041c3299;
+    --app-bg: #41413966;
+    --nav-bg: #41414177;
+    --overlay-bg: #41414199;
+    --main-border: #65656566;
+    --main-enabled: #ffcd71;
+    --main-radius: 0.5rem;
+    --main-text: #eec;
+}
+
+html, body {
+    color: var(--main-text);
+    font-family: Roboto;
+    height: 100vh;
+    margin: 0;
+    overflow: hidden;
+    padding: 0;
+    width: 100vw;
+}
+
+.app {
+    height: 100%;
+    width: 100%;
+}
+
+.button-wide {
+    border: 1px solid var(--main-border);
+    padding: 0.5rem;
+}
+
+.main {
+
+}
+
+.margin {
+    margin: 1rem;
+}
+
+.margin-lr {
+    margin: 0 1rem;
+}
+
+.zh1 {
+    filter: drop-shadow(1px 1px 1px rgba(0, 0, 0, 0.1));
+}
