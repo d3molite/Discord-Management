@@ -9,6 +9,7 @@ using DiscordApi.DiscordHost.Extensions.Interfaces;
 using DiscordApi.DiscordHost.Extensions.Logging;
 using DiscordApi.DiscordHost.Extensions.Modnotes;
 using DiscordApi.DiscordHost.Extensions.ReactionRoles;
+using DiscordApi.DiscordHost.Extensions.ReactTo;
 using DiscordApi.DiscordHost.Utils;
 using LibGit2Sharp;
 using Microsoft.EntityFrameworkCore;
@@ -30,6 +31,8 @@ public class DiscordBot
     private AntiSpamExtension _antiSpam;
 
     private ILoggingExtension _logger;
+
+    private MessageReactionExtension _messageReactionExtension;
     private ReactionRoleExtension _roleAssigner;
 
     public DiscordBot(string name, string token, IServiceProvider serviceProvider, string presence = "")
@@ -70,6 +73,7 @@ public class DiscordBot
             .Include(prop => prop.RelatedGuild)
             .Include(prop => prop.RelatedBot)
             .Include(prop => prop.RoleConfigs)
+            .Include(prop => prop.ReactionConfig)
             .Where(p => p.RelatedBot.Name == Name).ToArray();
 
         foreach (var config in configs)
@@ -81,6 +85,9 @@ public class DiscordBot
         {
             if (configs.Any(p => p.RoleConfigs.Any())) _roleAssigner = new ReactionRoleExtension(Name, _client);
             if (configs.Any(p => p.AntiSpam != null)) _antiSpam = new AntiSpamExtension(_client, _logger, Name);
+            if (configs.Any(p => p.ReactionConfig != null))
+                _messageReactionExtension = new MessageReactionExtension(_client, Name);
+
             if (configs.Any(p => p.ImageManipulationEnabled))
             {
                 await _interactionService.AddModuleAsync<ImageCommandHandler>(_provider);
@@ -172,7 +179,6 @@ public class DiscordBot
         {
             Serilog.Log.Debug("Could not find a repository or commit message for {ClientName}.", Name);
         }
-        
     }
 
     private Task Log(LogMessage msg)

@@ -49,5 +49,14 @@ public class AppDBContext : DbContext
             .Entity<Bot>()
             .Property(p => p.IsDebug)
             .HasDefaultValue(false);
+
+        modelBuilder
+            .Entity<MessageReactionConfig>()
+            .Navigation(x => x.MessageReactions)
+            .AutoInclude();
+
+        modelBuilder.Entity<MessageReaction>()
+            .Navigation(x => x.ReactionEmoji)
+            .AutoInclude();
     }
 }

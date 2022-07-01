@@ -84,8 +84,4 @@
         </None>
     </ItemGroup>
 
-    <ItemGroup>
-        <Folder Include="DiscordHost\Extensions\ReactTo" />
-    </ItemGroup>
-
 </Project>

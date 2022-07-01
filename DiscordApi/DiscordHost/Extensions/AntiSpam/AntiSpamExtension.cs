@@ -1,5 +1,6 @@
 ﻿using Discord;
 using Discord.WebSocket;
+using DiscordApi.DiscordHost.Extensions.Base;
 using DiscordApi.DiscordHost.Extensions.Interfaces;
 using DiscordApi.DiscordHost.Utils;
 using DiscordApi.Models;
@@ -7,32 +8,29 @@ using Serilog;
 
 namespace DiscordApi.DiscordHost.Extensions.AntiSpam;
 
-public class AntiSpamExtension : Extension
+public class AntiSpamExtension : ClientExtension
 {
     private static readonly int _maxQueueLength = 10;
 
-    private readonly DiscordSocketClient _client;
     private readonly ILoggingExtension _logger;
 
     private readonly GuildMessages _messages = new(_maxQueueLength);
 
-    public AntiSpamExtension(DiscordSocketClient client, ILoggingExtension logger, string botName) : base(botName)
+    public AntiSpamExtension(DiscordSocketClient client, ILoggingExtension logger, string botName) : base(botName,
+        client)
     {
-        _client = client;
         _logger = logger;
 
         BotName = botName;
 
-        _client.MessageReceived += CheckForSpam;
+        Client.MessageReceived += CheckForSpam;
 
         Log.Information("AntiSpam attached to {ClientName}", BotName);
     }
 
-    public string BotName { get; set; }
-
     private async Task CheckForSpam(SocketMessage message)
     {
-        if (string.IsNullOrEmpty(message.Content) || message.Author == _client.CurrentUser) return;
+        if (string.IsNullOrEmpty(message.Content) || message.Author == Client.CurrentUser) return;
 
         var channel = (SocketTextChannel)message.Channel;
         var guild = channel.Guild;
@@ -41,7 +39,6 @@ public class AntiSpamExtension : Extension
 
         if (TryGetConfig<AntiSpamConfig>(guild.Id, out var config))
         {
-
             if (config.IgnorePrefixes != null)
             {
                 try
@@ -56,10 +53,9 @@ public class AntiSpamExtension : Extension
                 {
                     Log.Debug("Could not split prefixes.");
                 }
-                
             }
             else _messages.InsertIntoQueue(message, guild);
-            
+
             var queue = _messages.GetQueue(message, guild);
 
             if (CheckQueueForSpam(queue))
@@ -70,7 +66,9 @@ public class AntiSpamExtension : Extension
 
                 var role = config.MutedRole;
                 if (role != null) await Mute(user, guild.GetRole(role.RoleID));
-                else await user.SetTimeOutAsync(TimeSpan.FromDays(3), new RequestOptions(){AuditLogReason = $"Spam AutoDetected by {BotName}"});
+                else
+                    await user.SetTimeOutAsync(TimeSpan.FromDays(3),
+                        new RequestOptions { AuditLogReason = $"Spam AutoDetected by {BotName}" });
 
                 if (TryGetConfig<LoggingConfig>(guild.Id, out var c))
                 {

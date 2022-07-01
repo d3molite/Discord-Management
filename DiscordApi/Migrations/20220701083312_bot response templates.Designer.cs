@@ -3,6 +3,7 @@ using System;
 using DiscordApi.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DiscordManager.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    partial class AppDBContextModelSnapshot : ModelSnapshot
+    [Migration("20220701083312_bot response templates")]
+    partial class botresponsetemplates
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "6.0.5");
@@ -100,9 +102,6 @@ namespace DiscordManager.Migrations
                     b.Property<bool>("ModnotesEnabled")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("ReactionConfigID")
-                        .HasColumnType("INTEGER");
-
                     b.Property<int>("RelatedBotID")
                         .HasColumnType("INTEGER");
 
@@ -115,8 +114,6 @@ namespace DiscordManager.Migrations
                     b.HasKey("ID");
 
                     b.HasIndex("AntiSpamID");
-
-                    b.HasIndex("ReactionConfigID");
 
                     b.HasIndex("RelatedBotID");
 
@@ -217,19 +214,16 @@ namespace DiscordManager.Migrations
                     b.ToTable("Messages");
                 });
 
-            modelBuilder.Entity("DiscordApi.Models.MessageReaction", b =>
+            modelBuilder.Entity("DiscordApi.Models.MessageReactionConfig", b =>
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<int?>("BotConfigID")
+                        .HasColumnType("INTEGER");
+
                     b.Property<bool>("EmojiOnly")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int?>("MessageReactionConfigID")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("ReactionChance")
                         .HasColumnType("INTEGER");
 
                     b.Property<int?>("ReactionEmojiID")
@@ -244,20 +238,9 @@ namespace DiscordManager.Migrations
 
                     b.HasKey("ID");
 
-                    b.HasIndex("MessageReactionConfigID");
+                    b.HasIndex("BotConfigID");
 
                     b.HasIndex("ReactionEmojiID");
-
-                    b.ToTable("MessageReaction");
-                });
-
-            modelBuilder.Entity("DiscordApi.Models.MessageReactionConfig", b =>
-                {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("ID");
 
                     b.ToTable("MessageReactionConfig");
                 });
@@ -383,10 +366,6 @@ namespace DiscordManager.Migrations
                         .WithMany()
                         .HasForeignKey("AntiSpamID");
 
-                    b.HasOne("DiscordApi.Models.MessageReactionConfig", "ReactionConfig")
-                        .WithMany()
-                        .HasForeignKey("ReactionConfigID");
-
                     b.HasOne("DiscordApi.Models.Bot", "RelatedBot")
                         .WithMany()
                         .HasForeignKey("RelatedBotID")
@@ -404,8 +383,6 @@ namespace DiscordManager.Migrations
                         .HasForeignKey("RelatedLoggerID");
 
                     b.Navigation("AntiSpam");
-
-                    b.Navigation("ReactionConfig");
 
                     b.Navigation("RelatedBot");
 
@@ -425,11 +402,11 @@ namespace DiscordManager.Migrations
                     b.Navigation("RelatedGuild");
                 });
 
-            modelBuilder.Entity("DiscordApi.Models.MessageReaction", b =>
+            modelBuilder.Entity("DiscordApi.Models.MessageReactionConfig", b =>
                 {
-                    b.HasOne("DiscordApi.Models.MessageReactionConfig", null)
-                        .WithMany("MessageReactions")
-                        .HasForeignKey("MessageReactionConfigID");
+                    b.HasOne("DiscordApi.Models.BotConfig", null)
+                        .WithMany("ReactionConfigs")
+                        .HasForeignKey("BotConfigID");
 
                     b.HasOne("DiscordApi.Models.Emoji", "ReactionEmoji")
                         .WithMany()
@@ -517,12 +494,9 @@ namespace DiscordManager.Migrations
 
             modelBuilder.Entity("DiscordApi.Models.BotConfig", b =>
                 {
-                    b.Navigation("RoleConfigs");
-                });
+                    b.Navigation("ReactionConfigs");
 
-            modelBuilder.Entity("DiscordApi.Models.MessageReactionConfig", b =>
-                {
-                    b.Navigation("MessageReactions");
+                    b.Navigation("RoleConfigs");
                 });
 #pragma warning restore 612, 618
         }

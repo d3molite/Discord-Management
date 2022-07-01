@@ -22,8 +22,9 @@ public class BotConfig : IConfig<BotConfig>
     public LoggingConfig? RelatedLogger { get; set; }
 
     public AntiSpamConfig? AntiSpam { get; set; }
-
     public List<ReactionRoleConfig> RoleConfigs { get; set; }
+
+    public MessageReactionConfig? ReactionConfig { get; set; }
 
     public bool ImageManipulationEnabled { get; set; }
 
