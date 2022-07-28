@@ -1,29 +1,30 @@
 ﻿using Discord.WebSocket;
 
-namespace DiscordApi.DiscordHost.Utils
+namespace DiscordApi.DiscordHost.Utils;
+
+public class UserMessages
 {
-    public class UserMessages
+    private readonly int _maxMessages;
+    private readonly Dictionary<SocketUser, MessageQueue> _userMessages;
+
+    public UserMessages(int maxMessages)
     {
-        private Dictionary<SocketUser, MessageQueue> _userMessages;
-        private readonly int _maxMessages;
+        _userMessages = new Dictionary<SocketUser, MessageQueue>();
+        _maxMessages = maxMessages;
+    }
 
-        public UserMessages(int maxMessages)
+    public ulong _guildId { get; set; }
+
+    public MessageQueue GetOrCreateNew(SocketUser user)
+    {
+        if (_userMessages.ContainsKey(user))
         {
-            _userMessages = new ();
-            _maxMessages = maxMessages;
+            return _userMessages[user];
         }
 
-        public MessageQueue GetOrCreateNew(SocketUser user)
-        {
-            if (_userMessages.ContainsKey(user))
-            {
-                return _userMessages[user];
-            }
+        var messageQueue = new MessageQueue(_maxMessages);
+        _userMessages.Add(user, messageQueue);
 
-            var messageQueue = new MessageQueue(_maxMessages);
-            _userMessages.Add(user, messageQueue);
-
-            return messageQueue;
-        }
+        return messageQueue;
     }
 }
