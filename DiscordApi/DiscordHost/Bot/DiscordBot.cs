@@ -30,6 +30,8 @@ public class DiscordBot
     private readonly string _token;
     private AntiSpamExtension _antiSpam;
 
+    private bool _firstStartup = true;
+
     private ILoggingExtension _logger;
 
     private MessageReactionExtension _messageReactionExtension;
@@ -88,22 +90,27 @@ public class DiscordBot
             if (configs.Any(p => p.ReactionConfig != null))
                 _messageReactionExtension = new MessageReactionExtension(_client, Name);
 
-            if (configs.Any(p => p.ImageManipulationEnabled))
+            if (_firstStartup)
             {
-                await _interactionService.AddModuleAsync<ImageCommandHandler>(_provider);
-                Serilog.Log.Debug("Registered ImageManip to {ClientName}", Name);
-            }
+                if (configs.Any(p => p.ImageManipulationEnabled))
+                {
+                    await _interactionService.AddModuleAsync<ImageCommandHandler>(_provider);
+                    Serilog.Log.Debug("Registered ImageManip to {ClientName}", Name);
+                }
 
-            if (configs.Any(p => p.ModnotesEnabled))
-            {
-                await _interactionService.AddModuleAsync<ModNoteCommandHandler>(_provider);
-                Serilog.Log.Debug("Registered ModNotes to {ClientName}", Name);
-            }
+                if (configs.Any(p => p.ModnotesEnabled))
+                {
+                    await _interactionService.AddModuleAsync<ModNoteCommandHandler>(_provider);
+                    Serilog.Log.Debug("Registered ModNotes to {ClientName}", Name);
+                }
 
-            if (configs.Any(p => p.ESportsEnabled))
-            {
-                await _interactionService.AddModuleAsync<ESportsCommandHandler>(_provider);
-                Serilog.Log.Debug("Registered Esports to {ClientName}", Name);
+                if (configs.Any(p => p.ESportsEnabled))
+                {
+                    await _interactionService.AddModuleAsync<ESportsCommandHandler>(_provider);
+                    Serilog.Log.Debug("Registered Esports to {ClientName}", Name);
+                }
+
+                _firstStartup = false;
             }
         }
     }

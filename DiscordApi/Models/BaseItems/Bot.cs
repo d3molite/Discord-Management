@@ -33,4 +33,9 @@ public class Bot
     public bool IsActive { get; set; }
 
     public bool IsDebug { get; set; }
+
+    public override string ToString()
+    {
+        return Name;
+    }
 }

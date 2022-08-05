@@ -4,7 +4,6 @@ using DiscordApi.DiscordHost.Extensions.Interfaces;
 using DiscordApi.DiscordHost.Utils;
 using DiscordApi.Models;
 using Serilog;
-using Timer = System.Timers.Timer;
 
 namespace DiscordApi.DiscordHost.Extensions.AntiSpam;
 
@@ -22,7 +21,7 @@ public class AntiSpamExtension : ClientExtension
         client)
     {
         _logger = logger;
-        
+
         BotName = botName;
 
         Client.MessageReceived += CheckForSpam;
@@ -32,7 +31,7 @@ public class AntiSpamExtension : ClientExtension
 
     private async Task CheckForSpam(SocketMessage message)
     {
-        if (string.IsNullOrEmpty(message.Content) || message.Author == Client.CurrentUser) return;
+        if (string.IsNullOrEmpty(message.Content) || message.Author.Id == Client.CurrentUser.Id) return;
 
         var channel = (SocketTextChannel)message.Channel;
         var guild = channel.Guild;
