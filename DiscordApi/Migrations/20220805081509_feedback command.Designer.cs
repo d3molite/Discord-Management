@@ -3,6 +3,7 @@ using System;
 using DiscordApi.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DiscordManager.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    partial class AppDBContextModelSnapshot : ModelSnapshot
+    [Migration("20220805081509_feedback command")]
+    partial class feedbackcommand
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "6.0.5");
@@ -90,9 +92,6 @@ namespace DiscordManager.Migrations
                     b.Property<bool>("ESportsEnabled")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("FeedbackConfigID")
-                        .HasColumnType("INTEGER");
-
                     b.Property<bool>("ImageManipulationEnabled")
                         .HasColumnType("INTEGER");
 
@@ -118,8 +117,6 @@ namespace DiscordManager.Migrations
                     b.HasKey("ID");
 
                     b.HasIndex("AntiSpamID");
-
-                    b.HasIndex("FeedbackConfigID");
 
                     b.HasIndex("ReactionConfigID");
 
@@ -156,10 +153,15 @@ namespace DiscordManager.Migrations
                     b.Property<bool>("AddReactions")
                         .HasColumnType("INTEGER");
 
+                    b.Property<int?>("BotConfigID")
+                        .HasColumnType("INTEGER");
+
                     b.Property<ulong>("FeedbackChannelID")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("ID");
+
+                    b.HasIndex("BotConfigID");
 
                     b.ToTable("FeedbackConfig");
                 });
@@ -405,10 +407,6 @@ namespace DiscordManager.Migrations
                         .WithMany()
                         .HasForeignKey("AntiSpamID");
 
-                    b.HasOne("DiscordApi.Models.FeedbackConfig", "FeedbackConfig")
-                        .WithMany()
-                        .HasForeignKey("FeedbackConfigID");
-
                     b.HasOne("DiscordApi.Models.MessageReactionConfig", "ReactionConfig")
                         .WithMany()
                         .HasForeignKey("ReactionConfigID");
@@ -431,8 +429,6 @@ namespace DiscordManager.Migrations
 
                     b.Navigation("AntiSpam");
 
-                    b.Navigation("FeedbackConfig");
-
                     b.Navigation("ReactionConfig");
 
                     b.Navigation("RelatedBot");
@@ -440,6 +436,13 @@ namespace DiscordManager.Migrations
                     b.Navigation("RelatedGuild");
 
                     b.Navigation("RelatedLogger");
+                });
+
+            modelBuilder.Entity("DiscordApi.Models.FeedbackConfig", b =>
+                {
+                    b.HasOne("DiscordApi.Models.BotConfig", null)
+                        .WithMany("FeedbackConfigs")
+                        .HasForeignKey("BotConfigID");
                 });
 
             modelBuilder.Entity("DiscordApi.Models.Message", b =>
@@ -545,6 +548,8 @@ namespace DiscordManager.Migrations
 
             modelBuilder.Entity("DiscordApi.Models.BotConfig", b =>
                 {
+                    b.Navigation("FeedbackConfigs");
+
                     b.Navigation("RoleConfigs");
                 });
 

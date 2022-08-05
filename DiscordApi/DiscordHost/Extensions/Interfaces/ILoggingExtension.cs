@@ -6,9 +6,7 @@ namespace DiscordApi.DiscordHost.Extensions.Interfaces;
 public interface ILoggingExtension
 {
     DiscordSocketClient Client { get; set; }
-
-    string BotName { get; set; }
-
+    
     void LogSetup();
 
     void Pause();

@@ -1,5 +1,6 @@
 ﻿using Discord;
 using Discord.WebSocket;
+using DiscordApi.DiscordHost.Extensions.Base;
 using DiscordApi.DiscordHost.Extensions.Interfaces;
 using DiscordApi.Models;
 
@@ -12,16 +13,13 @@ public class LoggingExtension : Extension, ILoggingExtension
     public LoggingExtension(DiscordSocketClient client, string botName) : base(botName)
     {
         Client = client;
-        BotName = botName;
     }
 
     public DiscordSocketClient Client { get; set; }
-    public string BotName { get; set; }
 
     public void LogSetup()
     {
     }
-
 
     public async Task SendLogMessage(string message, Embed embed, ulong channelId)
     {

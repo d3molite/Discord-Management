@@ -27,8 +27,9 @@ public class BotConfig : IConfig<BotConfig>
     public MessageReactionConfig? ReactionConfig { get; set; }
 
     public bool ImageManipulationEnabled { get; set; }
-
     public bool ModnotesEnabled { get; set; }
+
+    public FeedbackConfig? FeedbackConfig { get; set; }
 
     public bool ESportsEnabled { get; set; }
 

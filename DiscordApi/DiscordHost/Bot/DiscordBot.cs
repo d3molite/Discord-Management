@@ -4,6 +4,7 @@ using Discord.WebSocket;
 using DiscordApi.Data;
 using DiscordApi.DiscordHost.Extensions.AntiSpam;
 using DiscordApi.DiscordHost.Extensions.ESports;
+using DiscordApi.DiscordHost.Extensions.Feedback;
 using DiscordApi.DiscordHost.Extensions.ImageManipulation;
 using DiscordApi.DiscordHost.Extensions.Interfaces;
 using DiscordApi.DiscordHost.Extensions.Logging;
@@ -76,6 +77,7 @@ public class DiscordBot
             .Include(prop => prop.RelatedBot)
             .Include(prop => prop.RoleConfigs)
             .Include(prop => prop.ReactionConfig)
+            .Include(prop => prop.FeedbackConfig)
             .Where(p => p.RelatedBot.Name == Name).ToArray();
 
         foreach (var config in configs)
@@ -102,6 +104,12 @@ public class DiscordBot
                 {
                     await _interactionService.AddModuleAsync<ModNoteCommandHandler>(_provider);
                     Serilog.Log.Debug("Registered ModNotes to {ClientName}", Name);
+                }
+
+                if (configs.Any(p => p.FeedbackConfig != null))
+                {
+                    await _interactionService.AddModuleAsync<FeedbackCommandHandler>(_provider);
+                    Serilog.Log.Debug("Registered Feedback to {ClientName}", Name);
                 }
 
                 if (configs.Any(p => p.ESportsEnabled))
