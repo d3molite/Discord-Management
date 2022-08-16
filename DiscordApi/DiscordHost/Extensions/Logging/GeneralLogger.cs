@@ -61,6 +61,23 @@ public class GeneralLogger : LoggingExtension
         }
     }
 
+    private string OffsetToDate(TimeSpan time)
+    {
+        var age = Math.Round(time.TotalDays, 2);
+
+        return age switch
+        {
+            // if the time is smaller than one day.
+            < 1 => Math.Round(time.TotalHours, 2) + " hours.",
+            
+            // if the time is smaller than a year.
+            < 365 => age + " days.",
+            
+            // if the time is greater than a year.
+            _ => Math.Round(time.TotalDays / 365, 2) + " years."
+        };
+    }
+
     private async Task OnUserJoined(SocketGuildUser user)
     {
         var guild = user.Guild;
@@ -71,18 +88,7 @@ public class GeneralLogger : LoggingExtension
         if (TryGetConfig<LoggingConfig>(guild.Id, out var config))
             if (config.LogUserJoined)
             {
-                var age = Math.Round((DateTime.Now - user.CreatedAt).TotalDays, 2);
-                string ageString;
-
-                // if the account is younger than one day.
-                if (age < 1)
-                    ageString = Math.Round((DateTime.Now - user.CreatedAt).TotalHours, 2) + " hours.";
-                // if the account is younger than a year.
-                else if (age < 365)
-                    ageString = age + " days.";
-                // if the account is older than a year.
-                else
-                    ageString = Math.Round((DateTime.Now - user.CreatedAt).TotalDays / 365, 2) + " years.";
+                var ageString = OffsetToDate((DateTime.Now - user.CreatedAt));
 
                 var discriminatedUser = $"{user.DisplayName}#{user.DiscriminatorValue}";
                 var embMessage = $"User {discriminatedUser} <@{user.Id}> joined. \n **Account Age:** {ageString}";
@@ -100,7 +106,13 @@ public class GeneralLogger : LoggingExtension
             if (config.LogUserLeft)
             {
                 var discriminatedUser = $"{user.Username}#{user.DiscriminatorValue}";
+                var time = "";
+
+                if (user is SocketGuildUser guildUser) time = OffsetToDate(guildUser!.JoinedAt!.Value.Offset);
+                
                 var embMessage = $"User {discriminatedUser} <@{user.Id}> left.";
+                
+                if (!string.IsNullOrEmpty(time)) embMessage += $"\n **Time Spent:** {time}";
 
                 try
                 {
