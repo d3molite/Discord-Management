@@ -25,6 +25,8 @@ builder.Services.AddMvc(options => { options.Filters.Add(new SerilogExceptionLog
 
 var app = builder.Build();
 
+LocalizationService.Initialize();
+
 app.UseForwardedHeaders(new ForwardedHeadersOptions
 {
     ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto

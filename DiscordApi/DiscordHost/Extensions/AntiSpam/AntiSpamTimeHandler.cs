@@ -41,8 +41,6 @@ public class AntiSpamTimeHandler : ClientExtension
     public MessageQueue Queue { get; set; }
     public SocketGuildUser User { get; set; }
 
-    public ResourceManager Resources { get; set; }
-
     public bool Finished { get; set; }
 
     public event EventHandler SpamDeleted;
@@ -55,7 +53,7 @@ public class AntiSpamTimeHandler : ClientExtension
 
     private async Task DeleteAsync()
     {
-        var culture = new CultureInfo(LocalizationService.GetLocale(BotName));
+        var culture = new CultureInfo(LocalizationService.GetLocale(BotName, Guild.Id));
 
         _logger.Pause();
 
@@ -90,9 +88,9 @@ public class AntiSpamTimeHandler : ClientExtension
                 await _logger.SendCustomLogMessage(
                     " ",
                     _logger.GenerateEmbed(
-                        Resources.GetString("user_muted_title", culture)!,
+                        GetResource("user_muted_title", culture)!,
                         string.Format(
-                            Resources.GetString("user_muted_text", culture)!,
+                            GetResource("user_muted_text", culture)!,
                             GetDiscriminatedUser(User),
                             User.Id.ToString()),
                         Color.DarkRed
@@ -103,9 +101,9 @@ public class AntiSpamTimeHandler : ClientExtension
                 await _logger.SendCustomLogMessage(
                     " ",
                     _logger.GenerateEmbed(
-                        Resources.GetString("user_timedout_title", culture)!,
+                        GetResource("user_timedout_title", culture)!,
                         string.Format(
-                            Resources.GetString("user_timedout_text", culture)!,
+                            GetResource("user_timedout_text", culture)!,
                             GetDiscriminatedUser(User),
                             User.Id),
                         Color.DarkRed
@@ -129,12 +127,12 @@ public class AntiSpamTimeHandler : ClientExtension
     {
         var deleted = queue.GetGroupedByChannels();
 
-        var culture = new CultureInfo(LocalizationService.GetLocale(BotName));
+        var culture = new CultureInfo(LocalizationService.GetLocale(BotName, Guild.Id));
 
         var embed = new EmbedBuilder
         {
             Title = string.Format(
-                Resources.GetString(nameof(AntiSpamResources.deleted_spam_title), culture)!,
+                GetResource(nameof(AntiSpamResources.deleted_spam_title), culture)!,
                 GetDiscriminatedUser(User))
         };
 

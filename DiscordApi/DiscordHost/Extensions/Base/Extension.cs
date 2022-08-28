@@ -1,4 +1,6 @@
-﻿using Discord;
+﻿using System.Globalization;
+using System.Resources;
+using Discord;
 using DiscordApi.Data;
 using DiscordApi.Models;
 using Microsoft.EntityFrameworkCore;
@@ -15,9 +17,16 @@ public class Extension
 
     protected string BotName { get; set; }
 
+    public ResourceManager Resources { get; set; }
+
+    protected string GetResource(string key, CultureInfo culture)
+    {
+        return Resources.GetString(key, culture)!.Replace("\\n", "\n");
+    }
+
     protected string GetDiscriminatedUser(IUser user)
     {
-        return user.Username + user.Discriminator.PadLeft(4, '0');
+        return user.Username + "#" + user.Discriminator.PadLeft(4, '0');
     }
 
     protected bool TryGetConfig<T>(ulong guildId, out T config)

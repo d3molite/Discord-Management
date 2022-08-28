@@ -1,4 +1,5 @@
 ﻿using DiscordApi.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace DiscordApi.Services;
 
@@ -6,32 +7,37 @@ public static class LocalizationService
 {
     static LocalizationService()
     {
-        LocaleInfo = new();
+        LocaleInfo = new Dictionary<string, string>();
         Initialize();
     }
-    
+
     public static Dictionary<string, string> LocaleInfo { get; set; }
-    
+
     public static void Initialize()
     {
-        
         using var db = AppDBContext.Get();
 
-        foreach (var config in db.Configs)
-        {
-            LocaleInfo.Add(config.RelatedBot.Name, config.Locale);
-        }
-        
+        var configs = db.Configs
+            .Include(x => x.RelatedGuild)
+            .Include(x => x.RelatedBot).ToList();
+
+        LocaleInfo =
+            configs.ToDictionary(key => key.RelatedBot.Name + "_" + key.RelatedGuild.GuildID, value => value.Locale);
     }
 
-    public static string GetLocale(string name)
+    public static string GetLocale(string name, ulong guildId)
     {
-        if (!LocaleInfo.TryGetValue(name, out var locale)) return "en";
+        var key = string.Format("{0}_{1}", name, guildId);
 
-        return locale.ToLower() switch
+        if (LocaleInfo.TryGetValue(key, out var locale))
         {
-            "de" => "de-de",
-            _ => "Default Culture"
-        };
+            return locale.ToLower() switch
+            {
+                "de" => "de-de",
+                _ => "Default Culture"
+            };
+        }
+
+        return "en";
     }
 }

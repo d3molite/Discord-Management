@@ -20,7 +20,7 @@ public class GeneralLogger : LoggingExtension
         Resources = new ResourceManager(typeof(LoggingResources));
     }
 
-    public ResourceManager Resources { get; set; }
+    // public ResourceManager Resources { get; set; }
 
     private new void LogSetup()
     {
@@ -43,17 +43,17 @@ public class GeneralLogger : LoggingExtension
             Log.Debug("MessageDeleted triggered for {ClientName} in {ChannelName}", BotName,
                 message.Value.Channel.Name);
 
-            var culture = new CultureInfo(LocalizationService.GetLocale(BotName));
-
             var guild = ((SocketGuildChannel)message.Value.Channel).Guild;
+
+            var culture = new CultureInfo(LocalizationService.GetLocale(BotName, guild.Id));
 
             if (TryGetConfig<LoggingConfig>(guild.Id, out var config))
                 if (config.LogMessageDeleted)
                 {
-                    var embTitle = Resources.GetString("message_deleted_title", culture)!;
+                    var embTitle = GetResource(nameof(LoggingResources.message_deleted_title), culture)!;
 
                     var embMessage =
-                        string.Format(Resources.GetString("message_deleted_text", culture)!,
+                        string.Format(GetResource(nameof(LoggingResources.message_deleted_text), culture)!,
                             GetDiscriminatedUser(message.Value.Author), message.Value.Author.Id, channel.Value.Id,
                             message.Value);
 
@@ -73,22 +73,20 @@ public class GeneralLogger : LoggingExtension
         }
     }
 
-    private string OffsetToDate(TimeSpan time)
+    private string OffsetToDate(TimeSpan time, CultureInfo culture)
     {
-        var culture = new CultureInfo(LocalizationService.GetLocale(BotName));
-
         var age = Math.Round(time.TotalDays, 2);
 
         return age switch
         {
             // if the time is smaller than one day.
-            < 1 => Math.Round(time.TotalHours, 2) + Resources.GetString(nameof(LoggingResources.hours), culture),
+            < 1 => Math.Round(time.TotalHours, 2) + GetResource(nameof(LoggingResources.hours), culture),
 
             // if the time is smaller than a year.
-            < 365 => age + Resources.GetString(nameof(LoggingResources.days), culture),
+            < 365 => age + GetResource(nameof(LoggingResources.days), culture),
 
             // if the time is greater than a year.
-            _ => Math.Round(time.TotalDays / 365, 2) + Resources.GetString(nameof(LoggingResources.years), culture)
+            _ => Math.Round(time.TotalDays / 365, 2) + GetResource(nameof(LoggingResources.years), culture)
         };
     }
 
@@ -97,19 +95,19 @@ public class GeneralLogger : LoggingExtension
         var guild = user.Guild;
         Log.Debug("UserJoined triggered for {ClientName} in {GuildName}", BotName, guild.Name);
 
-        var culture = new CultureInfo(LocalizationService.GetLocale(BotName));
+        var culture = new CultureInfo(LocalizationService.GetLocale(BotName, guild.Id));
 
         using var context = AppDBContext.Get();
 
         if (TryGetConfig<LoggingConfig>(guild.Id, out var config))
             if (config.LogUserJoined)
             {
-                var ageString = OffsetToDate(DateTime.Now - user.CreatedAt);
+                var ageString = OffsetToDate(DateTime.Now - user.CreatedAt, culture);
 
-                var embTitle = Resources.GetString(nameof(LoggingResources.user_joined_title), culture)!;
+                var embTitle = GetResource(nameof(LoggingResources.user_joined_title), culture)!;
 
                 var embMessage = string.Format(
-                    Resources.GetString(
+                    GetResource(
                         nameof(LoggingResources.user_joined_text), culture)!,
                     GetDiscriminatedUser(user), user.Id, ageString);
 
@@ -125,26 +123,26 @@ public class GeneralLogger : LoggingExtension
         {
             if (config.LogUserLeft)
             {
-                var culture = new CultureInfo(LocalizationService.GetLocale(BotName));
+                var culture = new CultureInfo(LocalizationService.GetLocale(BotName, guild.Id));
 
                 var time = "";
 
                 if (user is SocketGuildUser guildUser)
                 {
-                    time = OffsetToDate(guild.GetUser(guildUser.Id).JoinedAt!.Value.Offset);
+                    time = OffsetToDate(guild.GetUser(guildUser.Id).JoinedAt!.Value.Offset, culture);
                 }
 
-                var embTitle = Resources.GetString(nameof(LoggingResources.user_left_title), culture)!;
+                var embTitle = GetResource(nameof(LoggingResources.user_left_title), culture)!;
 
                 var embMessage = string.Format(
-                    Resources.GetString(
+                    GetResource(
                         nameof(LoggingResources.user_left_text), culture)!,
                     GetDiscriminatedUser(user),
                     user.Id);
 
                 if (!string.IsNullOrEmpty(time))
                     embMessage +=
-                        string.Format(Resources.GetString(nameof(LoggingResources.user_left_duration), culture)!, time);
+                        string.Format(GetResource(nameof(LoggingResources.user_left_duration), culture)!, time);
 
                 try
                 {
@@ -171,7 +169,7 @@ public class GeneralLogger : LoggingExtension
         if (TryGetConfig<LoggingConfig>(guild.Id, out var config))
             if (config.LogUserBanned)
             {
-                var culture = new CultureInfo(LocalizationService.GetLocale(BotName));
+                var culture = new CultureInfo(LocalizationService.GetLocale(BotName, guild.Id));
 
                 var banReason = string.Empty;
 
@@ -184,14 +182,14 @@ public class GeneralLogger : LoggingExtension
                     Log.Error("{ClientName} could not fetch Bans from Server: {GuildName} \n {Exception}", BotName,
                         guild.Name, ex.Message);
 
-                    banReason = Resources.GetString(nameof(LoggingResources.user_banned_error), culture);
+                    banReason = GetResource(nameof(LoggingResources.user_banned_error), culture);
                 }
 
-                var embTitle = Resources.GetString(nameof(LoggingResources.user_banned_title), culture);
+                var embTitle = GetResource(nameof(LoggingResources.user_banned_title), culture);
 
                 var embMessage =
                     string.Format(
-                        Resources.GetString(nameof(LoggingResources.user_banned_text), culture)!,
+                        GetResource(nameof(LoggingResources.user_banned_text), culture)!,
                         GetDiscriminatedUser(user), user.Id, banReason);
 
 
