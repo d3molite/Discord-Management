@@ -1,4 +1,5 @@
-﻿using DiscordApi.Data;
+﻿using Discord;
+using DiscordApi.Data;
 using DiscordApi.Models;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
@@ -13,6 +14,11 @@ public class Extension
     }
 
     protected string BotName { get; set; }
+
+    protected string GetDiscriminatedUser(IUser user)
+    {
+        return user.Username + user.Discriminator.PadLeft(4, '0');
+    }
 
     protected bool TryGetConfig<T>(ulong guildId, out T config)
         where T : new()

@@ -59,5 +59,122 @@ namespace DiscordApi.Resources.Extensions {
                 resourceCulture = value;
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to days..
+        /// </summary>
+        internal static string days {
+            get {
+                return ResourceManager.GetString("days", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to hours..
+        /// </summary>
+        internal static string hours {
+            get {
+                return ResourceManager.GetString("hours", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Message by user {0} &lt;@{1}&gt; \n was deleted in channel &lt;#{2}&gt; \n **Content:** \n {3}.
+        /// </summary>
+        internal static string message_deleted_text {
+            get {
+                return ResourceManager.GetString("message_deleted_text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Message deleted..
+        /// </summary>
+        internal static string message_deleted_title {
+            get {
+                return ResourceManager.GetString("message_deleted_title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Could not fetch ban reason..
+        /// </summary>
+        internal static string user_banned_error {
+            get {
+                return ResourceManager.GetString("user_banned_error", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User banned..
+        /// </summary>
+        internal static string user_banned_text {
+            get {
+                return ResourceManager.GetString("user_banned_text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User {0} &lt;@{1}&gt; was banned. \n **Reason:** {2}.
+        /// </summary>
+        internal static string user_banned_title {
+            get {
+                return ResourceManager.GetString("user_banned_title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User {0} &lt;@{1}&gt; joined. \n **Account Age:** {2}.
+        /// </summary>
+        internal static string user_joined_text {
+            get {
+                return ResourceManager.GetString("user_joined_text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User joined..
+        /// </summary>
+        internal static string user_joined_title {
+            get {
+                return ResourceManager.GetString("user_joined_title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to \n **Time Spent: {0}..
+        /// </summary>
+        internal static string user_left_duration {
+            get {
+                return ResourceManager.GetString("user_left_duration", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User {0} &lt;@{1}&gt; left..
+        /// </summary>
+        internal static string user_left_text {
+            get {
+                return ResourceManager.GetString("user_left_text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User left..
+        /// </summary>
+        internal static string user_left_title {
+            get {
+                return ResourceManager.GetString("user_left_title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to years..
+        /// </summary>
+        internal static string years {
+            get {
+                return ResourceManager.GetString("years", resourceCulture);
+            }
+        }
     }
 }

@@ -61,7 +61,16 @@ namespace DiscordApi.Resources.Extensions {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Muted user &lt;@{0}&gt; for spamming..
+        ///   Looks up a localized string similar to Bulk deleted spam by {0}:.
+        /// </summary>
+        internal static string deleted_spam_title {
+            get {
+                return ResourceManager.GetString("deleted_spam_title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Muted user {0} &lt;@{1}&gt; for spamming..
         /// </summary>
         internal static string user_muted_text {
             get {
@@ -70,7 +79,7 @@ namespace DiscordApi.Resources.Extensions {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to User Muted for Spamming.
+        ///   Looks up a localized string similar to User Muted for Spamming..
         /// </summary>
         internal static string user_muted_title {
             get {
@@ -79,7 +88,7 @@ namespace DiscordApi.Resources.Extensions {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Timed out user  &lt;@{0}&gt; for spamming (3 Days)..
+        ///   Looks up a localized string similar to Timed out user {0} &lt;@{1}&gt; for spamming (3 Days)..
         /// </summary>
         internal static string user_timedout_text {
             get {
@@ -88,7 +97,7 @@ namespace DiscordApi.Resources.Extensions {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to User Timed Out for Spamming.
+        ///   Looks up a localized string similar to User Timed Out for Spamming..
         /// </summary>
         internal static string user_timedout_title {
             get {

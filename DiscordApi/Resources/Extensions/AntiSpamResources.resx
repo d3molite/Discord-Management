@@ -1,9 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 
 <root>
-    <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
         <xsd:element name="root" msdata:IsDataSet="true">
-            
+
         </xsd:element>
     </xsd:schema>
     <resheader name="resmimetype">
@@ -13,21 +15,28 @@
         <value>1.3</value>
     </resheader>
     <resheader name="reader">
-        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
     </resheader>
     <resheader name="writer">
-        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
     </resheader>
     <data name="user_muted_title" xml:space="preserve">
-        <value>User Muted for Spamming</value>
+        <value>User Muted for Spamming.</value>
     </data>
     <data name="user_muted_text" xml:space="preserve">
-        <value>Muted user &lt;@{0}&gt; for spamming.</value>
+        <value>Muted user {0} &lt;@{1}&gt; for spamming.</value>
     </data>
     <data name="user_timedout_text" xml:space="preserve">
-        <value>Timed out user  &lt;@{0}&gt; for spamming (3 Days).</value>
+        <value>Timed out user {0} &lt;@{1}&gt; for spamming (3 Days).</value>
     </data>
     <data name="user_timedout_title" xml:space="preserve">
-        <value>User Timed Out for Spamming</value>
+        <value>User Timed Out for Spamming.</value>
+    </data>
+    <data name="deleted_spam_title" xml:space="preserve">
+        <value>Bulk deleted spam by {0}:</value>
     </data>
 </root>

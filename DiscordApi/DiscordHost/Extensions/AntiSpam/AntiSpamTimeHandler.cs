@@ -40,7 +40,7 @@ public class AntiSpamTimeHandler : ClientExtension
     public SocketGuild Guild { get; set; }
     public MessageQueue Queue { get; set; }
     public SocketGuildUser User { get; set; }
-    
+
     public ResourceManager Resources { get; set; }
 
     public bool Finished { get; set; }
@@ -56,7 +56,7 @@ public class AntiSpamTimeHandler : ClientExtension
     private async Task DeleteAsync()
     {
         var culture = new CultureInfo(LocalizationService.GetLocale(BotName));
-        
+
         _logger.Pause();
 
         foreach (var kvp in Queue.GetGroupedByChannels()) await kvp.Key.DeleteMessagesAsync(kvp.Value);
@@ -81,7 +81,7 @@ public class AntiSpamTimeHandler : ClientExtension
         {
             Log.Error("Could not apply mute to {User}", User);
         }
-        
+
 
         if (TryGetConfig<LoggingConfig>(Guild.Id, out var c))
         {
@@ -91,7 +91,11 @@ public class AntiSpamTimeHandler : ClientExtension
                     " ",
                     _logger.GenerateEmbed(
                         Resources.GetString("user_muted_title", culture)!,
-                        string.Format(Resources.GetString("user_muted_text", culture)!, User.Id.ToString()), Color.DarkRed
+                        string.Format(
+                            Resources.GetString("user_muted_text", culture)!,
+                            GetDiscriminatedUser(User),
+                            User.Id.ToString()),
+                        Color.DarkRed
                     ), c.LoggingChannelID);
             }
             else
@@ -99,8 +103,12 @@ public class AntiSpamTimeHandler : ClientExtension
                 await _logger.SendCustomLogMessage(
                     " ",
                     _logger.GenerateEmbed(
-                        "User Timed Out for Spamming",
-                        "Timed Out User <@" + User.Id + "> for spamming (3 Days).", Color.DarkRed
+                        Resources.GetString("user_timedout_title", culture)!,
+                        string.Format(
+                            Resources.GetString("user_timedout_text", culture)!,
+                            GetDiscriminatedUser(User),
+                            User.Id),
+                        Color.DarkRed
                     ), c.LoggingChannelID);
             }
 
@@ -121,9 +129,13 @@ public class AntiSpamTimeHandler : ClientExtension
     {
         var deleted = queue.GetGroupedByChannels();
 
+        var culture = new CultureInfo(LocalizationService.GetLocale(BotName));
+
         var embed = new EmbedBuilder
         {
-            Title = "Bulk Deleted Spam by " + User.Username + ":"
+            Title = string.Format(
+                Resources.GetString(nameof(AntiSpamResources.deleted_spam_title), culture)!,
+                GetDiscriminatedUser(User))
         };
 
         foreach (var kvp in deleted) embed.AddField(kvp.Key.Name + ":", MessageQueue.MessageList(kvp.Value));

@@ -1,7 +1,11 @@
-﻿using Discord;
+﻿using System.Globalization;
+using System.Resources;
+using Discord;
 using Discord.WebSocket;
 using DiscordApi.Data;
 using DiscordApi.Models;
+using DiscordApi.Resources.Extensions;
+using DiscordApi.Services;
 using Serilog;
 
 namespace DiscordApi.DiscordHost.Extensions.Logging;
@@ -12,7 +16,11 @@ public class GeneralLogger : LoggingExtension
         : base(client, botName)
     {
         LogSetup();
+
+        Resources = new ResourceManager(typeof(LoggingResources));
     }
+
+    public ResourceManager Resources { get; set; }
 
     private new void LogSetup()
     {
@@ -35,26 +43,30 @@ public class GeneralLogger : LoggingExtension
             Log.Debug("MessageDeleted triggered for {ClientName} in {ChannelName}", BotName,
                 message.Value.Channel.Name);
 
+            var culture = new CultureInfo(LocalizationService.GetLocale(BotName));
+
             var guild = ((SocketGuildChannel)message.Value.Channel).Guild;
 
             if (TryGetConfig<LoggingConfig>(guild.Id, out var config))
                 if (config.LogMessageDeleted)
                 {
-                    var discriminatedUser =
-                        $"{message.Value.Author.Username}#{message.Value.Author.DiscriminatorValue}";
+                    var embTitle = Resources.GetString("message_deleted_title", culture)!;
+
                     var embMessage =
-                        $"Message by user {discriminatedUser} <@{message.Value.Author.Id}> \n was deleted in channel <#{channel.Value.Id}> \n **Content:** \n {message.Value}";
+                        string.Format(Resources.GetString("message_deleted_text", culture)!,
+                            GetDiscriminatedUser(message.Value.Author), message.Value.Author.Id, channel.Value.Id,
+                            message.Value);
 
                     if (message.Value.Attachments.Count > 0)
                     {
                         await SendLogMessage(" ",
-                            GenerateEmbed("Message Deleted", embMessage, Color.Orange,
+                            GenerateEmbed(embTitle, embMessage, Color.Orange,
                                 message.Value.Attachments.ToList()),
                             config.LoggingChannelID);
                     }
                     else
                     {
-                        await SendLogMessage(" ", GenerateEmbed("Message Deleted", embMessage, Color.Orange),
+                        await SendLogMessage(" ", GenerateEmbed(embTitle, embMessage, Color.Orange),
                             config.LoggingChannelID);
                     }
                 }
@@ -63,18 +75,20 @@ public class GeneralLogger : LoggingExtension
 
     private string OffsetToDate(TimeSpan time)
     {
+        var culture = new CultureInfo(LocalizationService.GetLocale(BotName));
+
         var age = Math.Round(time.TotalDays, 2);
 
         return age switch
         {
             // if the time is smaller than one day.
-            < 1 => Math.Round(time.TotalHours, 2) + " hours.",
-            
+            < 1 => Math.Round(time.TotalHours, 2) + Resources.GetString(nameof(LoggingResources.hours), culture),
+
             // if the time is smaller than a year.
-            < 365 => age + " days.",
-            
+            < 365 => age + Resources.GetString(nameof(LoggingResources.days), culture),
+
             // if the time is greater than a year.
-            _ => Math.Round(time.TotalDays / 365, 2) + " years."
+            _ => Math.Round(time.TotalDays / 365, 2) + Resources.GetString(nameof(LoggingResources.years), culture)
         };
     }
 
@@ -83,17 +97,23 @@ public class GeneralLogger : LoggingExtension
         var guild = user.Guild;
         Log.Debug("UserJoined triggered for {ClientName} in {GuildName}", BotName, guild.Name);
 
+        var culture = new CultureInfo(LocalizationService.GetLocale(BotName));
+
         using var context = AppDBContext.Get();
 
         if (TryGetConfig<LoggingConfig>(guild.Id, out var config))
             if (config.LogUserJoined)
             {
-                var ageString = OffsetToDate((DateTime.Now - user.CreatedAt));
+                var ageString = OffsetToDate(DateTime.Now - user.CreatedAt);
 
-                var discriminatedUser = $"{user.DisplayName}#{user.DiscriminatorValue}";
-                var embMessage = $"User {discriminatedUser} <@{user.Id}> joined. \n **Account Age:** {ageString}";
+                var embTitle = Resources.GetString(nameof(LoggingResources.user_joined_title), culture)!;
 
-                await SendLogMessage(" ", GenerateEmbed("User Joined", embMessage), config.LoggingChannelID);
+                var embMessage = string.Format(
+                    Resources.GetString(
+                        nameof(LoggingResources.user_joined_text), culture)!,
+                    GetDiscriminatedUser(user), user.Id, ageString);
+
+                await SendLogMessage(" ", GenerateEmbed(embTitle, embMessage), config.LoggingChannelID);
             }
     }
 
@@ -105,26 +125,38 @@ public class GeneralLogger : LoggingExtension
         {
             if (config.LogUserLeft)
             {
-                var discriminatedUser = $"{user.Username}#{user.DiscriminatorValue}";
+                var culture = new CultureInfo(LocalizationService.GetLocale(BotName));
+
                 var time = "";
 
-                if (user is SocketGuildUser guildUser) time = OffsetToDate(guildUser!.JoinedAt!.Value.Offset);
-                
-                var embMessage = $"User {discriminatedUser} <@{user.Id}> left.";
-                
-                if (!string.IsNullOrEmpty(time)) embMessage += $"\n **Time Spent:** {time}";
+                if (user is SocketGuildUser guildUser)
+                {
+                    time = OffsetToDate(guild.GetUser(guildUser.Id).JoinedAt!.Value.Offset);
+                }
+
+                var embTitle = Resources.GetString(nameof(LoggingResources.user_left_title), culture)!;
+
+                var embMessage = string.Format(
+                    Resources.GetString(
+                        nameof(LoggingResources.user_left_text), culture)!,
+                    GetDiscriminatedUser(user),
+                    user.Id);
+
+                if (!string.IsNullOrEmpty(time))
+                    embMessage +=
+                        string.Format(Resources.GetString(nameof(LoggingResources.user_left_duration), culture)!, time);
 
                 try
                 {
                     var ban = await guild.GetBanAsync(user);
                     if (ban == null)
-                        await SendLogMessage(" ", GenerateEmbed("User Left", embMessage), config.LoggingChannelID);
+                        await SendLogMessage(" ", GenerateEmbed(embTitle, embMessage), config.LoggingChannelID);
                 }
                 catch (Exception ex)
                 {
                     Log.Error("{ClientName} could not fetch Bans from Server: {GuildName} \n {Exception}", BotName,
                         guild.Name, ex.Message);
-                    await SendLogMessage(" ", GenerateEmbed("User Left", embMessage), config.LoggingChannelID);
+                    await SendLogMessage(" ", GenerateEmbed(embTitle, embMessage), config.LoggingChannelID);
                 }
             }
             else
@@ -139,6 +171,8 @@ public class GeneralLogger : LoggingExtension
         if (TryGetConfig<LoggingConfig>(guild.Id, out var config))
             if (config.LogUserBanned)
             {
+                var culture = new CultureInfo(LocalizationService.GetLocale(BotName));
+
                 var banReason = string.Empty;
 
                 try
@@ -149,11 +183,19 @@ public class GeneralLogger : LoggingExtension
                 {
                     Log.Error("{ClientName} could not fetch Bans from Server: {GuildName} \n {Exception}", BotName,
                         guild.Name, ex.Message);
+
+                    banReason = Resources.GetString(nameof(LoggingResources.user_banned_error), culture);
                 }
 
-                var discriminatedUser = $"{user.Username}#{user.DiscriminatorValue}";
-                var embMessage = $"User {discriminatedUser} <@{user.Id}> was banned. \n **Reason**: {banReason}";
-                await SendLogMessage(" ", GenerateEmbed("User Banned", embMessage, Color.Red), config.LoggingChannelID);
+                var embTitle = Resources.GetString(nameof(LoggingResources.user_banned_title), culture);
+
+                var embMessage =
+                    string.Format(
+                        Resources.GetString(nameof(LoggingResources.user_banned_text), culture)!,
+                        GetDiscriminatedUser(user), user.Id, banReason);
+
+
+                await SendLogMessage(" ", GenerateEmbed(embTitle, embMessage, Color.Red), config.LoggingChannelID);
             }
     }
 }
