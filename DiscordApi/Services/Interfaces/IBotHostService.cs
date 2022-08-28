@@ -1,6 +1,6 @@
 ﻿using DiscordApi.DiscordHost.Bot;
 
-namespace DiscordApi.Services;
+namespace DiscordApi.Services.Interfaces;
 
 public interface IBotHostService
 {

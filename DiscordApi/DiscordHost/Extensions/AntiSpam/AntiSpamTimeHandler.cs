@@ -1,10 +1,14 @@
-﻿using System.Timers;
+﻿using System.Globalization;
+using System.Resources;
+using System.Timers;
 using Discord;
 using Discord.WebSocket;
 using DiscordApi.DiscordHost.Extensions.Base;
 using DiscordApi.DiscordHost.Extensions.Interfaces;
 using DiscordApi.DiscordHost.Utils;
 using DiscordApi.Models;
+using DiscordApi.Resources.Extensions;
+using DiscordApi.Services;
 using Serilog;
 using Timer = System.Timers.Timer;
 
@@ -27,6 +31,8 @@ public class AntiSpamTimeHandler : ClientExtension
 
         _timer.Start();
 
+        Resources = new ResourceManager(typeof(AntiSpamResources));
+
         Finished = false;
     }
 
@@ -34,6 +40,8 @@ public class AntiSpamTimeHandler : ClientExtension
     public SocketGuild Guild { get; set; }
     public MessageQueue Queue { get; set; }
     public SocketGuildUser User { get; set; }
+    
+    public ResourceManager Resources { get; set; }
 
     public bool Finished { get; set; }
 
@@ -47,6 +55,8 @@ public class AntiSpamTimeHandler : ClientExtension
 
     private async Task DeleteAsync()
     {
+        var culture = new CultureInfo(LocalizationService.GetLocale(BotName));
+        
         _logger.Pause();
 
         foreach (var kvp in Queue.GetGroupedByChannels()) await kvp.Key.DeleteMessagesAsync(kvp.Value);
@@ -71,7 +81,7 @@ public class AntiSpamTimeHandler : ClientExtension
         {
             Log.Error("Could not apply mute to {User}", User);
         }
-
+        
 
         if (TryGetConfig<LoggingConfig>(Guild.Id, out var c))
         {
@@ -80,8 +90,8 @@ public class AntiSpamTimeHandler : ClientExtension
                 await _logger.SendCustomLogMessage(
                     " ",
                     _logger.GenerateEmbed(
-                        "User Muted for Spamming",
-                        "Muted User <@" + User.Id + "> for spamming.", Color.DarkRed
+                        Resources.GetString("user_muted_title", culture)!,
+                        string.Format(Resources.GetString("user_muted_text", culture)!, User.Id.ToString()), Color.DarkRed
                     ), c.LoggingChannelID);
             }
             else

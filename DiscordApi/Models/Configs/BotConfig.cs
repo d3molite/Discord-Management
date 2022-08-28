@@ -34,6 +34,8 @@ public class BotConfig : IConfig<BotConfig>
     public bool ESportsEnabled { get; set; }
 
     public string LastCommitPosted { get; set; }
+    
+    public string Locale { get; set; }
 
     public override string ToString()
     {
