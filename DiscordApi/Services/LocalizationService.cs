@@ -31,13 +31,14 @@ public static class LocalizationService
 
         if (LocaleInfo.TryGetValue(key, out var locale))
         {
-            return locale.ToLower() switch
+            switch (locale.ToLower())
             {
-                "de" => "de-de",
-                _ => "Default Culture"
-            };
+                case "de": return "de-de";
+                case "en": return "";
+                default: return "";
+            }
         }
 
-        return "en";
+        return "";
     }
 }

@@ -19,7 +19,7 @@ public class Extension
 
     public ResourceManager Resources { get; set; }
 
-    protected string GetResource(string key, CultureInfo culture)
+    protected string GetResource(string key, CultureInfo? culture)
     {
         return Resources.GetString(key, culture)!.Replace("\\n", "\n");
     }

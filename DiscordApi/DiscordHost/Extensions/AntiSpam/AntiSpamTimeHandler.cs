@@ -41,6 +41,9 @@ public class AntiSpamTimeHandler : ClientExtension
     public MessageQueue Queue { get; set; }
     public SocketGuildUser User { get; set; }
 
+    private string MessageContent { get; set; }
+    private Dictionary<string, List<string>> Deleted { get; } = new();
+
     public bool Finished { get; set; }
 
     public event EventHandler SpamDeleted;
@@ -51,38 +54,14 @@ public class AntiSpamTimeHandler : ClientExtension
         await DeleteAsync();
     }
 
-    private async Task DeleteAsync()
+    private async Task SendLog()
     {
-        var culture = new CultureInfo(LocalizationService.GetLocale(BotName, Guild.Id));
-
-        _logger.Pause();
-
-        foreach (var kvp in Queue.GetGroupedByChannels()) await kvp.Key.DeleteMessagesAsync(kvp.Value);
-
-        Thread.Sleep(100);
-
-        _logger.Resume();
-
-        Role role = null;
-
-        try
-        {
-            role = Config.MutedRole;
-
-            if (role != null) await Mute(User, Guild.GetRole(role.RoleID));
-
-            else
-                await User.SetTimeOutAsync(TimeSpan.FromDays(3),
-                    new RequestOptions { AuditLogReason = $"Spam AutoDetected by {BotName}" });
-        }
-        catch
-        {
-            Log.Error("Could not apply mute to {User}", User);
-        }
-
-
         if (TryGetConfig<LoggingConfig>(Guild.Id, out var c))
         {
+            var role = Config.MutedRole;
+
+            var culture = new CultureInfo(LocalizationService.GetLocale(BotName, Guild.Id));
+
             if (role != null)
             {
                 await _logger.SendCustomLogMessage(
@@ -115,18 +94,96 @@ public class AntiSpamTimeHandler : ClientExtension
                 DeletedMessageOverview(Queue),
                 c.LoggingChannelID);
         }
+    }
+
+    private async Task MuteUser()
+    {
+        Role? role = null;
+
+        try
+        {
+            role = Config.MutedRole;
+
+            if (role != null) await Mute(User, Guild.GetRole(role.RoleID));
+
+            else
+                await User.SetTimeOutAsync(TimeSpan.FromDays(3),
+                    new RequestOptions { AuditLogReason = $"Spam AutoDetected by {BotName}" });
+        }
+        catch
+        {
+            Log.Error("Could not apply mute to {User}", User);
+        }
+    }
+
+    private async Task DeleteAsync()
+    {
+        await MuteUser();
+
+        _logger.Pause();
+
+        foreach (var kvp in Queue.GetGroupedByChannels())
+        {
+            MessageContent = kvp.Value.First().Content;
+            await kvp.Key.DeleteMessagesAsync(kvp.Value);
+
+            if (Deleted.ContainsKey(kvp.Key.Name))
+            {
+                Deleted[kvp.Key.Name].AddRange(kvp.Value.Select(x => x.Content).ToList());
+            }
+            else
+            {
+                Deleted.Add(kvp.Key.Name, kvp.Value.Select(x => x.Content).ToList());
+            }
+        }
+
+        await CleanUp();
+
+        Thread.Sleep(100);
+
+        _logger.Resume();
+
+        await SendLog();
 
         Queue.Clear();
 
         Finished = true;
-
         SpamDeleted.Invoke(null, null);
+    }
+
+    private async Task CleanUp()
+    {
+        foreach (var channel in Guild.Channels)
+        {
+            if (channel is not ISocketMessageChannel messageChannel) continue;
+
+            var messages =
+                await messageChannel
+                    .GetMessagesAsync(5)
+                    .Select(
+                        x =>
+                            x.First(y => y.Content == MessageContent && y.Author.Id == User.Id))
+                    .ToListAsync();
+
+
+            foreach (var message in messages)
+            {
+                await message.DeleteAsync();
+
+                if (Deleted.ContainsKey(channel.Name))
+                {
+                    Deleted[channel.Name].Add(message.Content);
+                }
+                else
+                {
+                    Deleted.Add(channel.Name, new List<string> { message.Content });
+                }
+            }
+        }
     }
 
     private Embed DeletedMessageOverview(MessageQueue queue)
     {
-        var deleted = queue.GetGroupedByChannels();
-
         var culture = new CultureInfo(LocalizationService.GetLocale(BotName, Guild.Id));
 
         var embed = new EmbedBuilder
@@ -136,7 +193,7 @@ public class AntiSpamTimeHandler : ClientExtension
                 GetDiscriminatedUser(User))
         };
 
-        foreach (var kvp in deleted) embed.AddField(kvp.Key.Name + ":", MessageQueue.MessageList(kvp.Value));
+        foreach (var kvp in Deleted) embed.AddField(kvp.Key + ":", string.Join(Environment.NewLine, kvp.Value));
 
         return embed.Build();
     }

@@ -42,10 +42,10 @@
     <data name="user_left_text" xml:space="preserve">
         <value>User {0} &lt;@{1}&gt; left.</value>
     </data>
-    <data name="user_banned_title" xml:space="preserve">
+    <data name="user_banned_text" xml:space="preserve">
         <value>User {0} &lt;@{1}&gt; was banned. \n **Reason:** {2}</value>
     </data>
-    <data name="user_banned_text" xml:space="preserve">
+    <data name="user_banned_title" xml:space="preserve">
         <value>User banned.</value>
     </data>
     <data name="user_left_duration" xml:space="preserve">
