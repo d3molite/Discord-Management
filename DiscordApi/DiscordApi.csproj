@@ -67,9 +67,9 @@
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
         <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-        <PackageReference Include="OpenCvSharp4" Version="4.5.5.20211231" />
+        <PackageReference Include="OpenCvSharp4" Version="4.6.0.20220608" />
         <PackageReference Include="OpenCvSharp4.runtime.ubuntu.18.04-x64" Version="4.5.5.20211231" />
-        <PackageReference Include="OpenCvSharp4.runtime.win" Version="4.5.5.20211231" />
+        <PackageReference Include="OpenCvSharp4.runtime.win" Version="4.6.0.20220608" />
         <PackageReference Include="RestSharp" Version="107.3.0" />
         <PackageReference Include="Serilog" Version="2.11.1-dev-01397" />
         <PackageReference Include="Serilog.Sinks.Console" Version="4.0.1" />
@@ -81,6 +81,24 @@
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
         <None Update="Resources\feature.txt">
+          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Update="DiscordHost\Extensions\ImageManipulation\ManipulationHelper\Resources\eyelaugh.png">
+          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Update="DiscordHost\Extensions\ImageManipulation\ManipulationHelper\Resources\100.png">
+          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Update="DiscordHost\Extensions\ImageManipulation\ManipulationHelper\Resources\felix.png">
+          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Update="DiscordHost\Extensions\ImageManipulation\ManipulationHelper\Resources\fire.png">
+          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Update="DiscordHost\Extensions\ImageManipulation\ManipulationHelper\Resources\laugh.png">
+          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Update="DiscordHost\Extensions\ImageManipulation\ManipulationHelper\Resources\ok_hand.png">
           <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
     </ItemGroup>

@@ -56,6 +56,19 @@ public class ImageCommandHandler : InteractionModuleBase
         }
     }
 
+    [SlashCommand("memeify", "Spicy memez.")]
+    public async Task memeify(int power = 1)
+    {
+        var img = await TryGetImage();
+
+        if (img.Item1)
+        {
+            await DeferAsync();
+            await ImageManipulationHelper.Memeify(img.Item2, power);
+            await SendAndDelete(img.Item2);
+        }
+    }
+
     [SlashCommand("waaw", "Vertically mirror the last image left to right")]
     public async Task waaw()
     {
