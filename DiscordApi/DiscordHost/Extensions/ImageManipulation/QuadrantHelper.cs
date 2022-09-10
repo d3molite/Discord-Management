@@ -32,21 +32,17 @@ public class QuadrantHelper
         {
             default:
             case 1:
+            case 6:
                 return new[] { _masks[0], _masks[1], _masks[2] };
             case 2:
+            case 5:
                 return new[] { _masks[0], _masks[2], _masks[3] };
             case 3:
+            case 8:
                 return new[] { _masks[1], _masks[2], _masks[3] };
             case 4:
-                return new[] { _masks[0], _masks[1], _masks[3] };
-            case 5:
-                return new[] { _masks[2], _masks[3], _masks[0] };
-            case 6:
-                return new[] { _masks[2], _masks[0], _masks[1] };
             case 7:
-                return new[] { _masks[2], _masks[0], _masks[1] };
-            case 8:
-                return new[] { _masks[3], _masks[1], _masks[2] };
+                return new[] { _masks[0], _masks[1], _masks[3] };
         }
     }
 

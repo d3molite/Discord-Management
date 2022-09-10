@@ -149,8 +149,11 @@ public class ImageManipulationHelper
 
             src.CopyTo(tar, mask);
         }
+
+        // if the slice is the second,
         else
         {
+            // get the flipmode to paste it into the next quadrant
             var fp = QuadrantHelper.GetFlipMode(targetSlice);
 
             var fp2 = fp == FlipMode.X ? FlipMode.Y : FlipMode.X;
@@ -255,32 +258,32 @@ public class ImageManipulationHelper
 
         var image = ResizeToSquashable(inputImage);
         Jpegify(image, 100);
-        
+
         var computed = image.Clone();
 
         if (power > 5) power = 5;
-        
+
         for (var i = 0; i <= power; i++)
         {
             var gray = computed.Clone();
             Cv2.CvtColor(computed, gray, ColorConversionCodes.BGR2GRAY);
-            
+
             var sobelX = gray.Clone();
             var sobelY = gray.Clone();
-            
+
             Cv2.Scharr(gray, sobelX, image.Depth(), 1, 0);
             Cv2.Scharr(gray, sobelY, image.Depth(), 0, 1);
-            
+
             var helper = new ImageSeamHelper(computed, sobelX);
             computed = helper.ScaleY();
-            
+
             helper.Source = computed;
             helper.Weighted = sobelY;
             computed = helper.ScaleX();
 
             computed = helper.Resize(computed);
         }
-        
+
         computed.SaveImage(img.TargetPath);
 
         inputImage.Dispose();

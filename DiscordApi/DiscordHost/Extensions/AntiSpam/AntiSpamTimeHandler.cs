@@ -157,27 +157,34 @@ public class AntiSpamTimeHandler : ClientExtension
         {
             if (channel is not ISocketMessageChannel messageChannel) continue;
 
-            var messages =
-                await messageChannel
-                    .GetMessagesAsync(5)
-                    .Select(
-                        x =>
-                            x.First(y => y.Content == MessageContent && y.Author.Id == User.Id))
-                    .ToListAsync();
-
-
-            foreach (var message in messages)
+            try
             {
-                await message.DeleteAsync();
+                var messages =
+                    await messageChannel
+                        .GetMessagesAsync(5)
+                        .Select(
+                            x =>
+                                x.First(y => y.Content == MessageContent && y.Author.Id == User.Id))
+                        .ToListAsync();
 
-                if (Deleted.ContainsKey(channel.Name))
+
+                foreach (var message in messages)
                 {
-                    Deleted[channel.Name].Add(message.Content);
+                    await message.DeleteAsync();
+
+                    if (Deleted.ContainsKey(channel.Name))
+                    {
+                        Deleted[channel.Name].Add(message.Content);
+                    }
+                    else
+                    {
+                        Deleted.Add(channel.Name, new List<string> { message.Content });
+                    }
                 }
-                else
-                {
-                    Deleted.Add(channel.Name, new List<string> { message.Content });
-                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error("Could not delete. {ex}", ex);
             }
         }
     }

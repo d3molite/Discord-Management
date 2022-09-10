@@ -50,7 +50,7 @@ public class ImageCommandHandler : InteractionModuleBase
 
         if (img.Item1)
         {
-            await RespondAsync("Squooshing... (this might take a while)");
+            await DeferAsync();
             await ImageManipulationHelper.ContentAwareScale(img.Item2, power);
             await SendAndDelete(img.Item2);
         }
@@ -87,7 +87,7 @@ public class ImageCommandHandler : InteractionModuleBase
 
         if (img.Item1)
         {
-            await RespondAsync("Frying...");
+            await DeferAsync();
             await ImageManipulationHelper.DeepFry(img.Item2);
             await SendAndDelete(img.Item2);
         }
@@ -100,7 +100,7 @@ public class ImageCommandHandler : InteractionModuleBase
 
         if (img.Item1)
         {
-            await RespondAsync("Crustifying...");
+            await DeferAsync();
             await ImageManipulationHelper.MoreJpeg(img.Item2);
             await SendAndDelete(img.Item2);
         }
@@ -113,7 +113,7 @@ public class ImageCommandHandler : InteractionModuleBase
 
         if (img.Item1)
         {
-            await RespondAsync("Speeeeeeen");
+            await DeferAsync();
             await ImageManipulationHelper.Mandala(img.Item2, slice);
             await SendAndDelete(img.Item2);
         }
@@ -125,7 +125,7 @@ public class ImageCommandHandler : InteractionModuleBase
 
         if (img.Item1)
         {
-            await RespondAsync("Mirroring...");
+            await DeferAsync();
             await ImageManipulationHelper.Mirror(img.Item2, direction);
             await SendAndDelete(img.Item2);
         }
@@ -155,7 +155,7 @@ public class ImageCommandHandler : InteractionModuleBase
 
     private async Task SendAndDelete(Image imageObject)
     {
-        await Context.Channel.SendFileAsync(imageObject.TargetPath);
+        await FollowupWithFileAsync(imageObject.TargetPath);
         Directory.Delete(imageObject.Folder, true);
         Directory.CreateDirectory(imageObject.Folder);
     }

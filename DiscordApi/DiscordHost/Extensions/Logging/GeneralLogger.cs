@@ -129,7 +129,7 @@ public class GeneralLogger : LoggingExtension
 
                 if (user is SocketGuildUser guildUser)
                 {
-                    time = OffsetToDate(guild.GetUser(guildUser.Id).JoinedAt!.Value.Offset, culture);
+                    time = OffsetToDate(guildUser.JoinedAt!.Value.Offset, culture);
                 }
 
                 var embTitle = GetResource(nameof(LoggingResources.user_left_title), culture)!;
