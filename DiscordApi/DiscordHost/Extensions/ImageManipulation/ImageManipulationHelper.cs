@@ -48,7 +48,6 @@ public static partial class ImageManipulationHelper
 
         ColorContrast(inputImage, 50);
         Sharpen(inputImage);
-        ColorContrast(inputImage, 50);
 
         img.Extension = "jpg";
 

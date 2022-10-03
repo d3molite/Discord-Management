@@ -30,6 +30,7 @@ public class AppDBContext : DbContext
     public DbSet<Modnote> Modnotes { get; set; }
 
     public DbSet<Message> Messages { get; set; }
+    public DbSet<SocialMediaConfig> SocialConfigs { get; set; }
 
     public static AppDBContext Get()
     {

@@ -21,8 +21,8 @@ public static class MemeResources
         var randomImage = Paths.ElementAt(Random.Next(0, Paths.Count));
         var loc = new DirectoryInfo(Assembly.GetExecutingAssembly().Location).Parent;
 
-        var resourcePath = @"\DiscordHost\Extensions\ImageManipulation\ManipulationHelper\Resources\";
+        var resourcePath = @"/DiscordHost/Extensions/ImageManipulation/ManipulationHelper/Resources/";
 
-        return loc + resourcePath + randomImage;
+        return Path.GetFullPath(loc + resourcePath + randomImage);
     }
 }

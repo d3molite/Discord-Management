@@ -12,3 +12,5 @@ DiscordApi/Database.db
 DiscordApi.sln.DotSettings.user
 
 build/Credentials.cs
+
+DiscordApi/REST/Auth.json

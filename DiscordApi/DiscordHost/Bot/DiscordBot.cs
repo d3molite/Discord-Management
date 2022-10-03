@@ -11,6 +11,7 @@ using DiscordApi.DiscordHost.Extensions.Logging;
 using DiscordApi.DiscordHost.Extensions.Modnotes;
 using DiscordApi.DiscordHost.Extensions.ReactionRoles;
 using DiscordApi.DiscordHost.Extensions.ReactTo;
+using DiscordApi.DiscordHost.Extensions.SocialPolling;
 using DiscordApi.DiscordHost.Utils;
 using LibGit2Sharp;
 using Microsoft.EntityFrameworkCore;
@@ -37,6 +38,7 @@ public class DiscordBot
 
     private MessageReactionExtension _messageReactionExtension;
     private ReactionRoleExtension _roleAssigner;
+    private SocialMediaExtension _socialMedia;
 
     public DiscordBot(string name, string token, IServiceProvider serviceProvider, string presence = "")
     {
@@ -78,6 +80,7 @@ public class DiscordBot
             .Include(prop => prop.RoleConfigs)
             .Include(prop => prop.ReactionConfig)
             .Include(prop => prop.FeedbackConfig)
+            .Include(prop => prop.SocialMediaConfigs)
             .Where(p => p.RelatedBot.Name == Name).ToArray();
 
         foreach (var config in configs)
@@ -116,6 +119,13 @@ public class DiscordBot
                 {
                     await _interactionService.AddModuleAsync<ESportsCommandHandler>(_provider);
                     Serilog.Log.Debug("Registered Esports to {ClientName}", Name);
+                }
+
+                if (configs.Any(p => p.SocialMediaConfigs.Any()))
+                {
+                    _socialMedia =
+                        new SocialMediaExtension(Name, _client, configs.Where(p => p.SocialMediaConfigs.Any()));
+                    Serilog.Log.Debug("Registered SocialMedia to {ClientName}", Name);
                 }
 
                 _firstStartup = false;

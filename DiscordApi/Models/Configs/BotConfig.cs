@@ -26,6 +26,8 @@ public class BotConfig : IConfig<BotConfig>
 
     public MessageReactionConfig? ReactionConfig { get; set; }
 
+    public List<SocialMediaConfig> SocialMediaConfigs { get; set; }
+
     public bool ImageManipulationEnabled { get; set; }
     public bool ModnotesEnabled { get; set; }
 
@@ -34,7 +36,7 @@ public class BotConfig : IConfig<BotConfig>
     public bool ESportsEnabled { get; set; }
 
     public string LastCommitPosted { get; set; }
-    
+
     public string Locale { get; set; }
 
     public override string ToString()
