@@ -12,5 +12,7 @@ public interface ISocialsData
 
     public string MediaUrl { get; set; }
 
+    public string Id { get; set; }
+
     public void SetUrl();
 }

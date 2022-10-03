@@ -5,7 +5,6 @@ using DiscordApi.Data;
 using DiscordApi.DiscordHost.Extensions.SocialPolling.DataParsing;
 using DiscordApi.Models;
 using DiscordApi.REST;
-using Newtonsoft.Json.Linq;
 
 namespace DiscordApi.DiscordHost.Extensions.SocialPolling;
 
@@ -51,6 +50,7 @@ public class SocialMediaTimer
                 case SocialType.Twitter:
                     if (TwitterParser.TryParse(responseText, _config.LastPosted.ToString(), out parsed))
                     {
+                        UpdateTwitter(parsed!.Id);
                         await SendEmbed(parsed!);
                     }
 
@@ -100,27 +100,17 @@ public class SocialMediaTimer
         return builder.Build();
     }
 
-    private async Task<string> ParseTwitter(string response)
+    private void UpdateTwitter(string id)
     {
-        var items = JObject.Parse(response);
+        if (ulong.Parse(id) == _config.LastPosted) return;
 
-        var latestTweet = items["data"][0];
+        using var dbContext = AppDBContext.Get();
+        var config = dbContext.SocialConfigs.First(x => x.Id == _config.Id);
+        config.LastPosted = ulong.Parse(id);
 
-        if (ulong.Parse(latestTweet["id"].Value<string>()) != _config.LastPosted)
-        {
-            using var dbContext = AppDBContext.Get();
+        dbContext.SaveChanges();
 
-            var config = dbContext.SocialConfigs.First(x => x.Id == _config.Id);
-            config.LastPosted = ulong.Parse(latestTweet["id"].Value<string>());
-
-            dbContext.SaveChanges();
-
-            _config = config;
-
-            return latestTweet["text"].Value<string>();
-        }
-
-        return "";
+        _config = config;
     }
 
     private Uri GetTarget(SocialType type, string id)
