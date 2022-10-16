@@ -118,7 +118,7 @@ public class SocialMediaTimer
         return type switch
         {
             SocialType.Twitter => new Uri(
-                $"https://api.twitter.com/2/users/{id}/tweets?max_results=5&expansions=attachments.media_keys&media.fields=preview_image_url,url"),
+                $"https://api.twitter.com/2/users/{id}/tweets?max_results=5&expansions=attachments.media_keys&media.fields=preview_image_url,url&exclude=replies%2Cretweets"),
             SocialType.Facebook => new Uri(""),
             SocialType.Instagram => new Uri(""),
             _ => new Uri("")
