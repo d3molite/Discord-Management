@@ -21,9 +21,8 @@ public class VoiceChannelExtension : ClientExtension
 
         _timer = new PeriodicTimer(TimeSpan.FromMinutes(1));
 
-        Task.Run(async () => await RunPeriodicChecks());
-
         Client.Ready += () => Task.Run(async () => await PollChannels());
+        Task.Run(async () => await RunPeriodicChecks());
     }
 
     private async Task PollChannels()
