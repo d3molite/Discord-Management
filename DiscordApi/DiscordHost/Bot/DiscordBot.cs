@@ -12,6 +12,7 @@ using DiscordApi.DiscordHost.Extensions.Modnotes;
 using DiscordApi.DiscordHost.Extensions.ReactionRoles;
 using DiscordApi.DiscordHost.Extensions.ReactTo;
 using DiscordApi.DiscordHost.Extensions.SocialPolling;
+using DiscordApi.DiscordHost.Extensions.VoiceChannels;
 using DiscordApi.DiscordHost.Utils;
 using LibGit2Sharp;
 using Microsoft.EntityFrameworkCore;
@@ -39,6 +40,7 @@ public class DiscordBot
     private MessageReactionExtension _messageReactionExtension;
     private ReactionRoleExtension _roleAssigner;
     private SocialMediaExtension _socialMedia;
+    private VoiceChannelExtension _voiceChannel;
 
     public DiscordBot(string name, string token, IServiceProvider serviceProvider, string presence = "")
     {
@@ -81,6 +83,7 @@ public class DiscordBot
             .Include(prop => prop.ReactionConfig)
             .Include(prop => prop.FeedbackConfig)
             .Include(prop => prop.SocialMediaConfigs)
+            .Include(prop => prop.VoiceConfig)
             .Where(p => p.RelatedBot.Name == Name).ToArray();
 
         foreach (var config in configs)
@@ -126,6 +129,21 @@ public class DiscordBot
                     _socialMedia =
                         new SocialMediaExtension(Name, _client, configs.Where(p => p.SocialMediaConfigs.Any()));
                     Serilog.Log.Debug("Registered SocialMedia to {ClientName}", Name);
+                }
+
+                if (configs.Any(p => p.VoiceConfig != null))
+                {
+                    await _interactionService.AddModuleAsync<VoiceChannelCommandHandler>(_provider);
+
+                    var voiceConfig = configs.FirstOrDefault(x => x.VoiceConfig != null)!.VoiceConfig;
+
+                    var handler = _provider.GetRequiredService<IStateHandler>();
+
+                    _voiceChannel =
+                        new VoiceChannelExtension(Name, _client, handler,
+                            voiceConfig.First());
+
+                    Serilog.Log.Debug("Registered Voice to {ClientName}", Name);
                 }
 
                 _firstStartup = false;

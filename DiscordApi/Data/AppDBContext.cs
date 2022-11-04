@@ -28,7 +28,7 @@ public class AppDBContext : DbContext
     public DbSet<Guild> Guilds { get; set; }
     public DbSet<BotConfig> Configs { get; set; }
     public DbSet<Modnote> Modnotes { get; set; }
-
+    public DbSet<VoiceChannelConfig> VoiceChannelConfigs { get; set; }
     public DbSet<Message> Messages { get; set; }
     public DbSet<SocialMediaConfig> SocialConfigs { get; set; }
 

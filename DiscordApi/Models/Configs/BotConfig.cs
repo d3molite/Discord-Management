@@ -24,6 +24,8 @@ public class BotConfig : IConfig<BotConfig>
     public AntiSpamConfig? AntiSpam { get; set; }
     public List<ReactionRoleConfig> RoleConfigs { get; set; }
 
+    public List<VoiceChannelConfig> VoiceConfig { get; set; }
+
     public MessageReactionConfig? ReactionConfig { get; set; }
 
     public List<SocialMediaConfig> SocialMediaConfigs { get; set; }
