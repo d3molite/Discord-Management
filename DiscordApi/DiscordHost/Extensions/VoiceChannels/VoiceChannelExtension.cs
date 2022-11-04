@@ -55,6 +55,13 @@ public class VoiceChannelExtension : ClientExtension
     {
         while (await _timer.WaitForNextTickAsync(CancellationToken.None))
         {
+            if (_handler.VoiceChannelStates.Any())
+            {
+                Log.Debug("Checking... {BotName} - {Number} Channels", BotName, _handler.VoiceChannelStates.Count);
+            }
+
+            var removed = new List<VoiceChannelState>();
+
             foreach (var channelInfo in _handler.VoiceChannelStates)
             {
                 var lastCheck = channelInfo.UsersPresentInLastCheck;
@@ -68,6 +75,8 @@ public class VoiceChannelExtension : ClientExtension
                     var name = channelInfo.VoiceChannel.Name;
 
                     await channelInfo.VoiceChannel.DeleteAsync();
+                    removed.Add(channelInfo);
+
                     Log.Debug("Channel {ChannelName} deleted due to Inactivity by {BotName}", name, BotName);
                     continue;
                 }
@@ -81,6 +90,11 @@ public class VoiceChannelExtension : ClientExtension
                         channelInfo.UsersPresentInLastCheck = false;
                         break;
                 }
+            }
+
+            foreach (var channelInfo in removed)
+            {
+                _handler.VoiceChannelStates.Remove(channelInfo);
             }
         }
     }

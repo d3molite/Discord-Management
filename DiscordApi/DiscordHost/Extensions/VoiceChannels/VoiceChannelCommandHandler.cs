@@ -3,6 +3,7 @@ using Discord.Interactions;
 using Discord.WebSocket;
 using DiscordApi.Data.Repositories;
 using DiscordApi.DiscordHost.Utils;
+using Serilog;
 
 namespace DiscordApi.DiscordHost.Extensions.VoiceChannels;
 
@@ -90,6 +91,8 @@ public class VoiceChannelCommandHandler : InteractionModuleBase
             UsersPresentInLastCheck = true,
             VoiceChannel = socketChannel!
         });
+
+        Log.Debug("Channel {Channel} created by {BotName}", socketChannel.Name, Context.Client.CurrentUser);
     }
 
     public class CreateVoiceModal : IModal
