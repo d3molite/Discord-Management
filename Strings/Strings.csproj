@@ -1,0 +1,42 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Update="Resources\AntiSpamResources.resx">
+        <Generator>ResXFileCodeGenerator</Generator>
+        <LastGenOutput>AntiSpamResources.Designer.cs</LastGenOutput>
+      </EmbeddedResource>
+      <EmbeddedResource Update="Resources\LoggingResources.resx">
+        <Generator>ResXFileCodeGenerator</Generator>
+        <LastGenOutput>LoggingResources.Designer.cs</LastGenOutput>
+      </EmbeddedResource>
+      <EmbeddedResource Update="Resources\FeedbackResources.resx">
+        <Generator>ResXFileCodeGenerator</Generator>
+        <LastGenOutput>FeedbackResources.Designer.cs</LastGenOutput>
+      </EmbeddedResource>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Update="Resources\AntiSpamResources.Designer.cs">
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+        <DependentUpon>AntiSpamResources.resx</DependentUpon>
+      </Compile>
+      <Compile Update="Resources\LoggingResources.Designer.cs">
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+        <DependentUpon>LoggingResources.resx</DependentUpon>
+      </Compile>
+      <Compile Update="Resources\FeedbackResources.Designer.cs">
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+        <DependentUpon>FeedbackResources.resx</DependentUpon>
+      </Compile>
+    </ItemGroup>
+
+</Project>
