@@ -1,5 +1,4 @@
 ﻿using System.Globalization;
-using System.Resources;
 using System.Timers;
 using Discord;
 using Discord.WebSocket;
@@ -7,7 +6,6 @@ using DiscordApi.DiscordHost.Extensions.Base;
 using DiscordApi.DiscordHost.Extensions.Interfaces;
 using DiscordApi.DiscordHost.Utils;
 using DiscordApi.Models;
-using DiscordApi.Resources.Extensions;
 using DiscordApi.Services;
 using Serilog;
 using Timer = System.Timers.Timer;
@@ -30,8 +28,6 @@ public class AntiSpamTimeHandler : ClientExtension
         _timer.Elapsed += DeleteSpam;
 
         _timer.Start();
-
-        Resources = new ResourceManager(typeof(AntiSpamResources));
 
         Finished = false;
     }
@@ -196,7 +192,7 @@ public class AntiSpamTimeHandler : ClientExtension
         var embed = new EmbedBuilder
         {
             Title = string.Format(
-                GetResource(nameof(AntiSpamResources.deleted_spam_title), culture)!,
+                GetResource("nameof(AntiSpamResources.deleted_spam_title)", culture)!,
                 GetDiscriminatedUser(User))
         };
 

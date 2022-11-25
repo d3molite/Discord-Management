@@ -1,10 +1,8 @@
 ﻿using System.Globalization;
-using System.Resources;
 using Discord;
 using Discord.WebSocket;
 using DiscordApi.Data;
 using DiscordApi.Models;
-using DiscordApi.Resources.Extensions;
 using DiscordApi.Services;
 using Serilog;
 
@@ -16,8 +14,6 @@ public class GeneralLogger : LoggingExtension
         : base(client, botName)
     {
         LogSetup();
-
-        Resources = new ResourceManager(typeof(LoggingResources));
     }
 
     // public ResourceManager Resources { get; set; }
@@ -50,10 +46,10 @@ public class GeneralLogger : LoggingExtension
             if (TryGetConfig<LoggingConfig>(guild.Id, out var config))
                 if (config.LogMessageDeleted)
                 {
-                    var embTitle = GetResource(nameof(LoggingResources.message_deleted_title), culture)!;
+                    var embTitle = GetResource("", culture)!;
 
                     var embMessage =
-                        string.Format(GetResource(nameof(LoggingResources.message_deleted_text), culture)!,
+                        string.Format(GetResource("", culture)!,
                             GetDiscriminatedUser(message.Value.Author), message.Value.Author.Id, channel.Value.Id,
                             message.Value);
 
@@ -80,13 +76,13 @@ public class GeneralLogger : LoggingExtension
         return age switch
         {
             // if the time is smaller than one day.
-            < 1 => Math.Round(time.TotalHours, 2) + GetResource(nameof(LoggingResources.hours), culture),
+            < 1 => Math.Round(time.TotalHours, 2) + GetResource("nameof(LoggingResources.hours)", culture),
 
             // if the time is smaller than a year.
-            < 365 => age + GetResource(nameof(LoggingResources.days), culture),
+            < 365 => age + GetResource("nameof(LoggingResources.days)", culture),
 
             // if the time is greater than a year.
-            _ => Math.Round(time.TotalDays / 365, 2) + GetResource(nameof(LoggingResources.years), culture)
+            _ => Math.Round(time.TotalDays / 365, 2) + GetResource("nameof(LoggingResources.years)", culture)
         };
     }
 
@@ -104,11 +100,11 @@ public class GeneralLogger : LoggingExtension
             {
                 var ageString = OffsetToDate(DateTime.Now - user.CreatedAt, culture);
 
-                var embTitle = GetResource(nameof(LoggingResources.user_joined_title), culture)!;
+                var embTitle = GetResource("nameof(LoggingResources.user_joined_title)", culture)!;
 
                 var embMessage = string.Format(
                     GetResource(
-                        nameof(LoggingResources.user_joined_text), culture)!,
+                        "nameof(LoggingResources.user_joined_text)", culture)!,
                     GetDiscriminatedUser(user), user.Id, ageString);
 
                 await SendLogMessage(" ", GenerateEmbed(embTitle, embMessage), config.LoggingChannelID);
@@ -132,17 +128,17 @@ public class GeneralLogger : LoggingExtension
                     time = OffsetToDate(guildUser.JoinedAt!.Value.Offset, culture);
                 }
 
-                var embTitle = GetResource(nameof(LoggingResources.user_left_title), culture)!;
+                var embTitle = GetResource("nameof(LoggingResources.user_left_title)", culture)!;
 
                 var embMessage = string.Format(
                     GetResource(
-                        nameof(LoggingResources.user_left_text), culture)!,
+                        "nameof(LoggingResources.user_left_text)", culture)!,
                     GetDiscriminatedUser(user),
                     user.Id);
 
                 if (!string.IsNullOrEmpty(time))
                     embMessage +=
-                        string.Format(GetResource(nameof(LoggingResources.user_left_duration), culture)!, time);
+                        string.Format(GetResource("nameof(LoggingResources.user_left_duration)", culture)!, time);
 
                 try
                 {
@@ -182,14 +178,14 @@ public class GeneralLogger : LoggingExtension
                     Log.Error("{ClientName} could not fetch Bans from Server: {GuildName} \n {Exception}", BotName,
                         guild.Name, ex.Message);
 
-                    banReason = GetResource(nameof(LoggingResources.user_banned_error), culture);
+                    banReason = GetResource("nameof(LoggingResources.user_banned_error)", culture);
                 }
 
-                var embTitle = GetResource(nameof(LoggingResources.user_banned_title), culture);
+                var embTitle = GetResource("nameof(LoggingResources.user_banned_title)", culture);
 
                 var embMessage =
                     string.Format(
-                        GetResource(nameof(LoggingResources.user_banned_text), culture)!,
+                        GetResource("nameof(LoggingResources.user_banned_text)", culture)!,
                         GetDiscriminatedUser(user), user.Id, banReason);
 
 
