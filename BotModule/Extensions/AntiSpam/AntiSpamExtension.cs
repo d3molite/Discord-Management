@@ -1,5 +1,6 @@
 ﻿using BotModule.Extensions.AntiSpam.Objects;
 using BotModule.Extensions.Base;
+using BotModule.Extensions.Logging;
 using DB.Repositories;
 using Discord.WebSocket;
 using Serilog;
@@ -58,6 +59,14 @@ public class AntiSpamExtension : ClientExtension
 
 		if (ContainsSpam(queue))
 			if (_spamCleaners.Any(x => x.User == user))
+			{
+				_spamCleaners.First(x => x.User == user).Restart();
+				Log.Debug("Restarted Handler for {User}", user.Nickname);
+			}
+			else
+			{
+				var handler = new SpamCleaner(_lo)
+			}
 	}
 
 	/// <summary>

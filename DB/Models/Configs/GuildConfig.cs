@@ -14,4 +14,5 @@ public class GuildConfig : IConfig<GuildConfig>
 	public FeedbackConfig? FeedbackConfig { get; set; }
 
 	public FaqConfig? FaqConfig { get; set; }
+	public LoggingConfig? LoggingConfig { get; set; }
 }

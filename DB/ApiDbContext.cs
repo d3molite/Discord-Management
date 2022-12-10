@@ -13,7 +13,6 @@ public class ApiDbContext : DbContext
 
 	public DbSet<Bot> Bots { get; set; } = null!;
 	public DbSet<GuildConfig> GuildConfigs { get; set; } = null!;
-
 	public DbSet<FeedbackConfig> FeedbackConfigs { get; set; } = null!;
 
 	public static ApiDbContext Get()
@@ -35,6 +34,10 @@ public class ApiDbContext : DbContext
 
 		modelBuilder.Entity<GuildConfig>()
 			.Navigation(x => x.FaqConfig)
+			.AutoInclude();
+
+		modelBuilder.Entity<GuildConfig>()
+			.Navigation(x => x.LoggingConfig)
 			.AutoInclude();
 
 		modelBuilder.Entity<FeedbackConfig>()

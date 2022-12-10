@@ -18,6 +18,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <Folder Include="Extensions\Interfaces" />
       <Folder Include="Extensions\VoiceChannels" />
     </ItemGroup>
 
