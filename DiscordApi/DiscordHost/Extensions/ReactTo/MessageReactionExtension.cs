@@ -7,51 +7,55 @@ namespace DiscordApi.DiscordHost.Extensions.ReactTo;
 
 public class MessageReactionExtension : ClientExtension
 {
-    private readonly Random _random = new();
+	private readonly Random _random = new();
 
-    public MessageReactionExtension(DiscordSocketClient client, string botName) : base(botName, client)
-    {
-        BotName = botName;
+	public MessageReactionExtension(DiscordSocketClient client, string botName) : base(botName, client)
+	{
+		BotName = botName;
 
-        Client.MessageReceived += ReactToMessage;
+		Client.MessageReceived += ReactToMessage;
 
-        Log.Information("MessageReactions attached to {ClientName}", BotName);
-    }
+		Log.Information("MessageReactions attached to {ClientName}", BotName);
+	}
 
-    private async Task ReactToMessage(SocketMessage message)
-    {
-        if (string.IsNullOrEmpty(message.Content) || message.Author.Id == Client.CurrentUser.Id) return;
-        
-        var channel = (SocketTextChannel)message.Channel;
-        var guild = channel.Guild;
-        var author = message.Author;
+	private async Task ReactToMessage(SocketMessage message)
+	{
+		if (string.IsNullOrEmpty(message.Content) || message.Author.Id == Client.CurrentUser.Id) return;
 
-        if (TryGetConfig<MessageReactionConfig>(guild.Id, out var config))
-        {
-            var matches =
-                config.MessageReactions.Where(x => message.Content.ToLower().Contains(x.ReactionTrigger));
+		var channel = (SocketTextChannel) message.Channel;
+		var guild = channel.Guild;
+		var author = message.Author;
 
-            var messageReactions = matches as MessageReaction[] ?? matches.ToArray();
+		if (TryGetConfig<MessageReactionConfig>(guild.Id, out var config))
+		{
+			var matches =
+				config.MessageReactions.Where(x => message.Content.ToLower().Contains(x.ReactionTrigger));
 
-            if (!messageReactions.Any()) return;
+			var messageReactions = matches as MessageReaction[] ?? matches.ToArray();
 
-            var chanceRoll = _random.Next(0, 100);
+			if (!messageReactions.Any()) return;
 
-            Log.Debug("User {Author} rolled {Roll}", author.Username, chanceRoll);
+			var chanceRoll = _random.Next(0, 100);
 
-            var match = messageReactions
-                .Where(x => chanceRoll <= x.ReactionChance).MinBy(x => x.ReactionChance);
+			Log.Debug("User {Author} rolled {Roll}", author.Username, chanceRoll);
 
-            if (match is null) return;
+			var match = messageReactions
+				.Where(x => chanceRoll <= x.ReactionChance).MinBy(x => x.ReactionChance);
 
-            if (match.EmojiOnly)
-            {
-                await AddReaction(guild, message, match.ReactionEmoji!);
-            }
-            else
-            {
-                await channel.SendMessageAsync(match.ReactionMessage);
-            }
-        }
-    }
+			if (match is null) return;
+
+			if (match.EmojiOnly)
+				try
+				{
+					await AddReaction(guild, message, match.ReactionEmoji!);
+				}
+				catch (Exception ex)
+				{
+					Log.Error("Could not add reaction with Emoji {Emoji}", match.ReactionEmoji);
+					Log.Error("{EX}", ex.Message);
+				}
+			else
+				await channel.SendMessageAsync(match.ReactionMessage);
+		}
+	}
 }

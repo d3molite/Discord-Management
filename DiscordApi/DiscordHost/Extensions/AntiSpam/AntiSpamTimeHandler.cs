@@ -1,6 +1,7 @@
 ﻿using System.Globalization;
 using System.Resources;
 using System.Timers;
+using System.Web.Http.ModelBinding.Binders;
 using Discord;
 using Discord.WebSocket;
 using DiscordApi.DiscordHost.Extensions.Base;
@@ -43,6 +44,8 @@ public class AntiSpamTimeHandler : ClientExtension
 
     private string MessageContent { get; set; }
     private Dictionary<string, List<string>> Deleted { get; } = new();
+
+    private Dictionary<string, List<string>> Failed { get; } = new();
 
     public bool Finished { get; set; }
 
@@ -124,17 +127,37 @@ public class AntiSpamTimeHandler : ClientExtension
 
         foreach (var kvp in Queue.GetGroupedByChannels())
         {
-            MessageContent = kvp.Value.First().Content;
-            await kvp.Key.DeleteMessagesAsync(kvp.Value);
+            try
+            {
+                MessageContent = kvp.Value.First().Content;
+                await kvp.Key.DeleteMessagesAsync(kvp.Value);
 
-            if (Deleted.ContainsKey(kvp.Key.Name))
-            {
-                Deleted[kvp.Key.Name].AddRange(kvp.Value.Select(x => x.Content).ToList());
+                if (Deleted.ContainsKey(kvp.Key.Name))
+                {
+                    Deleted[kvp.Key.Name].AddRange(kvp.Value.Select(x => x.Content).ToList());
+                }
+                else
+                {
+                    Deleted.Add(kvp.Key.Name, kvp.Value.Select(x => x.Content).ToList());
+                }
+                
+                
             }
-            else
+            catch (Exception ex)
             {
-                Deleted.Add(kvp.Key.Name, kvp.Value.Select(x => x.Content).ToList());
+                Log.Error("Could not delete. {ex}", ex);
+                Log.Error("Could not delete Message {content} in {channel}", MessageContent, kvp.Key);
+
+                if (Failed.ContainsKey(kvp.Key.Name))
+                {
+                    Failed[kvp.Key.Name].AddRange(kvp.Value.Select(x => x.Content).ToList());
+                }
+                else
+                {
+                    Failed.Add(kvp.Key.Name, kvp.Value.Select(x => x.Content).ToList());
+                }
             }
+            
         }
 
         await CleanUp();
@@ -201,6 +224,12 @@ public class AntiSpamTimeHandler : ClientExtension
         };
 
         foreach (var kvp in Deleted) embed.AddField(kvp.Key + ":", string.Join(Environment.NewLine, kvp.Value));
+
+        if (Deleted.Any())
+        {
+            embed.AddField("Failed for the following messages:", " ");
+            foreach (var kvp in Failed) embed.AddField(kvp.Key + ":", string.Join(Environment.NewLine, kvp.Value));
+        }
 
         return embed.Build();
     }

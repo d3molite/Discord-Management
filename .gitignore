@@ -16,3 +16,7 @@ build/Credentials.cs
 DiscordApi/REST/Auth.json
 
 *.db
+
+*.db-shm
+
+*.db-wal
