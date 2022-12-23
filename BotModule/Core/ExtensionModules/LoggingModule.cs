@@ -1,4 +1,5 @@
-﻿using BotModule.Extensions.Logging;
+﻿using BotModule.DI;
+using BotModule.Extensions.Logging;
 using Discord;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
@@ -11,7 +12,8 @@ public sealed partial class DiscordBot
     {
         Log.Debug("Loaded Logging Module for {BotName} in {GuildName}", Name, guild.Name);
         var loggingProvider = _serviceProvider.GetRequiredService<ILoggingProvider>();
-        var loggingExtension = new LoggingExtension(_client, Name);
+        var languageProvider = _serviceProvider.GetRequiredService<ILanguageProvider>();
+        var loggingExtension = new LoggingExtension(_client, Name, languageProvider);
 
         var info = new LoggingInfo(guild, loggingExtension);
 

@@ -18,7 +18,7 @@ public sealed class AntiSpamExtension : ClientExtension
 
     public AntiSpamExtension(DiscordSocketClient client, string botName, ILoggingProvider logger,
         ILanguageProvider provider) : base(client,
-        botName)
+        botName, provider)
     {
         Client.MessageReceived += CheckForSpam;
         _logger = logger;

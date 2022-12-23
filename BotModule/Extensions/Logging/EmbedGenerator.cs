@@ -15,9 +15,11 @@ public static class EmbedGenerator
         embed.AddField(title, message);
 
         if (attachments != null)
-            embed.AddField(
-                "Attachments",
-                attachments);
+            foreach (var attachment in attachments)
+                embed.AddField(
+                    "Attachments",
+                    attachment);
+
 
         return embed.Build();
     }

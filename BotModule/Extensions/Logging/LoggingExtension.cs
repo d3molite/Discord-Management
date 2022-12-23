@@ -1,17 +1,24 @@
-﻿using BotModule.Extensions.Base;
+﻿using BotModule.DI;
+using BotModule.Extensions.Base;
 using DB.Repositories;
 using Discord;
 using Discord.WebSocket;
 
 namespace BotModule.Extensions.Logging;
 
-public class LoggingExtension : ClientExtension, ILoggingExtension
+public sealed partial class LoggingExtension : ClientExtension, ILoggingExtension
 {
     private bool _active = true;
+    private ILanguageProvider _languageProvider;
 
-    public LoggingExtension(DiscordSocketClient client, string botName)
-        : base(client, botName)
+    public LoggingExtension(DiscordSocketClient client, string botName, ILanguageProvider languageProvider)
+        : base(client, botName, languageProvider)
     {
+        _languageProvider = languageProvider;
+        client.MessageDeleted += LogMessageDeleted;
+        client.UserBanned += LogUserBanned;
+        client.UserLeft += LogUserLeft;
+        client.UserJoined += LogUserJoined;
     }
 
     /// <inheritdoc />

@@ -109,4 +109,8 @@
         <ProjectReference Include="..\ProcessProvider\ProcessProvider.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="DiscordHost\Extensions\Logging" />
+    </ItemGroup>
+
 </Project>
