@@ -13,97 +13,103 @@ namespace BotModule.Core;
 
 public sealed partial class DiscordBot
 {
-	private readonly DiscordSocketClient _client;
+    private readonly DiscordSocketClient _client;
 
-	private readonly DiscordSocketConfig _config = new()
-		{MessageCacheSize = 100, GatewayIntents = GatewayIntents.All, UseInteractionSnowflakeDate = false};
+    private readonly DiscordSocketConfig _config = new()
+        { MessageCacheSize = 100, GatewayIntents = GatewayIntents.All, UseInteractionSnowflakeDate = false };
 
-	private readonly InteractionService _interactionService;
-	private readonly IServiceProvider _serviceProvider;
-	private Bot _botModel;
+    private readonly InteractionService _interactionService;
+    private readonly IServiceProvider _serviceProvider;
+    private Bot _botModel;
 
-	public DiscordBot(Bot botModel, IServiceProvider serviceProvider)
-	{
-		_botModel = botModel;
-		_serviceProvider = serviceProvider;
-		_client = new DiscordSocketClient(_config);
-		_interactionService = new InteractionService(_client);
-	}
+    public DiscordBot(Bot botModel, IServiceProvider serviceProvider)
+    {
+        _botModel = botModel;
+        _serviceProvider = serviceProvider;
+        _client = new DiscordSocketClient(_config);
+        _interactionService = new InteractionService(_client);
+    }
 
-	public string Name => _botModel.Name;
+    public string Name => _botModel.Name;
 
-	public async Task StartBot()
-	{
-		_client.Ready += async () =>
-		{
-			_botModel = BotRepository.UpdateSnowFlake(_botModel.Id, _client.CurrentUser.Id);
+    public async Task StartBot()
+    {
+        _client.Ready += async () =>
+        {
+            _botModel = BotRepository.UpdateSnowFlake(_botModel.Id, _client.CurrentUser.Id);
 
-			if (_botModel.Configs == null)
-			{
-				Log.Debug("No Guild Configurations present for {ClientName}", _botModel.Name);
-				return;
-			}
+            if (_botModel.Configs == null)
+            {
+                Log.Debug("No Guild Configurations present for {ClientName}", _botModel.Name);
+                return;
+            }
 
-			await CreateExtensions();
-			await RegisterLanguages();
-			await LoadModules();
-			await UpdatePresence(_botModel.Presence);
-		};
+            await CreateExtensions();
+            await RegisterLanguages();
+            await LoadModules();
+            await UpdatePresence(_botModel.Presence);
+        };
 
-		await _client.LoginAsync(TokenType.Bot, _botModel.Token);
-		await _client.StartAsync();
-	}
+        await _client.LoginAsync(TokenType.Bot, _botModel.Token);
+        await _client.StartAsync();
+    }
 
-	public async Task StopBot()
-	{
-		await _client.LogoutAsync();
-		await _client.StopAsync();
-	}
+    public async Task StopBot()
+    {
+        await _client.LogoutAsync();
+        await _client.StopAsync();
+    }
 
-	private async Task LoadModules()
-	{
-		Log.Information("Loading Extensions for {ClientName}", _botModel.Name);
+    private async Task LoadModules()
+    {
+        Log.Information("Loading Extensions for {ClientName}", _botModel.Name);
 
-		foreach (var config in _botModel.Configs!)
-		{
-			var guild = _client.GetGuild(config.LinkedGuild.Snowflake);
+        foreach (var config in _botModel.Configs!)
+        {
+            var guild = _client.GetGuild(config.LinkedGuild.Snowflake);
 
-			if (guild == null)
-			{
-				Log.Error("Could not fetch guild for Snowflake: {Snowflake}", config.LinkedGuild.Snowflake);
-				continue;
-			}
+            if (guild == null)
+            {
+                Log.Error("Could not fetch guild for Snowflake: {Snowflake}", config.LinkedGuild.Snowflake);
+                continue;
+            }
 
-			if (config.FeedbackConfig != null)
-				await LoadFeedbackModule(guild);
-		}
-	}
+            if (config.FeedbackConfig != null)
+                await LoadFeedbackModule(guild);
 
-	private async Task RegisterLanguages()
-	{
-		Log.Information("Registering Language configs for {ClientName}", _botModel.Name);
+            if (config.AntiSpamConfig != null)
+                LoadAntiSpamModule(guild);
 
-		var languageProvider = _serviceProvider.GetRequiredService<ILanguageProvider>();
+            if (config.LoggingConfig != null)
+                LoadLoggingModule(guild);
+        }
+    }
 
-		foreach (var config in _botModel.Configs!)
-		{
-			languageProvider.Register(new LanguageInfo(config.LinkedGuild.Snowflake, _client.CurrentUser.Id,
-				LanguageProvider.GetCultureFromString(config.LinkedGuild.DefaultLanguage)));
+    private async Task RegisterLanguages()
+    {
+        Log.Information("Registering Language configs for {ClientName}", _botModel.Name);
 
-			Log.Debug("Registered {ClientName} - {GuildName} - {Language}", _botModel.Name, config.LinkedGuild.Name,
-				config.LinkedGuild.DefaultLanguage);
-		}
-	}
+        var languageProvider = _serviceProvider.GetRequiredService<ILanguageProvider>();
 
-	private async Task CreateExtensions()
-	{
-		Log.Information("Creating Extensions");
-		await _interactionService.AddModuleAsync<FeedbackExtension>(_serviceProvider);
+        foreach (var config in _botModel.Configs!)
+        {
+            languageProvider.Register(new LanguageInfo(config.LinkedGuild.Snowflake, _client.CurrentUser.Id,
+                LanguageProvider.GetCultureFromString(config.LinkedGuild.DefaultLanguage)));
 
-		_client.InteractionCreated += async interaction =>
-		{
-			var ctx = new SocketInteractionContext(_client, interaction);
-			await _interactionService.ExecuteCommandAsync(ctx, _serviceProvider);
-		};
-	}
+            Log.Debug("Registered {ClientName} - {GuildName} - {Language}", _botModel.Name, config.LinkedGuild.Name,
+                config.LinkedGuild.DefaultLanguage);
+        }
+    }
+
+    private async Task CreateExtensions()
+    {
+        Log.Information("Creating Extensions");
+        await _interactionService.AddModuleAsync<FeedbackExtension>(_serviceProvider);
+
+        _client.InteractionCreated += async interaction =>
+        {
+            var ctx = new SocketInteractionContext(_client, interaction);
+            await _interactionService.ExecuteCommandAsync(ctx, _serviceProvider);
+        };
+    }
 }

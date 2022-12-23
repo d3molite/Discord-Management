@@ -7,53 +7,74 @@ namespace DB;
 
 public class ApiDbContext : DbContext
 {
-	public ApiDbContext(DbContextOptions options) : base(options)
-	{
-	}
+    public ApiDbContext(DbContextOptions options) : base(options)
+    {
+    }
 
-	public DbSet<Bot> Bots { get; set; } = null!;
-	public DbSet<GuildConfig> GuildConfigs { get; set; } = null!;
-	public DbSet<FeedbackConfig> FeedbackConfigs { get; set; } = null!;
+    public DbSet<Bot> Bots { get; set; } = null!;
+    public DbSet<GuildConfig> GuildConfigs { get; set; } = null!;
+    public DbSet<FeedbackConfig> FeedbackConfigs { get; set; } = null!;
 
-	public static ApiDbContext Get()
-	{
-		var optionsBuilder = new DbContextOptionsBuilder<ApiDbContext>();
-		optionsBuilder.UseSqlite("Data Source=ApiDb.db");
-		return new ApiDbContext(optionsBuilder.Options);
-	}
+    public DbSet<AntiSpamConfig> AntiSpamConfigs { get; set; }
 
-	protected override void OnModelCreating(ModelBuilder modelBuilder)
-	{
-		modelBuilder.Entity<GuildConfig>()
-			.Navigation(x => x.LinkedGuild)
-			.AutoInclude();
+    public static ApiDbContext Get()
+    {
+        var optionsBuilder = new DbContextOptionsBuilder<ApiDbContext>();
+        optionsBuilder.UseSqlite("Data Source=ApiDb.db");
+        return new ApiDbContext(optionsBuilder.Options);
+    }
 
-		modelBuilder.Entity<GuildConfig>()
-			.Navigation(x => x.FeedbackConfig)
-			.AutoInclude();
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        // CONFIGS
+        // GUILD
+        modelBuilder.Entity<GuildConfig>()
+            .Navigation(x => x.LinkedGuild)
+            .AutoInclude();
 
-		modelBuilder.Entity<GuildConfig>()
-			.Navigation(x => x.FaqConfig)
-			.AutoInclude();
+        modelBuilder.Entity<GuildConfig>()
+            .Navigation(x => x.FeedbackConfig)
+            .AutoInclude();
 
-		modelBuilder.Entity<GuildConfig>()
-			.Navigation(x => x.LoggingConfig)
-			.AutoInclude();
+        modelBuilder.Entity<GuildConfig>()
+            .Navigation(x => x.FaqConfig)
+            .AutoInclude();
 
-		modelBuilder.Entity<FeedbackConfig>()
-			.Navigation(x => x.TargetChannel)
-			.AutoInclude();
+        modelBuilder.Entity<GuildConfig>()
+            .Navigation(x => x.LoggingConfig)
+            .AutoInclude();
 
-		modelBuilder.Entity<FaqConfig>()
-			.Navigation(x => x.FaqItems)
-			.AutoInclude();
+        modelBuilder.Entity<GuildConfig>()
+            .Navigation(x => x.AntiSpamConfig)
+            .AutoInclude();
 
-		modelBuilder.Entity<GuildChannel>()
-			.Navigation(x => x.LinkedGuild)
-			.AutoInclude();
+        // FEEDBACK
+        modelBuilder.Entity<FeedbackConfig>()
+            .Navigation(x => x.TargetChannel)
+            .AutoInclude();
 
-		modelBuilder.Entity<Bot>()
-			.Navigation(x => x.Configs)
-			.AutoInclude();
-	}
+        // FAQ
+        modelBuilder.Entity<FaqConfig>()
+            .Navigation(x => x.FaqItems)
+            .AutoInclude();
+
+        // ANTISPAM
+        modelBuilder.Entity<AntiSpamConfig>()
+            .Navigation(x => x.MutedRole)
+            .AutoInclude();
+
+        // LOGGING
+        modelBuilder.Entity<LoggingConfig>()
+            .Navigation(x => x.LoggingChannel)
+            .AutoInclude();
+
+        // OBJECTS
+        modelBuilder.Entity<GuildChannel>()
+            .Navigation(x => x.LinkedGuild)
+            .AutoInclude();
+
+        modelBuilder.Entity<Bot>()
+            .Navigation(x => x.Configs)
+            .AutoInclude();
+    }
 }

@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace DiscordApi.Resources.Extensions {
+namespace Strings.Resources {
     using System;
     
     

@@ -2,12 +2,12 @@
 
 namespace BotModule.Extensions.Base;
 
-public class ClientExtension : Extension
+public class ClientExtension : Extension, IClientExtension
 {
-	public ClientExtension(DiscordSocketClient client, string botName) : base(botName)
-	{
-		Client = client;
-	}
+    public ClientExtension(DiscordSocketClient client, string botName) : base(botName)
+    {
+        Client = client;
+    }
 
-	public DiscordSocketClient Client { get; }
+    public DiscordSocketClient Client { get; }
 }
