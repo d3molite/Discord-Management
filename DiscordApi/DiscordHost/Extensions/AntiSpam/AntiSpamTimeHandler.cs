@@ -1,7 +1,6 @@
 ﻿using System.Globalization;
 using System.Resources;
 using System.Timers;
-using System.Web.Http.ModelBinding.Binders;
 using Discord;
 using Discord.WebSocket;
 using DiscordApi.DiscordHost.Extensions.Base;
@@ -66,7 +65,6 @@ public class AntiSpamTimeHandler : ClientExtension
             var culture = new CultureInfo(LocalizationService.GetLocale(BotName, Guild.Id));
 
             if (role != null)
-            {
                 await _logger.SendCustomLogMessage(
                     " ",
                     _logger.GenerateEmbed(
@@ -77,9 +75,7 @@ public class AntiSpamTimeHandler : ClientExtension
                             User.Id.ToString()),
                         Color.DarkRed
                     ), c.LoggingChannelID);
-            }
             else
-            {
                 await _logger.SendCustomLogMessage(
                     " ",
                     _logger.GenerateEmbed(
@@ -90,7 +86,6 @@ public class AntiSpamTimeHandler : ClientExtension
                             User.Id),
                         Color.DarkRed
                     ), c.LoggingChannelID);
-            }
 
             await _logger.SendCustomLogMessage(
                 " ",
@@ -126,22 +121,15 @@ public class AntiSpamTimeHandler : ClientExtension
         _logger.Pause();
 
         foreach (var kvp in Queue.GetGroupedByChannels())
-        {
             try
             {
                 MessageContent = kvp.Value.First().Content;
                 await kvp.Key.DeleteMessagesAsync(kvp.Value);
 
                 if (Deleted.ContainsKey(kvp.Key.Name))
-                {
                     Deleted[kvp.Key.Name].AddRange(kvp.Value.Select(x => x.Content).ToList());
-                }
                 else
-                {
                     Deleted.Add(kvp.Key.Name, kvp.Value.Select(x => x.Content).ToList());
-                }
-                
-                
             }
             catch (Exception ex)
             {
@@ -149,18 +137,12 @@ public class AntiSpamTimeHandler : ClientExtension
                 Log.Error("Could not delete Message {content} in {channel}", MessageContent, kvp.Key);
 
                 if (Failed.ContainsKey(kvp.Key.Name))
-                {
                     Failed[kvp.Key.Name].AddRange(kvp.Value.Select(x => x.Content).ToList());
-                }
                 else
-                {
                     Failed.Add(kvp.Key.Name, kvp.Value.Select(x => x.Content).ToList());
-                }
             }
-            
-        }
 
-        await CleanUp();
+        // await CleanUp();
 
         Thread.Sleep(100);
 
@@ -196,13 +178,9 @@ public class AntiSpamTimeHandler : ClientExtension
                     await message.DeleteAsync();
 
                     if (Deleted.ContainsKey(channel.Name))
-                    {
                         Deleted[channel.Name].Add(message.Content);
-                    }
                     else
-                    {
                         Deleted.Add(channel.Name, new List<string> { message.Content });
-                    }
                 }
             }
             catch (Exception ex)
@@ -225,11 +203,11 @@ public class AntiSpamTimeHandler : ClientExtension
 
         foreach (var kvp in Deleted) embed.AddField(kvp.Key + ":", string.Join(Environment.NewLine, kvp.Value));
 
-        if (Deleted.Any())
-        {
-            embed.AddField("Failed for the following messages:", " ");
-            foreach (var kvp in Failed) embed.AddField(kvp.Key + ":", string.Join(Environment.NewLine, kvp.Value));
-        }
+        // if (Deleted.Any())
+        // {
+        //     embed.AddField("Failed for the following messages:", " ");
+        //     foreach (var kvp in Failed) embed.AddField(kvp.Key + ":", string.Join(Environment.NewLine, kvp.Value));
+        // }
 
         return embed.Build();
     }

@@ -40,21 +40,24 @@ public class AntiSpamExtension : ClientExtension
 
         if (TryGetConfig<AntiSpamConfig>(guild.Id, out var config))
         {
-            if (config.IgnorePrefixes != null)
+            // see if a spam cleaner for this user in this guild is already runnning
+            if (_spamTimeHandlers.Any(x => x.User == user && x.Guild == guild))
             {
+                var cleaner = _spamTimeHandlers.First(x => x.User == user);
+                RestartAndInsert(cleaner, message);
+                return;
+            }
+
+            if (config.IgnorePrefixes != null)
                 try
                 {
                     var pfx = config.IgnorePrefixes.Split(",");
-                    if (!pfx.Any(x => message.Content.StartsWith(x)))
-                    {
-                        _messages.InsertIntoQueue(message, guild);
-                    }
+                    if (!pfx.Any(x => message.Content.StartsWith(x))) _messages.InsertIntoQueue(message, guild);
                 }
                 catch
                 {
                     Log.Debug("Could not split prefixes.");
                 }
-            }
 
             else _messages.InsertIntoQueue(message, guild);
 
@@ -85,6 +88,13 @@ public class AntiSpamExtension : ClientExtension
                 }
             }
         }
+    }
+
+    private void RestartAndInsert(AntiSpamTimeHandler cleaner, SocketMessage message)
+    {
+        cleaner.Queue.ForceEnqueue(message);
+        cleaner.Restart();
+        Log.Verbose("Restarted Handler for {User}", message.Author.Username);
     }
 
     private void RemoveHandler(object? sender, EventArgs e)
