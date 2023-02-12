@@ -10,7 +10,8 @@ public static class ResourceLookup
     {
         Feedback,
         AntiSpam,
-        Logging
+        Logging,
+        Modnote
     }
 
     private static readonly ResourceManager FeedbackManager = new(typeof(FeedbackResources));
@@ -19,6 +20,8 @@ public static class ResourceLookup
 
     private static readonly ResourceManager LoggingManager = new(typeof(LoggingResources));
 
+    private static readonly ResourceManager ModnoteManager = new(typeof(ModnoteResources));
+
     public static string? GetResourceString(ResourceGroup group, string name, CultureInfo? culture)
     {
         return group switch
@@ -26,6 +29,7 @@ public static class ResourceLookup
             ResourceGroup.Feedback => FeedbackManager.GetString(name, culture),
             ResourceGroup.AntiSpam => AntiSpamManager.GetString(name, culture),
             ResourceGroup.Logging => LoggingManager.GetString(name, culture),
+            ResourceGroup.Modnote => ModnoteManager.GetString(name, culture),
             _ => throw new ArgumentOutOfRangeException(nameof(group), group, null)
         };
     }

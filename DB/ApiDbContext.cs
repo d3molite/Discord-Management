@@ -1,6 +1,7 @@
 ﻿using DB.Models;
 using DB.Models.Configs;
 using DB.Models.Configs.Extensions;
+using DB.Models.Objects;
 using Microsoft.EntityFrameworkCore;
 
 namespace DB;
@@ -12,10 +13,17 @@ public class ApiDbContext : DbContext
     }
 
     public DbSet<Bot> Bots { get; set; } = null!;
+    public DbSet<User> Users { get; set; } = null!;
+    public DbSet<Guild> Guilds { get; set; } = null!;
+
+    public DbSet<Modnote> Modnotes { get; set; } = null!;
     public DbSet<GuildConfig> GuildConfigs { get; set; } = null!;
     public DbSet<FeedbackConfig> FeedbackConfigs { get; set; } = null!;
 
-    public DbSet<AntiSpamConfig> AntiSpamConfigs { get; set; }
+    public DbSet<AntiSpamConfig> AntiSpamConfigs { get; set; } = null!;
+
+    public DbSet<ModnoteConfig> ModnoteConfigs { get; set; } = null!;
+
 
     public static ApiDbContext Get()
     {
@@ -46,6 +54,10 @@ public class ApiDbContext : DbContext
 
         modelBuilder.Entity<GuildConfig>()
             .Navigation(x => x.AntiSpamConfig)
+            .AutoInclude();
+
+        modelBuilder.Entity<GuildConfig>()
+            .Navigation(x => x.ModnoteConfig)
             .AutoInclude();
 
         // FEEDBACK

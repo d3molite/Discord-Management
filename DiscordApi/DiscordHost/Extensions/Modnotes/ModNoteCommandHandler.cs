@@ -72,14 +72,10 @@ public class ModNoteCommandHandler : InteractionModuleBase
         if (id >= 0)
         {
             if (ModNoteRepository.Delete(user.Guild.Id, user.Id, id))
-            {
                 await RespondAsync($"Deleted Note {id} for {user}");
-            }
 
             else
-            {
                 await RespondAsync($"No ModNote at {id} for {user}");
-            }
         }
         else
         {

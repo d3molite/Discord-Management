@@ -10,4 +10,6 @@ public class ModuleState : IModuleState
     }
 
     public Dictionary<Guid, SocketGuildUser> FeedbackCommandState { get; set; }
+
+    public Dictionary<Guid, SocketGuildUser> ModnoteCommandState { get; set; }
 }

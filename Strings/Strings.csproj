@@ -19,6 +19,10 @@
         <Generator>ResXFileCodeGenerator</Generator>
         <LastGenOutput>FeedbackResources.Designer.cs</LastGenOutput>
       </EmbeddedResource>
+      <EmbeddedResource Update="Resources\ModnoteResources.resx">
+        <Generator>ResXFileCodeGenerator</Generator>
+        <LastGenOutput>ModnoteResources.Designer.cs</LastGenOutput>
+      </EmbeddedResource>
     </ItemGroup>
 
     <ItemGroup>
@@ -36,6 +40,11 @@
         <DesignTime>True</DesignTime>
         <AutoGen>True</AutoGen>
         <DependentUpon>FeedbackResources.resx</DependentUpon>
+      </Compile>
+      <Compile Update="Resources\ModnoteResources.Designer.cs">
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+        <DependentUpon>ModnoteResources.resx</DependentUpon>
       </Compile>
     </ItemGroup>
 

@@ -1,5 +1,6 @@
 ﻿using BotModule.DI;
 using BotModule.Extensions.Feedback;
+using BotModule.Extensions.Modnotes;
 using DB.Models;
 using DB.Repositories;
 using Discord;
@@ -82,6 +83,9 @@ public sealed partial class DiscordBot
 
             if (config.LoggingConfig != null)
                 LoadLoggingModule(guild);
+
+            if (config.ModnoteConfig != null)
+                await LoadModnoteModule(guild);
         }
     }
 
@@ -105,6 +109,7 @@ public sealed partial class DiscordBot
     {
         Log.Information("Creating Extensions");
         await _interactionService.AddModuleAsync<FeedbackExtension>(_serviceProvider);
+        await _interactionService.AddModuleAsync<ModnoteExtension>(_serviceProvider);
 
         _client.InteractionCreated += async interaction =>
         {
