@@ -31,6 +31,7 @@ public class ModnoteExtension : InteractionModuleBase
         _loggingProvider = loggingProvider;
     }
 
+    [DefaultMemberPermissions(GuildPermission.ManageMessages)]
     [SlashCommand("modnotes", "Add, Show, or Remove Modnotes.")]
     public async Task ModnoteCommand(SocketGuildUser user, ModnoteCommandType type, int id = 0)
     {
@@ -40,14 +41,6 @@ public class ModnoteExtension : InteractionModuleBase
         {
             await RespondAsync(
                 _languageProvider.GetResource(Context, ResourceLookup.ResourceGroup.Modnote, "error_not_enabled"));
-            return;
-        }
-
-        if (Context.User is SocketGuildUser contextUser && contextUser.Hierarchy >= config.MinimumHierarchy)
-        {
-            await RespondAsync(
-                _languageProvider.GetResource(Context, ResourceLookup.ResourceGroup.Modnote,
-                    "error_missing_permissions"));
             return;
         }
 
@@ -184,11 +177,25 @@ public class ModnoteExtension : InteractionModuleBase
         var logger = _loggingProvider.Retrieve((DiscordSocketClient)Context.Client, Context.Guild);
         if (logger == null) return;
 
+        var loggingInfo = new Dictionary<string, string>();
+
         var title = _languageProvider.GetResource(Context, ResourceLookup.ResourceGroup.Modnote, "modnote_log_title");
-        title = string.Format(title, Context.User.GetDiscriminatedUser(), Context.User.Id, user.GetDiscriminatedUser(),
+
+        var message =
+            _languageProvider.GetResource(Context, ResourceLookup.ResourceGroup.Modnote, "modnote_log_message");
+
+        message = string.Format(message, Context.User.GetDiscriminatedUser(), Context.User.Id,
+            user.GetDiscriminatedUser(),
             user.Id);
 
-        await logger.LogToDefaultChannel(" ", EmbedGenerator.GenerateLoggingEmbed(title, note), Context.Guild.Id);
+        var titleTwo =
+            _languageProvider.GetResource(Context, ResourceLookup.ResourceGroup.Modnote, "modnote_log_message_title");
+
+        loggingInfo.Add(title, message);
+        loggingInfo.Add(titleTwo, note);
+
+        await logger.LogToDefaultChannel(" ", EmbedGenerator.GenerateLoggingEmbed(loggingInfo),
+            Context.Guild.Id);
     }
 
     public class ModnoteModal : IModal

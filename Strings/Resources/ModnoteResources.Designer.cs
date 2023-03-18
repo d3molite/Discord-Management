@@ -98,6 +98,24 @@ namespace Strings.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Modnote created by {0} &lt;@{1}&gt; for  {2} &lt;@{3}&gt;..
         /// </summary>
+        internal static string modnote_log_message {
+            get {
+                return ResourceManager.GetString("modnote_log_message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Content.
+        /// </summary>
+        internal static string modnote_log_message_title {
+            get {
+                return ResourceManager.GetString("modnote_log_message_title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to New Modnote.
+        /// </summary>
         internal static string modnote_log_title {
             get {
                 return ResourceManager.GetString("modnote_log_title", resourceCulture);

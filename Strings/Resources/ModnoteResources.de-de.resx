@@ -24,9 +24,6 @@
     <data name="modnote_created" xml:space="preserve">
         <value>Modnote für Nutzer {0} &lt;@{1}&gt; wurde erstellt.</value>
     </data>
-    <data name="modnote_log_title" xml:space="preserve">
-        <value>Modnote wurde von {0} &lt;@{1}&gt; für  {2} &lt;@{3}&gt; erstellt.</value>
-    </data>
     <data name="error_id_mismatch" xml:space="preserve">
         <value>Modnote an Position {0} für Nutzer {1} existiert nicht.</value>
     </data>
@@ -35,5 +32,14 @@
     </data>
     <data name="modnote_view_title" xml:space="preserve">
         <value>Modnote {0} für {1} - erfasst von {2} am {3}.</value>
+    </data>
+    <data name="modnote_log_message" xml:space="preserve">
+        <value>Modnote wurde von {0} &lt;@{1}&gt; für  {2} &lt;@{3}&gt; erstellt.</value>
+    </data>
+    <data name="modnote_log_title" xml:space="preserve">
+        <value>Neue Modnote</value>
+    </data>
+    <data name="modnote_log_message_title" xml:space="preserve">
+        <value>Inhalt</value>
     </data>
 </root>

@@ -33,7 +33,7 @@
     <data name="modnote_created" xml:space="preserve">
         <value>Modnote created for user {0} &lt;@{1}&gt;.</value>
     </data>
-    <data name="modnote_log_title" xml:space="preserve">
+    <data name="modnote_log_message" xml:space="preserve">
         <value>Modnote created by {0} &lt;@{1}&gt; for  {2} &lt;@{3}&gt;.</value>
     </data>
     <data name="error_id_mismatch" xml:space="preserve">
@@ -44,5 +44,11 @@
     </data>
     <data name="modnote_view_title" xml:space="preserve">
         <value>Modnote {0} for {1} - logged by {2} on {3}.</value>
+    </data>
+    <data name="modnote_log_title" xml:space="preserve">
+        <value>New Modnote</value>
+    </data>
+    <data name="modnote_log_message_title" xml:space="preserve">
+        <value>Content</value>
     </data>
 </root>

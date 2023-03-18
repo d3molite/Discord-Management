@@ -40,6 +40,9 @@ public class ModnoteRepository
 
         try
         {
+            db.Users.Attach(user);
+            db.Users.Attach(author);
+            db.Guilds.Attach(guild);
             db.SaveChanges();
             return true;
         }
