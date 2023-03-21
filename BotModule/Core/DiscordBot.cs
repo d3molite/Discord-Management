@@ -92,6 +92,8 @@ public sealed partial class DiscordBot
 
             if (config.VoiceConfig != null)
                 await LoadVoiceChannelModule(guild, config.VoiceConfig);
+
+            await RegisterModules(guild);
         }
     }
 

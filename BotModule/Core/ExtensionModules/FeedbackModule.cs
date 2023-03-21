@@ -12,6 +12,6 @@ public sealed partial class DiscordBot
 
         var feedbackModule = _interactionService.Modules.First(x => x.Name == nameof(FeedbackExtension));
 
-        await _interactionService.AddModulesToGuildAsync(guild, true, feedbackModule);
+        _modules.Add(feedbackModule);
     }
 }

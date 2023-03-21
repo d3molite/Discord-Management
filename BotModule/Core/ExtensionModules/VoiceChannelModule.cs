@@ -23,6 +23,6 @@ public sealed partial class DiscordBot
         _voiceChannelExtension = new VoiceChannelExtension(_botModel.Name, _client, languageProvider, moduleState, config);
 
         var voiceModule = _interactionService.Modules.First(x => x.Name == nameof(VoiceChannelCommandHandler));
-        await _interactionService.AddModulesToGuildAsync(guild, true, voiceModule);
+        _modules.Add(voiceModule);
     }
 }

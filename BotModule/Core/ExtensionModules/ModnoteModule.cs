@@ -11,6 +11,6 @@ public sealed partial class DiscordBot
         Log.Information("Loaded Modnote Module for {BotName} in {GuildName}", Name, guild.Name);
 
         var modnoteModule = _interactionService.Modules.First(x => x.Name == nameof(ModnoteExtension));
-        await _interactionService.AddModulesToGuildAsync(guild, true, modnoteModule);
+        _modules.Add(modnoteModule);
     }
 }
