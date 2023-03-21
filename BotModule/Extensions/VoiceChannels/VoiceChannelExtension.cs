@@ -28,6 +28,42 @@ public class VoiceChannelExtension : ClientExtension
         _timer = new PeriodicTimer(TimeSpan.FromMinutes(1));
 
         Task.Run(async () => await PollChannels());
+    }
+
+    private async Task PollChannels()
+    {
+        var guild = Client.GetGuild(_config.Category.LinkedGuild.Snowflake);
+        var category = guild.GetCategoryChannel(_config.Category.Snowflake);
+
+        Log.Debug("Polling Channels for {BotName} in {Guild}", BotName, guild.Name);
+
+        if (_config.RestrictedChannel is not null)
+        {
+            _loggingChannel = await Client.GetChannelAsync(_config.RestrictedChannel!.Snowflake)
+                as SocketTextChannel ?? throw new InvalidOperationException();
+        }
+        else
+        {
+            var config = LoggingConfigRepository.Get(guild.Id)!;
+
+            _loggingChannel = await Client.GetChannelAsync(config.LoggingChannel.Snowflake)
+                as SocketTextChannel ?? throw new InvalidOperationException();
+        }
+
+        Log.Debug("Logging for {BotName} in {Chanel}", BotName, _loggingChannel.Name);
+
+        foreach (var channel in category.Channels)
+            if (channel.Name.StartsWith("["))
+                _moduleState.VoiceChannelStates.Add(new VoiceChannelState
+                {
+                    BotId = Client.CurrentUser.Id,
+                    UsersPresent = true,
+                    Channel = (channel as SocketVoiceChannel)!
+                });
+
+        foreach (var state in _moduleState.VoiceChannelStates)
+            Log.Debug("Found {ChannelName}", state.Channel.Name);
+
         Task.Run(async () => await RunPeriodicChecks());
     }
 
@@ -75,40 +111,5 @@ public class VoiceChannelExtension : ClientExtension
 
             foreach (var channelInfo in removed) _moduleState.VoiceChannelStates.Remove(channelInfo);
         }
-    }
-
-    private async Task PollChannels()
-    {
-        var guild = Client.GetGuild(_config.Category.LinkedGuild.Snowflake);
-        var category = guild.GetCategoryChannel(_config.Category.Snowflake);
-
-        Log.Debug("Polling Channels for {BotName} in {Guild}", BotName, guild.Name);
-
-        if (_config.RestrictedChannel is not null)
-        {
-            _loggingChannel = await Client.GetChannelAsync(_config.RestrictedChannel!.Snowflake)
-                as SocketTextChannel ?? throw new InvalidOperationException();
-        }
-        else
-        {
-            var config = LoggingConfigRepository.Get(guild.Id)!;
-
-            _loggingChannel = await Client.GetChannelAsync(config.LoggingChannel.Snowflake)
-                as SocketTextChannel ?? throw new InvalidOperationException();
-        }
-
-        Log.Debug("Logging for {BotName} in {Chanel}", BotName, _loggingChannel.Name);
-
-        foreach (var channel in category.Channels)
-            if (channel.Name.StartsWith("["))
-                _moduleState.VoiceChannelStates.Add(new VoiceChannelState
-                {
-                    BotId = Client.CurrentUser.Id,
-                    UsersPresent = true,
-                    Channel = (channel as SocketVoiceChannel)!
-                });
-
-        foreach (var state in _moduleState.VoiceChannelStates)
-            Log.Debug("Found {ChannelName}", state.Channel.Name);
     }
 }

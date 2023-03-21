@@ -94,13 +94,14 @@ public class VoiceChannelCommandHandler : InteractionModuleBase
                 if (maxUsers > 0) properties.UserLimit = maxUsers;
             });
 
+        var socketChannel = await guild.GetVoiceChannelAsync(channel.Id);
 
         _moduleState.VoiceChannelStates.Add(
             new VoiceChannelState
             {
                 BotId = botId,
                 UsersPresent = true,
-                Channel = (channel as SocketVoiceChannel)!
+                Channel = (socketChannel as SocketVoiceChannel)!
             });
 
         return channel;
