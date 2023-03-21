@@ -34,7 +34,7 @@
         <value>This command can only be used in &lt;#{0}&gt;.</value>
     </data>
     <data name="voice_created" xml:space="preserve">
-        <value>Channel {0} &lt;#{1}&gt; has been created!</value>
+        <value>Channel **{0}** has been created! \nTap &lt;#{1}&gt; to join.</value>
     </data>
     <data name="channel_deleted" xml:space="preserve">
         <value>Channel **{0}** has been deleted due to inactivity.</value>

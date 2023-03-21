@@ -63,7 +63,7 @@ public class VoiceChannelCommandHandler : InteractionModuleBase
         var message = _languageProvider.GetResource(Context, ResourceLookup.ResourceGroup.Voice,
             "voice_created");
 
-        message = string.Format(message, channel.Name, channel.Id);
+        message = string.Format(message, channel.Name, channel.Id).Replace("\\n", Environment.NewLine);
 
         await FollowupAsync(message);
     }

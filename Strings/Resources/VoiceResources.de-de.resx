@@ -25,7 +25,7 @@
         <value>Dieser Befehl kann nur in &lt;#{0}&gt; verwendet werden.</value>
     </data>
     <data name="voice_created" xml:space="preserve">
-        <value>Sprachkanal {0} &lt;#{1}&gt; wurde erstellt!</value>
+        <value>Sprachkanal **{0}** wurde erstellt! \nKlicke auf &lt;#{1}&gt; um beizutreten.</value>
     </data>
     <data name="channel_deleted" xml:space="preserve">
         <value>Sprachkanal **{0}** wurde wegen inaktivität gelöscht.</value>

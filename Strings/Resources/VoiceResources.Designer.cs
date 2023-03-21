@@ -96,7 +96,7 @@ namespace Strings.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Channel {0} &lt;#{1}&gt; has been created!.
+        ///   Looks up a localized string similar to Channel **{0}** has been created! \nTap &lt;#{1}&gt; to join..
         /// </summary>
         internal static string voice_created {
             get {
