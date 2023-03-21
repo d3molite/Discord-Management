@@ -1,6 +1,8 @@
 ﻿using BotModule.DI;
+using BotModule.Extensions.Base;
 using BotModule.Extensions.Feedback;
 using BotModule.Extensions.Modnotes;
+using BotModule.Extensions.VoiceChannels;
 using DB.Models;
 using DB.Repositories;
 using Discord;
@@ -21,6 +23,7 @@ public sealed partial class DiscordBot
 
     private readonly InteractionService _interactionService;
     private readonly IServiceProvider _serviceProvider;
+
     private Bot _botModel;
 
     public DiscordBot(Bot botModel, IServiceProvider serviceProvider)
@@ -86,6 +89,9 @@ public sealed partial class DiscordBot
 
             if (config.ModnoteConfig != null)
                 await LoadModnoteModule(guild);
+
+            if (config.VoiceConfig != null)
+                await LoadVoiceChannelModule(guild, config.VoiceConfig);
         }
     }
 
@@ -110,6 +116,7 @@ public sealed partial class DiscordBot
         Log.Information("Creating Extensions");
         await _interactionService.AddModuleAsync<FeedbackExtension>(_serviceProvider);
         await _interactionService.AddModuleAsync<ModnoteExtension>(_serviceProvider);
+        await _interactionService.AddModuleAsync<VoiceChannelCommandHandler>(_serviceProvider);
 
         _client.InteractionCreated += async interaction =>
         {

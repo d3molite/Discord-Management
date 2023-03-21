@@ -23,6 +23,10 @@
         <Generator>ResXFileCodeGenerator</Generator>
         <LastGenOutput>ModnoteResources.Designer.cs</LastGenOutput>
       </EmbeddedResource>
+      <EmbeddedResource Update="Resources\VoiceResources.resx">
+        <Generator>ResXFileCodeGenerator</Generator>
+        <LastGenOutput>VoiceResources.Designer.cs</LastGenOutput>
+      </EmbeddedResource>
     </ItemGroup>
 
     <ItemGroup>
@@ -45,6 +49,11 @@
         <DesignTime>True</DesignTime>
         <AutoGen>True</AutoGen>
         <DependentUpon>ModnoteResources.resx</DependentUpon>
+      </Compile>
+      <Compile Update="Resources\VoiceResources.Designer.cs">
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+        <DependentUpon>VoiceResources.resx</DependentUpon>
       </Compile>
     </ItemGroup>
 

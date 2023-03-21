@@ -17,4 +17,6 @@ public class GuildConfig : IConfig<GuildConfig>
     public LoggingConfig? LoggingConfig { get; set; }
 
     public ModnoteConfig? ModnoteConfig { get; set; }
+
+    public VoiceConfig? VoiceConfig { get; set; }
 }

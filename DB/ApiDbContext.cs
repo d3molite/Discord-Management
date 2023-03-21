@@ -24,6 +24,8 @@ public class ApiDbContext : DbContext
 
     public DbSet<ModnoteConfig> ModnoteConfigs { get; set; } = null!;
 
+    public DbSet<VoiceConfig> VoiceConfigs { get; set; } = null!;
+
 
     public static ApiDbContext Get()
     {
@@ -60,9 +62,22 @@ public class ApiDbContext : DbContext
             .Navigation(x => x.ModnoteConfig)
             .AutoInclude();
 
+        modelBuilder.Entity<GuildConfig>()
+            .Navigation(x => x.VoiceConfig)
+            .AutoInclude();
+
         // FEEDBACK
         modelBuilder.Entity<FeedbackConfig>()
             .Navigation(x => x.TargetChannel)
+            .AutoInclude();
+
+        // VOICE
+        modelBuilder.Entity<VoiceConfig>()
+            .Navigation(x => x.Category)
+            .AutoInclude();
+
+        modelBuilder.Entity<VoiceConfig>()
+            .Navigation(x => x.RestrictedChannel)
             .AutoInclude();
 
         // FAQ
