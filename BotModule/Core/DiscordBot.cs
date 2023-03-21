@@ -1,5 +1,4 @@
 ﻿using BotModule.DI;
-using BotModule.Extensions.Base;
 using BotModule.Extensions.Feedback;
 using BotModule.Extensions.Modnotes;
 using BotModule.Extensions.VoiceChannels;
@@ -92,6 +91,9 @@ public sealed partial class DiscordBot
 
             if (config.VoiceConfig != null)
                 await LoadVoiceChannelModule(guild, config.VoiceConfig);
+
+            if (config.MessageReactionConfig != null)
+                LoadMessageReactionExtension(guild);
 
             await RegisterModules(guild);
         }

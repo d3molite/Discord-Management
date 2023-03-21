@@ -5,11 +5,9 @@ using DiscordApi.Data;
 using DiscordApi.DiscordHost.Extensions.ESports;
 using DiscordApi.DiscordHost.Extensions.ImageManipulation;
 using DiscordApi.DiscordHost.Extensions.Interfaces;
-using DiscordApi.DiscordHost.Extensions.Modnotes;
 using DiscordApi.DiscordHost.Extensions.ReactionRoles;
 using DiscordApi.DiscordHost.Extensions.ReactTo;
 using DiscordApi.DiscordHost.Extensions.SocialPolling;
-using DiscordApi.DiscordHost.Extensions.VoiceChannels;
 using DiscordApi.DiscordHost.Utils;
 using LibGit2Sharp;
 using Microsoft.EntityFrameworkCore;
@@ -36,7 +34,6 @@ public class DiscordBot
     private MessageReactionExtension _messageReactionExtension;
     private ReactionRoleExtension _roleAssigner;
     private SocialMediaExtension _socialMedia;
-    private VoiceChannelExtension _voiceChannel;
 
     public DiscordBot(string name, string token, IServiceProvider serviceProvider, string presence = "")
     {

@@ -19,4 +19,6 @@ public class GuildConfig : IConfig<GuildConfig>
     public ModnoteConfig? ModnoteConfig { get; set; }
 
     public VoiceConfig? VoiceConfig { get; set; }
+
+    public MessageReactionConfig? MessageReactionConfig { get; set; }
 }

@@ -1,4 +1,5 @@
 ﻿using DB.Models;
+using DB.Models.Base;
 using DB.Models.Configs;
 using DB.Models.Configs.Extensions;
 using DB.Models.Objects;
@@ -16,6 +17,7 @@ public class ApiDbContext : DbContext
     public DbSet<User> Users { get; set; } = null!;
     public DbSet<Guild> Guilds { get; set; } = null!;
 
+    public DbSet<Emoji> Emojis { get; set; } = null!;
     public DbSet<Modnote> Modnotes { get; set; } = null!;
     public DbSet<GuildConfig> GuildConfigs { get; set; } = null!;
     public DbSet<FeedbackConfig> FeedbackConfigs { get; set; } = null!;
@@ -66,6 +68,10 @@ public class ApiDbContext : DbContext
             .Navigation(x => x.VoiceConfig)
             .AutoInclude();
 
+        modelBuilder.Entity<GuildConfig>()
+            .Navigation(x => x.MessageReactionConfig)
+            .AutoInclude();
+
         // FEEDBACK
         modelBuilder.Entity<FeedbackConfig>()
             .Navigation(x => x.TargetChannel)
@@ -78,6 +84,15 @@ public class ApiDbContext : DbContext
 
         modelBuilder.Entity<VoiceConfig>()
             .Navigation(x => x.RestrictedChannel)
+            .AutoInclude();
+
+        // MESSAGE REACTIONS
+        modelBuilder.Entity<MessageReactionConfig>()
+            .Navigation(x => x.MessageReactions)
+            .AutoInclude();
+
+        modelBuilder.Entity<MessageReactionItem>()
+            .Navigation(x => x.ReactionEmoji)
             .AutoInclude();
 
         // FAQ
