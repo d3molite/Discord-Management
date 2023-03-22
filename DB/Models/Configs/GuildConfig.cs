@@ -21,4 +21,6 @@ public class GuildConfig : IConfig<GuildConfig>
     public VoiceConfig? VoiceConfig { get; set; }
 
     public MessageReactionConfig? MessageReactionConfig { get; set; }
+    
+    public List<ReactionRoleConfig>? ReactionRoleConfigs { get; set; }
 }

@@ -28,6 +28,8 @@ public class ApiDbContext : DbContext
 
     public DbSet<VoiceConfig> VoiceConfigs { get; set; } = null!;
 
+    public DbSet<ReactionRoleConfig> ReactionRoleConfigs { get; set; } = null!;
+
 
     public static ApiDbContext Get()
     {
@@ -71,6 +73,10 @@ public class ApiDbContext : DbContext
         modelBuilder.Entity<GuildConfig>()
             .Navigation(x => x.MessageReactionConfig)
             .AutoInclude();
+        
+        modelBuilder.Entity<GuildConfig>()
+            .Navigation(x => x.ReactionRoleConfigs)
+            .AutoInclude();
 
         // FEEDBACK
         modelBuilder.Entity<FeedbackConfig>()
@@ -108,6 +114,19 @@ public class ApiDbContext : DbContext
         // LOGGING
         modelBuilder.Entity<LoggingConfig>()
             .Navigation(x => x.LoggingChannel)
+            .AutoInclude();
+        
+        // REACTION ROLES
+        modelBuilder.Entity<ReactionRoleConfig>()
+            .Navigation(x => x.Message)
+            .AutoInclude();
+        
+        modelBuilder.Entity<ReactionRoleItem>()
+            .Navigation(x => x.Role)
+            .AutoInclude();
+        
+        modelBuilder.Entity<ReactionRoleItem>()
+            .Navigation(x => x.Emoji)
             .AutoInclude();
 
         // OBJECTS

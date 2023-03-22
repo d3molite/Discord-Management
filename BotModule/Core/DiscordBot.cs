@@ -94,6 +94,9 @@ public sealed partial class DiscordBot
 
             if (config.MessageReactionConfig != null)
                 LoadMessageReactionExtension(guild);
+            
+            if (config.ReactionRoleConfigs != null && config.ReactionRoleConfigs.Any())
+                LoadReactionRoleExtension(guild);
 
             await RegisterModules(guild);
         }
