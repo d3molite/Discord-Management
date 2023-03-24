@@ -1,9 +1,10 @@
-using DiscordApi.Data;
-using DiscordApi.DiscordHost.Utils;
+using BotModule.DI;
+using DB;
 using DiscordApi.Services;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.EntityFrameworkCore;
+using ProcessProvider;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,11 +15,13 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddDbContext<AppDBContext>(options => options.UseSqlite("Data Source=Database.db"));
+// builder.Services.AddDbContext<AppDBContext>(options => options.UseSqlite("Data Source=Database.db"));
+builder.Services.AddDbContext<ApiDbContext>(options => options.UseSqlite("Data Source=ApiDb.db"));
 
-builder.Services.AddSingleton<IStateHandler, StateHandler>();
-builder.Services.AddSingleton<BotHostService>();
-builder.Services.AddHostedService(p => p.GetRequiredService<BotHostService>());
+builder.Services.AddSingleton<IModuleState, ModuleState>();
+builder.Services.AddSingleton<ILanguageProvider, LanguageProvider>();
+builder.Services.AddSingleton<ProcessProviderService>();
+builder.Services.AddHostedService(p => p.GetRequiredService<ProcessProviderService>());
 
 // add exception logging
 builder.Services.AddMvc(options => { options.Filters.Add(new SerilogExceptionLogger()); });
@@ -29,26 +32,23 @@ LocalizationService.Initialize();
 
 app.UseForwardedHeaders(new ForwardedHeadersOptions
 {
-    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+	ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
 });
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+	app.UseSwagger();
+	app.UseSwaggerUI();
 }
 
 Log.Logger = new LoggerConfiguration()
-    .WriteTo.Trace()
-    .WriteTo.Console()
-    .MinimumLevel.Debug()
-    .CreateLogger();
+	.WriteTo.Trace()
+	.WriteTo.Console()
+	.MinimumLevel.Debug()
+	.CreateLogger();
 
-if (!app.Environment.IsDevelopment())
-{
-    app.UseHttpsRedirection();
-}
+if (!app.Environment.IsDevelopment()) app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
@@ -56,15 +56,15 @@ app.UseDefaultFiles();
 
 var provider = new FileExtensionContentTypeProvider
 {
-    Mappings =
-    {
-        [".vue"] = "application/javascript"
-    }
+	Mappings =
+	{
+		[".vue"] = "application/javascript"
+	}
 };
 
 app.UseStaticFiles(new StaticFileOptions
 {
-    ContentTypeProvider = provider
+	ContentTypeProvider = provider
 });
 
 app.MapControllers();

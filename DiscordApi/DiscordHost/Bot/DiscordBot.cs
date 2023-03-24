@@ -2,17 +2,12 @@
 using Discord.Interactions;
 using Discord.WebSocket;
 using DiscordApi.Data;
-using DiscordApi.DiscordHost.Extensions.AntiSpam;
 using DiscordApi.DiscordHost.Extensions.ESports;
-using DiscordApi.DiscordHost.Extensions.Feedback;
 using DiscordApi.DiscordHost.Extensions.ImageManipulation;
 using DiscordApi.DiscordHost.Extensions.Interfaces;
-using DiscordApi.DiscordHost.Extensions.Logging;
-using DiscordApi.DiscordHost.Extensions.Modnotes;
 using DiscordApi.DiscordHost.Extensions.ReactionRoles;
 using DiscordApi.DiscordHost.Extensions.ReactTo;
 using DiscordApi.DiscordHost.Extensions.SocialPolling;
-using DiscordApi.DiscordHost.Extensions.VoiceChannels;
 using DiscordApi.DiscordHost.Utils;
 using LibGit2Sharp;
 using Microsoft.EntityFrameworkCore;
@@ -31,7 +26,6 @@ public class DiscordBot
     private readonly InteractionService _interactionService;
     private readonly IServiceProvider _provider;
     private readonly string _token;
-    private AntiSpamExtension _antiSpam;
 
     private bool _firstStartup = true;
 
@@ -40,7 +34,6 @@ public class DiscordBot
     private MessageReactionExtension _messageReactionExtension;
     private ReactionRoleExtension _roleAssigner;
     private SocialMediaExtension _socialMedia;
-    private VoiceChannelExtension _voiceChannel;
 
     public DiscordBot(string name, string token, IServiceProvider serviceProvider, string presence = "")
     {
@@ -86,15 +79,11 @@ public class DiscordBot
             .Include(prop => prop.VoiceConfig)
             .Where(p => p.RelatedBot.Name == Name).ToArray();
 
-        foreach (var config in configs)
-        {
-            Serilog.Log.Debug("{ClientName}", config.RelatedBot.Name);
-        }
+        foreach (var config in configs) Serilog.Log.Debug("{ClientName}", config.RelatedBot.Name);
 
         if (configs.Any())
         {
             if (configs.Any(p => p.RoleConfigs.Any())) _roleAssigner = new ReactionRoleExtension(Name, _client);
-            if (configs.Any(p => p.AntiSpam != null)) _antiSpam = new AntiSpamExtension(_client, _logger, Name);
             if (configs.Any(p => p.ReactionConfig != null))
                 _messageReactionExtension = new MessageReactionExtension(_client, Name);
 
@@ -110,12 +99,6 @@ public class DiscordBot
                 {
                     await _interactionService.AddModuleAsync<ModNoteCommandHandler>(_provider);
                     Serilog.Log.Debug("Registered ModNotes to {ClientName}", Name);
-                }
-
-                if (configs.Any(p => p.FeedbackConfig != null))
-                {
-                    await _interactionService.AddModuleAsync<FeedbackCommandHandler>(_provider);
-                    Serilog.Log.Debug("Registered Feedback to {ClientName}", Name);
                 }
 
                 if (configs.Any(p => p.ESportsEnabled))
@@ -156,8 +139,6 @@ public class DiscordBot
         await _client.LoginAsync(TokenType.Bot, _token);
         await _client.StartAsync();
 
-        _logger = new GeneralLogger(_client, Name);
-
         await LoadExtensions();
 
         _client.Log += Log;
@@ -174,18 +155,14 @@ public class DiscordBot
             .Where(p => p.RelatedBot.Name == Name);
 
         if (_interactionService.Modules.Any())
-        {
             foreach (var config in configs)
             {
                 Serilog.Log.Debug("Registering Commands for {ClientName} to {GuildName}", Name,
                     config.RelatedGuild.Name);
                 await _interactionService.RegisterCommandsToGuildAsync(config.RelatedGuild.GuildID);
             }
-        }
         else
-        {
             Serilog.Log.Debug("{ClientName} has no modules.", Name);
-        }
 
         _client.InteractionCreated += async interaction =>
         {

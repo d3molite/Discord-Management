@@ -1,10 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
     <PropertyGroup>
-        <TargetFramework>net6.0</TargetFramework>
+        <TargetFramework>net7.0</TargetFramework>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <UseRazorSourceGenerator>false</UseRazorSourceGenerator>
+        <LangVersion>11</LangVersion>
     </PropertyGroup>
 
     <ItemGroup>
@@ -51,28 +52,28 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Discord.Net" Version="3.8.0" />
-        <PackageReference Include="FluentValidation" Version="11.0.1" />
+        <PackageReference Include="Discord.Net" Version="3.8.1" />
+        <PackageReference Include="FluentValidation" Version="11.4.0" />
         <PackageReference Include="LibGit2Sharp" Version="0.27.0-preview-0182" />
         <PackageReference Include="Microsoft.AspNet.WebHooks.Receivers.Custom" Version="1.2.2" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.0">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.5" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.5">
+        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.1" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.1">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="6.0.5" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.5">
-            <PrivateAssets>all</PrivateAssets>
-            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-        </PackageReference>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="7.0.1" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
         <PackageReference Include="OpenCvSharp4" Version="4.6.0.20220608" />
         <PackageReference Include="OpenCvSharp4.runtime.ubuntu.18.04-x64" Version="4.5.5.20211231" />
         <PackageReference Include="OpenCvSharp4.runtime.win" Version="4.6.0.20220608" />
         <PackageReference Include="RestSharp" Version="107.3.0" />
-        <PackageReference Include="Serilog" Version="2.11.1-dev-01397" />
-        <PackageReference Include="Serilog.Sinks.Console" Version="4.0.1" />
+        <PackageReference Include="Serilog" Version="2.12.0" />
+        <PackageReference Include="Serilog.Sinks.Console" Version="4.1.0" />
         <PackageReference Include="Serilog.Sinks.Trace" Version="3.0.0" />
     </ItemGroup>
 
@@ -81,50 +82,31 @@
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
         <None Update="Resources\feature.txt">
-          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
         <None Update="DiscordHost\Extensions\ImageManipulation\ManipulationHelper\Resources\eyelaugh.png">
-          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
         <None Update="DiscordHost\Extensions\ImageManipulation\ManipulationHelper\Resources\100.png">
-          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
         <None Update="DiscordHost\Extensions\ImageManipulation\ManipulationHelper\Resources\felix.png">
-          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
         <None Update="DiscordHost\Extensions\ImageManipulation\ManipulationHelper\Resources\fire.png">
-          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
         <None Update="DiscordHost\Extensions\ImageManipulation\ManipulationHelper\Resources\laugh.png">
-          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
         <None Update="DiscordHost\Extensions\ImageManipulation\ManipulationHelper\Resources\ok_hand.png">
-          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
     </ItemGroup>
 
     <ItemGroup>
-      <EmbeddedResource Update="Resources\Extensions\AntiSpamResources.resx">
-        <Generator>ResXFileCodeGenerator</Generator>
-        <LastGenOutput>AntiSpamResources.Designer.cs</LastGenOutput>
-      </EmbeddedResource>
-      <EmbeddedResource Update="Resources\Extensions\LoggingResources.resx">
-        <Generator>ResXFileCodeGenerator</Generator>
-        <LastGenOutput>LoggingResources.Designer.cs</LastGenOutput>
-      </EmbeddedResource>
-    </ItemGroup>
-
-    <ItemGroup>
-      <Compile Update="Resources\Extensions\AntiSpamResources.Designer.cs">
-        <DesignTime>True</DesignTime>
-        <AutoGen>True</AutoGen>
-        <DependentUpon>AntiSpam.resx</DependentUpon>
-      </Compile>
-      <Compile Update="Resources\Extensions\LoggingResources.Designer.cs">
-        <DesignTime>True</DesignTime>
-        <AutoGen>True</AutoGen>
-        <DependentUpon>LoggingResources.resx</DependentUpon>
-      </Compile>
+        <ProjectReference Include="..\DB\DB.csproj" />
+        <ProjectReference Include="..\ProcessProvider\ProcessProvider.csproj" />
     </ItemGroup>
 
 </Project>

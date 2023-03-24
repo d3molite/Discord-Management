@@ -6,7 +6,7 @@ namespace DiscordApi.DiscordHost.Extensions.ImageManipulation;
 
 public class ImageCommandHandler : InteractionModuleBase
 {
-    private readonly List<string> _formats = new() { "jpg", "png", "bmp", "jpeg" };
+    private readonly List<string> _formats = new() { "jpg", "png", "bmp", "jpeg", "webp" };
 
     private string CleanImageUrl(string url)
     {
