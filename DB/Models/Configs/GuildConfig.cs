@@ -1,4 +1,4 @@
-﻿using DB.Models.Configs.Extensions;
+using DB.Models.Configs.Extensions;
 using DB.Models.Interfaces;
 
 namespace DB.Models.Configs;
@@ -23,4 +23,6 @@ public class GuildConfig : IConfig<GuildConfig>
     public MessageReactionConfig? MessageReactionConfig { get; set; }
     
     public List<ReactionRoleConfig>? ReactionRoleConfigs { get; set; }
+
+    public bool ImageManipulationEnabled { get; set; }
 }

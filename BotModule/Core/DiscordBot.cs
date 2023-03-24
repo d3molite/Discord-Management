@@ -1,5 +1,6 @@
 ﻿using BotModule.DI;
 using BotModule.Extensions.Feedback;
+using BotModule.Extensions.ImageManipulation;
 using BotModule.Extensions.Modnotes;
 using BotModule.Extensions.VoiceChannels;
 using DB.Models;
@@ -94,9 +95,12 @@ public sealed partial class DiscordBot
 
             if (config.MessageReactionConfig != null)
                 LoadMessageReactionExtension(guild);
-            
+
             if (config.ReactionRoleConfigs != null && config.ReactionRoleConfigs.Any())
                 LoadReactionRoleExtension(guild);
+
+            if (config.ImageManipulationEnabled)
+                LoadImageManipulationModule(guild);
 
             await RegisterModules(guild);
         }
@@ -124,6 +128,7 @@ public sealed partial class DiscordBot
         await _interactionService.AddModuleAsync<FeedbackExtension>(_serviceProvider);
         await _interactionService.AddModuleAsync<ModnoteExtension>(_serviceProvider);
         await _interactionService.AddModuleAsync<VoiceChannelCommandHandler>(_serviceProvider);
+        await _interactionService.AddModuleAsync<ImageCommandHandler>(_serviceProvider);
 
         _client.InteractionCreated += async interaction =>
         {
