@@ -42,7 +42,7 @@ public class MessageReactionExtension : ClientExtension
                 return;
 
             case { EmojiOnly: true, ReactionEmoji: { } }:
-                await message.AddReactionAsync(Emoji.Parse(matchingItem.ReactionEmoji.EmojiString));
+                await AddEmote(message, matchingItem.ReactionEmoji.EmojiString);
                 break;
 
             default:
@@ -61,5 +61,16 @@ public class MessageReactionExtension : ClientExtension
     {
         return items.Where(x => roll <= x.ReactionChance)
             .MinBy(x => x.ReactionChance);
+    }
+
+    private async Task AddEmote(SocketMessage message, string emojiString)
+    {
+        if (emojiString.StartsWith("<") && emojiString.EndsWith(">"))
+        {
+            await message.AddReactionAsync(Emote.Parse(emojiString));
+            return;
+        }
+
+        await message.AddReactionAsync(Emoji.Parse(emojiString));
     }
 }

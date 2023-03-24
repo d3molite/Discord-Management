@@ -69,29 +69,6 @@
 //         }
 //     }
 //
-//     [SlashCommand("waaw", "Vertically mirror the last image left to right")]
-//     public async Task waaw()
-//     {
-//         await Mirror(ImageManipulationHelper.MirrorDirection.LTR);
-//     }
-//
-//     [SlashCommand("woow", "Vertically mirror the last image right to left")]
-//     public async Task woow()
-//     {
-//         await Mirror(ImageManipulationHelper.MirrorDirection.RTL);
-//     }
-//
-//     [SlashCommand("haah", "Horizontally mirror the last image top to bottom")]
-//     public async Task haah()
-//     {
-//         await Mirror(ImageManipulationHelper.MirrorDirection.TTB);
-//     }
-//
-//     [SlashCommand("hooh", "Horizontally mirror the last image bottom to top")]
-//     public async Task hooh()
-//     {
-//         await Mirror(ImageManipulationHelper.MirrorDirection.BTT);
-//     }
 //
 //     [SlashCommand("deepfry", "Do you really need an explanation?")]
 //     public async Task deepfry()

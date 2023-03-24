@@ -8,21 +8,9 @@ using Image = BotModule.Extensions.ImageManipulation.Core.Image;
 
 namespace BotModule.Extensions.ImageManipulation;
 
-public class ImageCommandHandler : InteractionModuleBase
+public partial class ImageCommandHandler : InteractionModuleBase
 {
     private readonly List<string> _formats = new() { "jpg", "png", "bmp", "jpeg", "webp", "gif" };
-
-    [SlashCommand("waaw", "Vertically mirror the last image left to right")]
-    public async Task waaw()
-    {
-        var imageResult = await TryGetImage();
-        if (imageResult.Success)
-        {
-            await DeferAsync();
-            await Mirror(imageResult.Image!, MirrorDirection.LTR);
-            await SendAndDelete(imageResult.Image!);
-        }
-    }
 
     private async Task Mirror(Image image, MirrorDirection direction)
     {
@@ -32,7 +20,7 @@ public class ImageCommandHandler : InteractionModuleBase
 
             for (var i = 0; i < image.Frames; i++)
                 await ImageManipulator.Mirror(image.FramePath(i), image.ModifiedFramePath(i), direction);
-            
+
             image.IsManipulated = true;
 
             GifSpool.Roll(image, true);
