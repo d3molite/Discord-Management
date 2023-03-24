@@ -1,3 +1,4 @@
+using System.IO;
 using Nuke.Common;
 using Nuke.Common.CI;
 using Nuke.Common.IO;
@@ -59,6 +60,10 @@ class Build : NukeBuild
                 .SetSelfContained(false)
                 .SetPublishTrimmed(false)
             );
+
+            var rootPath = Path.Combine(Solution.Directory, "WebUI", "ApiDb.db");
+
+            CopyFile(rootPath, Path.Combine(rootPath, OutputDirectory, "ApiDb.db"), FileExistsPolicy.Overwrite);
         });
 
 

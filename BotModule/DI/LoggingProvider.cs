@@ -9,7 +9,7 @@ public class LoggingProvider : ILoggingProvider
 {
     private readonly List<LoggingInfo> _loggers = new();
 
-    public void Register(LoggingInfo loggingCombo)
+    public void Register(LoggingInfo loggingCombo, DiscordSocketClient client)
     {
         if (_loggers.Contains(loggingCombo)) return;
 

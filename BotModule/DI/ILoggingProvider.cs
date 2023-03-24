@@ -5,7 +5,7 @@ namespace BotModule.Extensions.Logging;
 
 public interface ILoggingProvider
 {
-    public void Register(LoggingInfo loggingCombo);
+    public void Register(LoggingInfo loggingCombo, DiscordSocketClient client);
 
     public ILoggingExtension? Retrieve(DiscordSocketClient client, IGuild guild);
 

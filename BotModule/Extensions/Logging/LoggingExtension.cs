@@ -11,10 +11,14 @@ public sealed partial class LoggingExtension : ClientExtension, ILoggingExtensio
     private bool _active = true;
     private ILanguageProvider _languageProvider;
 
-    public LoggingExtension(DiscordSocketClient client, string botName, ILanguageProvider languageProvider)
+    public LoggingExtension(DiscordSocketClient client, string botName, ILanguageProvider languageProvider,
+        bool alreadyRegistered)
         : base(client, botName, languageProvider)
     {
         _languageProvider = languageProvider;
+
+        if (alreadyRegistered) return;
+
         client.MessageDeleted += LogMessageDeleted;
         client.UserBanned += LogUserBanned;
         client.UserLeft += LogUserLeft;
@@ -69,5 +73,13 @@ public sealed partial class LoggingExtension : ClientExtension, ILoggingExtensio
     public void Resume()
     {
         _active = true;
+    }
+
+    private void Unregister(DiscordSocketClient client)
+    {
+        client.MessageDeleted -= LogMessageDeleted;
+        client.UserBanned -= LogUserBanned;
+        client.UserLeft -= LogUserLeft;
+        client.UserJoined -= LogUserJoined;
     }
 }
