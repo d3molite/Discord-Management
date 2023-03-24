@@ -60,43 +60,7 @@ public static partial class ImageManipulationHelper
         }
     }
 
-    private static Mat ResizeToSquashable(Mat mat)
-    {
-        var width = 600.0;
-
-        try
-        {
-            if (mat.Width > width)
-            {
-                var scaleFactor = width / mat.Width;
-                var height = mat.Height * scaleFactor;
-
-                Cv2.Resize(mat, mat, new Size(width, height));
-            }
-
-            return mat;
-        }
-        catch (Exception ex)
-        {
-            Log.Error("Exception in Resizer {exception}", ex);
-        }
-
-        return new Mat(mat);
-    }
-
-    private static void Squarify(Mat input)
-    {
-        if (input.Width == input.Height) return;
-
-        if (input.Height > input.Width)
-        {
-            Cv2.Resize(input, input, new Size(input.Width, input.Width));
-        }
-        else if (input.Width > input.Height)
-        {
-            Cv2.Resize(input, input, new Size(input.Height, input.Height));
-        }
-    }
+    
 
     private static void Sharpen(Mat input)
     {

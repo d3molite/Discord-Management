@@ -52,4 +52,28 @@ public partial class ImageCommandHandler
             await SendAndDelete(imageResult.Image!);
         }
     }
+
+    [SlashCommand("mandala", "Speen.")]
+    public async Task mandala(int slice = 1)
+    {
+        var imageResult = await TryGetImage();
+        if (imageResult.Success)
+        {
+            await DeferAsync();
+            await Mandala(imageResult.Image!, slice);
+            await SendAndDelete(imageResult.Image!);
+        }
+    }
+
+    [SlashCommand("squoosh", "Content Aware Scale Very Funny Haha.")]
+    public async Task ContentAwareScale(int percentage = 20, bool alternateMode = false)
+    {
+        var imageResult = await TryGetImage();
+        if (imageResult.Success)
+        {
+            await DeferAsync();
+            await ContentAwareScale(imageResult.Image!, percentage, alternateMode);
+            await SendAndDelete(imageResult.Image!);
+        }
+    }
 }

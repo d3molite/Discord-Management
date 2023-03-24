@@ -14,12 +14,6 @@
 //
 //     private static readonly string _path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "temp");
 //
-//     private static void Jpegify(Mat input, out Mat output, int quality)
-//     {
-//         var flags = new[] { (int)ImwriteFlags.JpegQuality, quality };
-//         var encoded = input!.ImEncode(".jpg", flags);
-//         output = Cv2.ImDecode(encoded, ImreadModes.Color);
-//     }
 //
 //     public static Task Memeify(Image img, int power)
 //     {

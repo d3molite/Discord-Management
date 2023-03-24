@@ -1,4 +1,6 @@
 ﻿using BotModule.Extensions.ImageManipulation.Core;
+using ImageMagick;
+using ImageMagick.Formats;
 using OpenCvSharp;
 using Serilog;
 
@@ -26,6 +28,9 @@ public static class ImageDownloader
 
         await s.CopyToAsync(fs);
 
+        if (image.Extension == "webp")
+            ConvertToJpeg(image);
+
         ResizeToManageable(image);
 
         return image;
@@ -45,8 +50,6 @@ public static class ImageDownloader
 
             Cv2.Resize(mat, mat, new Size(1000.0, height));
 
-            img.FileName = "r_" + img.FileName;
-
             mat.SaveImage(img.SourcePath);
             mat.Dispose();
         }
@@ -54,5 +57,16 @@ public static class ImageDownloader
         {
             Log.Error("Exception in Resizer {exception}", ex);
         }
+    }
+
+    private static void ConvertToJpeg(Image image)
+    {
+        using var img = new MagickImage(image.SourcePath);
+
+        var defines = new JpegWriteDefines();
+
+        image.Extension = "jpg";
+
+        img.Write(new FileInfo(image.SourcePath));
     }
 }

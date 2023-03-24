@@ -12,7 +12,7 @@ public partial class ImageCommandHandler : InteractionModuleBase
 {
     private readonly List<string> _formats = new() { "jpg", "png", "bmp", "jpeg", "webp", "gif" };
 
-    private async Task Mirror(Image image, MirrorDirection direction)
+    private static async Task Mirror(Image image, MirrorDirection direction)
     {
         if (image.IsAnimated)
         {
@@ -32,6 +32,54 @@ public partial class ImageCommandHandler : InteractionModuleBase
         }
     }
 
+    private static async Task Mandala(Image image, int slice)
+    {
+        if (image.IsAnimated)
+        {
+            GifSpool.Unroll(image);
+
+            for (var i = 0; i < image.Frames; i++)
+                await ImageManipulator.Mandala(image.FramePath(i), image.ModifiedFramePath(i), slice);
+
+            image.IsManipulated = true;
+
+            GifSpool.Roll(image, true);
+        }
+
+        else
+        {
+            await ImageManipulator.Mandala(image.SourcePath, image.TargetPath, slice);
+        }
+    }
+
+    private static async Task ContentAwareScale(Image image, int percentage, bool flip)
+    {
+        if (image.IsAnimated)
+        {
+            GifSpool.Unroll(image);
+
+            if (image.Frames < 20)
+                for (var i = 0; i < image.Frames; i++)
+                    await ImageManipulator.ContentAwareScale(image.FramePath(i), image.ModifiedFramePath(i), percentage,
+                        flip);
+            else
+                Parallel.For(0, image.Frames, async i =>
+                {
+                    await ImageManipulator.ContentAwareScale(image.FramePath(i), image.ModifiedFramePath(i), percentage,
+                        flip);
+                });
+
+            image.IsManipulated = true;
+
+            GifSpool.Roll(image, true);
+        }
+
+        else
+        {
+            await ImageManipulator.ContentAwareScale(image.SourcePath, image.TargetPath, percentage, flip);
+        }
+    }
+
     private string CleanImageUrl(string url)
     {
         return url.Split("?").First();
@@ -45,7 +93,15 @@ public partial class ImageCommandHandler : InteractionModuleBase
 
     private async Task SendAndDelete(Image imageObject)
     {
-        await FollowupWithFileAsync(imageObject.TargetPath);
+        try
+        {
+            await FollowupWithFileAsync(imageObject.TargetPath);
+        }
+        catch (Exception ex)
+        {
+            await FollowupAsync("The resulting file was too large.", ephemeral: true);
+        }
+
         Directory.Delete(imageObject.SubFolder, true);
     }
 

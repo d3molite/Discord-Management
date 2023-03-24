@@ -26,6 +26,8 @@ public sealed partial class DiscordBot
 
     private Bot _botModel;
 
+    private bool _firstStartup = true;
+
     public DiscordBot(Bot botModel, IServiceProvider serviceProvider)
     {
         _botModel = botModel;
@@ -48,10 +50,14 @@ public sealed partial class DiscordBot
                 return;
             }
 
+            if (!_firstStartup) return;
+
             await CreateExtensions();
             await RegisterLanguages();
             await LoadModules();
             await UpdatePresence(_botModel.Presence);
+
+            _firstStartup = false;
         };
 
         await _client.LoginAsync(TokenType.Bot, _botModel.Token);
@@ -124,7 +130,8 @@ public sealed partial class DiscordBot
 
     private async Task CreateExtensions()
     {
-        Log.Information("Creating Extensions");
+        if (_firstStartup)
+            Log.Information("Creating Extensions");
         await _interactionService.AddModuleAsync<FeedbackExtension>(_serviceProvider);
         await _interactionService.AddModuleAsync<ModnoteExtension>(_serviceProvider);
         await _interactionService.AddModuleAsync<VoiceChannelCommandHandler>(_serviceProvider);

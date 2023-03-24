@@ -43,18 +43,7 @@
 //         }
 //     }
 //
-//     [SlashCommand("squoosh", "Content Aware Scale Very Funny Haha.")]
-//     public async Task ContentAwareScale(int power = 1)
-//     {
-//         var img = await TryGetImage();
-//
-//         if (img.Item1)
-//         {
-//             await DeferAsync();
-//             await ImageManipulationHelper.ContentAwareScale(img.Item2, power);
-//             await SendAndDelete(img.Item2);
-//         }
-//     }
+//     
 //
 //     [SlashCommand("memeify", "Spicy memez.")]
 //     public async Task memeify(int power = 1)
@@ -96,18 +85,6 @@
 //         }
 //     }
 //
-//     [SlashCommand("mandala", "Speen.")]
-//     public async Task mandala(int slice = 1)
-//     {
-//         var img = await TryGetImage();
-//
-//         if (img.Item1)
-//         {
-//             await DeferAsync();
-//             await ImageManipulationHelper.Mandala(img.Item2, slice);
-//             await SendAndDelete(img.Item2);
-//         }
-//     }
 //
 //     private async Task Mirror(ImageManipulationHelper.MirrorDirection direction)
 //     {
@@ -120,73 +97,4 @@
 //             await SendAndDelete(img.Item2);
 //         }
 //     }
-//
-//     private async Task<Tuple<bool, Image>> TryGetImage()
-//     {
-//         var image = await CheckForImage();
-//
-//         if (image != null)
-//         {
-//             try
-//             {
-//                 var imageObject = await ImageManipulationHelper.Download(image);
-//                 return new Tuple<bool, Image>(true, imageObject);
-//             }
-//             catch (Exception ex)
-//             {
-//                 Log.Error("Exception in Downloading Image. {exception}", ex);
-//             }
-//         }
-//
-//         await RespondAsync("No Image found.", ephemeral: true);
-//
-//         return new Tuple<bool, Image>(false, new Image());
-//     }
-//
-//     private async Task SendAndDelete(Image imageObject)
-//     {
-//         await FollowupWithFileAsync(imageObject.TargetPath);
-//         Directory.Delete(imageObject.Folder, true);
-//         Directory.CreateDirectory(imageObject.Folder);
-//     }
-//
-//     private async Task<string?> CheckForImage()
-//     {
-//         var channel = Context.Channel;
-//         var msgs = await channel.GetMessagesAsync(5).FlattenAsync();
-//         var messages = msgs.ToList();
-//         messages.Reverse();
-//
-//         foreach (var message in msgs)
-//         {
-//             if (message.Embeds.Any())
-//             {
-//                 var images = message.Embeds.Where(embed => embed.Url != null);
-//
-//                 if (images != null)
-//                 {
-//                     var image = images.First();
-//
-//                     if (IsImage(image.Url))
-//                     {
-//                         return CleanImageUrl(image.Url);
-//                     }
-//                 }
-//             }
-//             else if (message.Attachments.Any())
-//             {
-//                 var images = message.Attachments.Where(attachment => attachment.Url != null);
-//
-//                 var image = images.First();
-//
-//                 if (IsImage(image.Url))
-//                 {
-//                     return CleanImageUrl(image.Url);
-//                 }
-//             }
-//         }
-//
-//         return null;
-//     }
-// }
 
