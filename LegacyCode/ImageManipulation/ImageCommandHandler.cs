@@ -25,24 +25,6 @@
 //         return false;
 //     }
 //
-//     [SlashCommand("undo", "Fuck, go back!")]
-//     public async Task undo()
-//     {
-//         var channel = Context.Channel;
-//         var msgs = await channel.GetMessagesAsync(5).FlattenAsync();
-//         var messages = msgs.ToList();
-//
-//         foreach (var message in messages)
-//         {
-//             if (message.Author.Id == Context.Client.CurrentUser.Id)
-//             {
-//                 await message.DeleteAsync();
-//                 await RespondAsync("Done!", ephemeral: true);
-//                 return;
-//             }
-//         }
-//     }
-//
 //     
 //
 //     [SlashCommand("memeify", "Spicy memez.")]
