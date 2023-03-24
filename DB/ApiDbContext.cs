@@ -73,7 +73,7 @@ public class ApiDbContext : DbContext
         modelBuilder.Entity<GuildConfig>()
             .Navigation(x => x.MessageReactionConfig)
             .AutoInclude();
-        
+
         modelBuilder.Entity<GuildConfig>()
             .Navigation(x => x.ReactionRoleConfigs)
             .AutoInclude();
@@ -115,16 +115,20 @@ public class ApiDbContext : DbContext
         modelBuilder.Entity<LoggingConfig>()
             .Navigation(x => x.LoggingChannel)
             .AutoInclude();
-        
+
         // REACTION ROLES
         modelBuilder.Entity<ReactionRoleConfig>()
             .Navigation(x => x.Message)
             .AutoInclude();
-        
+
+        modelBuilder.Entity<ReactionRoleConfig>()
+            .Navigation(x => x.ReactionRoleItems)
+            .AutoInclude();
+
         modelBuilder.Entity<ReactionRoleItem>()
             .Navigation(x => x.Role)
             .AutoInclude();
-        
+
         modelBuilder.Entity<ReactionRoleItem>()
             .Navigation(x => x.Emoji)
             .AutoInclude();
