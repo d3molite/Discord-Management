@@ -1,4 +1,5 @@
 ﻿using Discord;
+using Serilog;
 
 namespace BotModule.Core;
 
@@ -8,5 +9,7 @@ public sealed partial class DiscordBot
     {
         if (presence != null)
             await _client.SetActivityAsync(new Game(presence));
+
+        Log.Debug("{BotName} Startup Completed.", Name);
     }
 }

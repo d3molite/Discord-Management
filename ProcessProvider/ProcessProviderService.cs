@@ -8,47 +8,51 @@ namespace ProcessProvider;
 
 public class ProcessProviderService : IHostedService
 {
-	private readonly IServiceProvider _serviceProvider;
+    private readonly IServiceProvider _serviceProvider;
 
-	public ProcessProviderService(IServiceProvider provider)
-	{
-		_serviceProvider = provider;
+    public ProcessProviderService(IServiceProvider provider)
+    {
+        _serviceProvider = provider;
 
-		BotConfigs = BotRepository.Get().ToList();
-		DiscordBots = new List<DiscordBot>();
-	}
+        BotConfigs = BotRepository.Get().ToList();
+        DiscordBots = new List<DiscordBot>();
+    }
 
-	private List<Bot> BotConfigs { get; }
-	public List<DiscordBot> DiscordBots { get; }
+    private List<Bot> BotConfigs { get; }
+    public List<DiscordBot> DiscordBots { get; }
 
-	public Task StartAsync(CancellationToken token)
-	{
-		foreach (var config in BotConfigs)
-		{
+    public Task StartAsync(CancellationToken token)
+    {
+        Log.Debug("Found {Number} of Bots", BotConfigs.Count);
+        Log.Debug("{Number} enabled in Debug", BotConfigs.Count(x => x.IsActiveInDebug));
+        Log.Debug("{Number} enabled in Release", BotConfigs.Count(x => x.IsActiveInRelease));
+
+        foreach (var config in BotConfigs)
+        {
 #if DEBUG
-			if (!config.IsActiveInDebug) continue;
-			Log.Information("Starting Debug {BotName}", config.Name);
-			var tmp = new DiscordBot(config, _serviceProvider);
-			DiscordBots.Add(tmp);
-			Task.Run(() => tmp.StartBot(), token);
+            if (!config.IsActiveInDebug) continue;
+            Log.Information("Starting Debug {BotName}", config.Name);
+            var tmp = new DiscordBot(config, _serviceProvider);
+            DiscordBots.Add(tmp);
+            Task.Run(() => tmp.StartBot(), token);
 
 #elif RELEASE
             if (!config.IsActiveInRelease) continue;
-            
+
             Log.Information("Starting Release {BotName}", config.Name);
             var tmp = new DiscordBot(config, _serviceProvider);
             DiscordBots.Add(tmp);
             Task.Run(() => tmp.StartBot(), token);
 #endif
-		}
+        }
 
-		return Task.CompletedTask;
-	}
+        return Task.CompletedTask;
+    }
 
-	public Task StopAsync(CancellationToken cancellationToken)
-	{
-		foreach (var bot in DiscordBots) Task.Run(() => bot.StopBot(), cancellationToken);
+    public Task StopAsync(CancellationToken cancellationToken)
+    {
+        foreach (var bot in DiscordBots) Task.Run(() => bot.StopBot(), cancellationToken);
 
-		return Task.CompletedTask;
-	}
+        return Task.CompletedTask;
+    }
 }

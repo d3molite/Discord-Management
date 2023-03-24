@@ -1,7 +1,5 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscordApi", "DiscordApi\DiscordApi.csproj", "{19B453B4-1137-400F-97ED-11653549C715}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "_build", "build\_build.csproj", "{3AB1F551-8851-4CC5-B71A-095E995D5133}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Bot", "Bot", "{B1CC35A8-A80D-487E-9A3D-5945E551A977}"
@@ -22,16 +20,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebUI", "WebUI\WebUI.csproj
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{45251B11-F03B-4A15-B0EA-D02C25AF2C14}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LegacyCode", "LegacyCode\LegacyCode.csproj", "{08C880EF-19B6-412B-B185-A1F7C4346C88}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{19B453B4-1137-400F-97ED-11653549C715}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{19B453B4-1137-400F-97ED-11653549C715}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{19B453B4-1137-400F-97ED-11653549C715}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{19B453B4-1137-400F-97ED-11653549C715}.Release|Any CPU.Build.0 = Release|Any CPU
 		{3AB1F551-8851-4CC5-B71A-095E995D5133}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{3AB1F551-8851-4CC5-B71A-095E995D5133}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3AB1F551-8851-4CC5-B71A-095E995D5133}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -60,6 +56,10 @@ Global
 		{51391EA8-CF59-4EE3-93AA-A7A635BD8FA2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{51391EA8-CF59-4EE3-93AA-A7A635BD8FA2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{51391EA8-CF59-4EE3-93AA-A7A635BD8FA2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{08C880EF-19B6-412B-B185-A1F7C4346C88}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{08C880EF-19B6-412B-B185-A1F7C4346C88}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{08C880EF-19B6-412B-B185-A1F7C4346C88}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{08C880EF-19B6-412B-B185-A1F7C4346C88}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{DCA8BF92-33F7-47D6-962A-A61F07459B09} = {B1CC35A8-A80D-487E-9A3D-5945E551A977}

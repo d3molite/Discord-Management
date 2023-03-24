@@ -1,6 +1,5 @@
 ﻿using BotModule.Extensions.ImageManipulation.Core;
 using ImageMagick;
-using IMG = System.Drawing.Image;
 
 namespace BotModule.Extensions.ImageManipulation.Utils;
 

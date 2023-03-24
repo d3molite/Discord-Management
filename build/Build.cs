@@ -1,8 +1,5 @@
-using System.IO;
 using Nuke.Common;
 using Nuke.Common.CI;
-using Nuke.Common.Execution;
-using Nuke.Common.Git;
 using Nuke.Common.IO;
 using Nuke.Common.ProjectModel;
 using Nuke.Common.Tools.DotNet;
@@ -10,7 +7,6 @@ using Nuke.Common.Utilities.Collections;
 using static Nuke.Common.IO.FileSystemTasks;
 using static Nuke.Common.Tools.DotNet.DotNetTasks;
 
-[CheckBuildProjectConfigurations]
 [ShutdownDotNetAfterServerBuild]
 class Build : NukeBuild
 {
@@ -18,8 +14,6 @@ class Build : NukeBuild
 
     [Parameter("Configuration to build - Default is 'Debug' (local) or 'Release' (server)")]
     readonly Configuration Configuration = Configuration.Release;
-
-    [GitRepository] readonly GitRepository GitRepository;
 
     [Solution] readonly Solution Solution;
 
@@ -65,8 +59,6 @@ class Build : NukeBuild
                 .SetSelfContained(false)
                 .SetPublishTrimmed(false)
             );
-
-            CopyDirectoryRecursively(Path.Combine(RootDirectory, ".git"), Path.Combine(OutputDirectory, ".git"));
         });
 
 
