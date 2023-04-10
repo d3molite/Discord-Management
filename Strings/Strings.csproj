@@ -27,6 +27,10 @@
         <Generator>ResXFileCodeGenerator</Generator>
         <LastGenOutput>VoiceResources.Designer.cs</LastGenOutput>
       </EmbeddedResource>
+      <EmbeddedResource Update="Resources\FaqResources.resx">
+        <Generator>ResXFileCodeGenerator</Generator>
+        <LastGenOutput>FaqResources.Designer.cs</LastGenOutput>
+      </EmbeddedResource>
     </ItemGroup>
 
     <ItemGroup>
@@ -54,6 +58,11 @@
         <DesignTime>True</DesignTime>
         <AutoGen>True</AutoGen>
         <DependentUpon>VoiceResources.resx</DependentUpon>
+      </Compile>
+      <Compile Update="Resources\FaqResources.Designer.cs">
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+        <DependentUpon>FaqResources.resx</DependentUpon>
       </Compile>
     </ItemGroup>
 

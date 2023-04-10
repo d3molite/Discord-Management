@@ -1,4 +1,5 @@
 ﻿using BotModule.DI;
+using BotModule.Extensions.Faq;
 using BotModule.Extensions.Feedback;
 using BotModule.Extensions.ImageManipulation;
 using BotModule.Extensions.Modnotes;
@@ -102,6 +103,9 @@ public sealed partial class DiscordBot
             if (config.MessageReactionConfig != null)
                 LoadMessageReactionExtension(guild);
 
+            if (config.FaqConfig != null)
+                await LoadFaqModule(guild);
+
             if (config.ReactionRoleConfigs != null && config.ReactionRoleConfigs.Any())
                 LoadReactionRoleExtension(guild);
 
@@ -132,15 +136,19 @@ public sealed partial class DiscordBot
     {
         if (_firstStartup)
             Log.Information("Creating Extensions");
+
         await _interactionService.AddModuleAsync<FeedbackExtension>(_serviceProvider);
         await _interactionService.AddModuleAsync<ModnoteExtension>(_serviceProvider);
         await _interactionService.AddModuleAsync<VoiceChannelCommandHandler>(_serviceProvider);
         await _interactionService.AddModuleAsync<ImageCommandHandler>(_serviceProvider);
+        await _interactionService.AddModuleAsync<FaqExtension>(_serviceProvider);
 
         _client.InteractionCreated += async interaction =>
         {
             var ctx = new SocketInteractionContext(_client, interaction);
             await _interactionService.ExecuteCommandAsync(ctx, _serviceProvider);
         };
+
+        _firstStartup = false;
     }
 }
