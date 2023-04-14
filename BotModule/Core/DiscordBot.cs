@@ -57,6 +57,7 @@ public sealed partial class DiscordBot
             await RegisterLanguages();
             await LoadModules();
             await UpdatePresence(_botModel.Presence);
+            WriteLog();
 
             _firstStartup = false;
         };
@@ -127,15 +128,15 @@ public sealed partial class DiscordBot
             languageProvider.Register(new LanguageInfo(config.LinkedGuild.Snowflake, _client.CurrentUser.Id,
                 LanguageProvider.GetCultureFromString(config.LinkedGuild.DefaultLanguage)));
 
-            Log.Debug("Registered {ClientName} - {GuildName} - {Language}", _botModel.Name, config.LinkedGuild.Name,
-                config.LinkedGuild.DefaultLanguage);
+            LogStartupAction(
+                $"Registered {_botModel.Name} - {config.LinkedGuild.Name} - {config.LinkedGuild.DefaultLanguage}");
         }
     }
 
     private async Task CreateExtensions()
     {
         if (_firstStartup)
-            Log.Information("Creating Extensions");
+            Log.Information("Creating Extensions - {BotName}", Name);
 
         await _interactionService.AddModuleAsync<FeedbackExtension>(_serviceProvider);
         await _interactionService.AddModuleAsync<ModnoteExtension>(_serviceProvider);
@@ -148,7 +149,5 @@ public sealed partial class DiscordBot
             var ctx = new SocketInteractionContext(_client, interaction);
             await _interactionService.ExecuteCommandAsync(ctx, _serviceProvider);
         };
-
-        _firstStartup = false;
     }
 }

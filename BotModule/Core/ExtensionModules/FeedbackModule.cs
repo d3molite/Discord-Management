@@ -1,6 +1,5 @@
 ﻿using BotModule.Extensions.Feedback;
 using Discord;
-using Serilog;
 
 namespace BotModule.Core;
 
@@ -8,7 +7,7 @@ public sealed partial class DiscordBot
 {
     private async Task LoadFeedbackModule(IGuild guild)
     {
-        Log.Information("Loaded Feedback Module for {BotName} in {GuildName}", Name, guild.Name);
+        LogStartupAction($"Loaded Feedback Module for {Name} in {guild.Name}");
 
         var feedbackModule = _interactionService.Modules.First(x => x.Name == nameof(FeedbackExtension));
 

@@ -79,7 +79,7 @@ public class VoiceChannelCommandHandler : InteractionModuleBase
 
         var maxUsers = 0;
 
-        var count = currentChannels.Count() + 1;
+        var count = currentChannels.Select(x => ChannelToNumber(x.Channel.Name)).Max() + 1;
 
         var channelName = $"[{count}] {modal.ChannelName}";
 
@@ -105,6 +105,11 @@ public class VoiceChannelCommandHandler : InteractionModuleBase
             });
 
         return channel;
+    }
+    
+    public static int ChannelToNumber(string input)
+    {
+        return int.Parse(input.Split("]").First()[1..]);
     }
 
     public class CreateVoiceModal : IModal

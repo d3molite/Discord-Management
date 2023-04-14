@@ -2,7 +2,6 @@
 using BotModule.Extensions.MessageReaction;
 using Discord;
 using Microsoft.Extensions.DependencyInjection;
-using Serilog;
 
 namespace BotModule.Core;
 
@@ -12,9 +11,7 @@ public sealed partial class DiscordBot
 
     private void LoadMessageReactionExtension(IGuild guild)
     {
-        Log.Information("Loaded Message Reaction Module for {BotName} in {GuildName}",
-            Name,
-            guild.Name);
+        LogStartupAction($"Loaded Message Reaction Module for {Name} in {guild.Name}");
 
         _messageReactionExtension = new MessageReactionExtension(
             _client,

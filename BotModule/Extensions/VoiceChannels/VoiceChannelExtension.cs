@@ -62,7 +62,7 @@ public class VoiceChannelExtension : ClientExtension
                 });
 
         foreach (var state in _moduleState.VoiceChannelStates)
-            Log.Debug("Found {ChannelName}", state.Channel.Name);
+            Log.Debug("Found {ChannelName} with {Bot}", state.Channel.Name, Client.CurrentUser.Username);
 
         Task.Run(async () => await RunPeriodicChecks());
     }
@@ -73,7 +73,7 @@ public class VoiceChannelExtension : ClientExtension
         {
             var removed = new List<VoiceChannelState>();
 
-            foreach (var channelInfo in _moduleState.VoiceChannelStates)
+            foreach (var channelInfo in _moduleState.VoiceChannelStates.Where(x => x.BotId == Client.CurrentUser.Id))
             {
                 var lastCheck = channelInfo.UsersPresent;
                 var currentCheck = channelInfo.Channel.ConnectedUsers.Any();
