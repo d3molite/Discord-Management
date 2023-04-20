@@ -9,7 +9,9 @@ public sealed partial class DiscordBot
 
     private void InitializeLogger()
     {
+        _startupLogger.AppendLine("");
         _startupLogger.AppendLine(new string('#', 50));
+        _startupLogger.AppendLine($"STARTUP FOR {Name}");
     }
 
     private void LogStartupAction(string input)

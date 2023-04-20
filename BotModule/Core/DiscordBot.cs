@@ -53,6 +53,7 @@ public sealed partial class DiscordBot
 
             if (!_firstStartup) return;
 
+            InitializeLogger();
             await CreateExtensions();
             await RegisterLanguages();
             await LoadModules();

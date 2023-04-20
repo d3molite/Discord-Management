@@ -10,7 +10,7 @@ public sealed partial class DiscordBot
     private async Task RegisterModules(IGuild guild)
     {
         await _interactionService.AddModulesToGuildAsync(guild, true, _modules.ToArray());
-
         LogStartupAction($"Added Commands for {Name} to {guild.Name}");
+        _modules.Clear();
     }
 }

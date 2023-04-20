@@ -75,11 +75,15 @@ public class VoiceChannelExtension : ClientExtension
 
             foreach (var channelInfo in _moduleState.VoiceChannelStates.Where(x => x.BotId == Client.CurrentUser.Id))
             {
+                await RefreshVoiceChannel(channelInfo);
+                
                 var lastCheck = channelInfo.UsersPresent;
                 var currentCheck = channelInfo.Channel.ConnectedUsers.Any();
 
                 var creationChannel =
                     await Client.GetChannelAsync(_config.RestrictedChannel!.Snowflake) as SocketTextChannel;
+                
+                
 
                 if (!lastCheck && !currentCheck)
                 {
@@ -111,5 +115,12 @@ public class VoiceChannelExtension : ClientExtension
 
             foreach (var channelInfo in removed) _moduleState.VoiceChannelStates.Remove(channelInfo);
         }
+    }
+
+    private async Task RefreshVoiceChannel(VoiceChannelState voiceChannelState)
+    {
+        var id = voiceChannelState.Channel.Id;
+        var channel = await Client.GetChannelAsync(id);
+        if (channel is SocketVoiceChannel voiceChannel) voiceChannelState.Channel = voiceChannel;
     }
 }
