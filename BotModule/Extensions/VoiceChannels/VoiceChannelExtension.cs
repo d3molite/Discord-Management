@@ -1,4 +1,4 @@
-﻿using BotModule.DI;
+using BotModule.DI;
 using BotModule.Extensions.Base;
 using DB.Models.Configs.Extensions;
 using DB.Repositories;
@@ -71,6 +71,7 @@ public class VoiceChannelExtension : ClientExtension
     {
         while (await _timer.WaitForNextTickAsync(CancellationToken.None))
         {
+            Log.Debug("Checking Channels for {BotName}", Client.CurrentUser.Username);
             var removed = new List<VoiceChannelState>();
 
             foreach (var channelInfo in _moduleState.VoiceChannelStates.Where(x => x.BotId == Client.CurrentUser.Id))
@@ -94,11 +95,20 @@ public class VoiceChannelExtension : ClientExtension
 
                     await creationChannel!.SendMessageAsync(message);
 
-                    await channelInfo.Channel.DeleteAsync();
-                    removed.Add(channelInfo);
+                    try
+                    {
+                        await channelInfo.Channel.DeleteAsync();
+                        removed.Add(channelInfo);
+                        Log.Debug("Channel {ChannelName} deleted due to Inactivity by {BotName}",
+                            channelInfo.Channel.Name,
+                            BotName);
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.Error("Failed to delete channel {ChannelName}: {ex}", channelInfo.Channel.Name, ex);
+                    }
 
-                    Log.Debug("Channel {ChannelName} deleted due to Inactivity by {BotName}", channelInfo.Channel.Name,
-                        BotName);
+
                     continue;
                 }
 
