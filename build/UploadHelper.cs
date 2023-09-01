@@ -13,7 +13,7 @@ public class UploadHelper
             HostName = Credentials.Host,
             UserName = Credentials.Username,
             Password = Credentials.Password,
-            SshHostKeyFingerprint = "ssh-ed25519 255 a08PwEh56Y5nO1Wgg7en8VZJfDU0eo8nGaaCRJtZfvQ="
+            SshHostKeyPolicy = SshHostKeyPolicy.GiveUpSecurityAndAcceptAny,
         };
 
         using var session = new Session();

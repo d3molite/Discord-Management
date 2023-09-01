@@ -55,7 +55,7 @@ class Build : NukeBuild
         {
             DotNetPublish(s => s
                 .SetOutput(OutputDirectory)
-                .SetRuntime("ubuntu.18.04-x64")
+                .SetRuntime("ubuntu.22.04-x64")
                 .SetConfiguration(Configuration.Release)
                 .SetSelfContained(false)
                 .SetPublishTrimmed(false)
